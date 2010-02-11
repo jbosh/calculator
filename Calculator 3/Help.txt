@@ -1,0 +1,62 @@
+Calculator by Jbosh 2.2.0.0 (jsbosh@gmail.com)
+
+Hot Keys:
+Ctrl + N: Creates a new instance of the current window.
+Ctrl + M: Brings up the menu to spawn other solvers.
+Ctrl + F: Same as Ctrl + M.
+Ctrl + Q: Quits the entire application.
+Ctrl + +: Adds a new text box to the calculator window.
+Ctrl + -: Removes the last text box from the calculator window.
+Ctrl + Shift + Del: Clear all fields in calculator.
+Ctrl + S: Saves current calculator fields.
+Ctrl + Shift + S: Save as.
+Ctrl + O: Opens a txt file with calculator fields.
+Click	: Clicking on an answer will copy the answer to the clipboard.
+Esc		: Closes the current window.
+
+F1		: Opens the help menu. 
+F2		: Options menu.
+
+
+Notes:
+-NaN is the answer when there is a parsing error or you screwed up.
+-Copy the answer to the clipboard by clicking on it.
+-Use () or {} or [] for parenthesis.
+-Commas are accpetable but do not affect the outcome
+ Ex. 1,000,000 or 1,0000,00, are both considered to be 1000000.
+-All calculator functions are in degrees.
+
+Functions:
+tan, sin, cos: find the trig values of numbers. Ex. sin(pi) or sin pi
+atan, asin, acos: find the angle from a number. Ex. asin(1/2) or asin 2
+tanh, sinh, cosh: hyperbolic trig. Ex. tanh(17) or sinh 2
+deg, rad: converts a number to deg or to rad. Ex. deg(pi) = 180 or rad(180) = pi
+sqrt: Takes the square root of a number.
+
+abs: find the absolute value of a number.
+%: find a number mod another. Ex. 10 % 3 = 1
+!: factorial a number.  Works with positive integers only.
+ln, log: natural log and log of a number.  Ex. ln 2 or log(10)
+
+Variables:
+e = 2.71828...: Euler's variable
+pi = 3.141592...
+g = gravity (m/(ss)) = 9.8, please note that it is positive.
+c = speed of light (m/s)
+G = 6.67428E-11: Gravitation constant.
+
+Command Line Arguments:
+-c: Opens the calculator first (this is default on).
+-p: Opens to the physics solver.
+-q: Opens to the quadratic formula.
+-s: Calculator program will parse the given input and output the answer.
+
+Future Releases:
+-Hex numbers are supported, but not well.  Just throw a '0x' before 
+ a number to have the calculator attempt. Ex. 0xff3 = 4083.
+-Use {} for vectors. Ex. {2;3}.
+	-dot: performs a dot product. Ex. 2<1;2>dot<0;1>
+	-cross: perfroms cross product. Ex. 2<1;2;1>cross<0;1;2>
+	 (Works in 3 dimensions only.)
+	-normalize: normalizes the vector. Ex normalize<3;2>
+-Ctrl + Enter inserts a line, Ctrl + X deletes a line.
