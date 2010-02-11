@@ -1,0 +1,10 @@
+﻿[ ] Constant folding
+[ ] Force only the changed text box to recompile, leave all others
+[ ] Alt key brings up file menu
+[ ] Show file name and whether or not it is saved in title bar
+[ ] Graph
+[ ]   Derivative
+[ ]   Integral
+[x] Latex Commands
+[ ] Optimize latex replace (so that it's not a ton of replaces in a row).
+[ ] Latex command shouldn't bring caret to front of box

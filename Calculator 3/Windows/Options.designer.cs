@@ -1,0 +1,190 @@
+﻿namespace Calculator.Windows
+{
+	partial class Options
+	{
+		/// <summary>
+		/// Required designer variable.
+		/// </summary>
+		private System.ComponentModel.IContainer components = null;
+
+		/// <summary>
+		/// Clean up any resources being used.
+		/// </summary>
+		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+		protected override void Dispose(bool disposing)
+		{
+			if (disposing && (components != null))
+			{
+				components.Dispose();
+			}
+			base.Dispose(disposing);
+		}
+
+		#region Windows Form Designer generated code
+
+		/// <summary>
+		/// Required method for Designer support - do not modify
+		/// the contents of this method with the code editor.
+		/// </summary>
+		private void InitializeComponent()
+		{
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Options));
+			this.chkOnTop = new System.Windows.Forms.CheckBox();
+			this.btnTrig = new System.Windows.Forms.Button();
+			this.numRounding = new System.Windows.Forms.NumericUpDown();
+			this.label1 = new System.Windows.Forms.Label();
+			this.radioStandard = new System.Windows.Forms.RadioButton();
+			this.radioScientific = new System.Windows.Forms.RadioButton();
+			this.radioHex = new System.Windows.Forms.RadioButton();
+			this.chkThousands = new System.Windows.Forms.CheckBox();
+			this.label2 = new System.Windows.Forms.Label();
+			this.chkAntialias = new System.Windows.Forms.CheckBox();
+			((System.ComponentModel.ISupportInitialize)(this.numRounding)).BeginInit();
+			this.SuspendLayout();
+			// 
+			// chkOnTop
+			// 
+			this.chkOnTop.AutoSize = true;
+			this.chkOnTop.Location = new System.Drawing.Point(12, 46);
+			this.chkOnTop.Name = "chkOnTop";
+			this.chkOnTop.Size = new System.Drawing.Size(141, 17);
+			this.chkOnTop.TabIndex = 0;
+			this.chkOnTop.Text = "Windows always on top.";
+			this.chkOnTop.UseVisualStyleBackColor = true;
+			this.chkOnTop.CheckedChanged += new System.EventHandler(this.chkOnTop_CheckedChanged);
+			// 
+			// btnTrig
+			// 
+			this.btnTrig.Location = new System.Drawing.Point(92, 12);
+			this.btnTrig.Name = "btnTrig";
+			this.btnTrig.Size = new System.Drawing.Size(61, 25);
+			this.btnTrig.TabIndex = 2;
+			this.btnTrig.Text = "Radians";
+			this.btnTrig.UseVisualStyleBackColor = true;
+			this.btnTrig.Click += new System.EventHandler(this.btnTrig_Click);
+			// 
+			// numRounding
+			// 
+			this.numRounding.Location = new System.Drawing.Point(68, 89);
+			this.numRounding.Maximum = new decimal(new int[] {
+            15,
+            0,
+            0,
+            0});
+			this.numRounding.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            -2147483648});
+			this.numRounding.Name = "numRounding";
+			this.numRounding.Size = new System.Drawing.Size(84, 20);
+			this.numRounding.TabIndex = 3;
+			this.numRounding.ValueChanged += new System.EventHandler(this.numRounding_ValueChanged);
+			// 
+			// label1
+			// 
+			this.label1.Location = new System.Drawing.Point(9, 91);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(53, 13);
+			this.label1.TabIndex = 4;
+			this.label1.Text = "Rounding";
+			// 
+			// radioStandard
+			// 
+			this.radioStandard.Location = new System.Drawing.Point(12, 115);
+			this.radioStandard.Name = "radioStandard";
+			this.radioStandard.Size = new System.Drawing.Size(104, 19);
+			this.radioStandard.TabIndex = 5;
+			this.radioStandard.TabStop = true;
+			this.radioStandard.Text = "Standard";
+			this.radioStandard.UseVisualStyleBackColor = true;
+			// 
+			// radioScientific
+			// 
+			this.radioScientific.Location = new System.Drawing.Point(12, 135);
+			this.radioScientific.Name = "radioScientific";
+			this.radioScientific.Size = new System.Drawing.Size(104, 19);
+			this.radioScientific.TabIndex = 6;
+			this.radioScientific.TabStop = true;
+			this.radioScientific.Text = "Scientific";
+			this.radioScientific.UseVisualStyleBackColor = true;
+			// 
+			// radioHex
+			// 
+			this.radioHex.Location = new System.Drawing.Point(12, 154);
+			this.radioHex.Name = "radioHex";
+			this.radioHex.Size = new System.Drawing.Size(104, 19);
+			this.radioHex.TabIndex = 7;
+			this.radioHex.TabStop = true;
+			this.radioHex.Text = "Hex";
+			this.radioHex.UseVisualStyleBackColor = true;
+			// 
+			// chkThousands
+			// 
+			this.chkThousands.AutoSize = true;
+			this.chkThousands.Location = new System.Drawing.Point(12, 179);
+			this.chkThousands.Name = "chkThousands";
+			this.chkThousands.Size = new System.Drawing.Size(129, 17);
+			this.chkThousands.TabIndex = 8;
+			this.chkThousands.Text = "Thousands seperator.";
+			this.chkThousands.UseVisualStyleBackColor = true;
+			this.chkThousands.CheckedChanged += new System.EventHandler(this.chkThousands_CheckedChanged);
+			// 
+			// label2
+			// 
+			this.label2.Location = new System.Drawing.Point(9, 18);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(77, 19);
+			this.label2.TabIndex = 9;
+			this.label2.Text = "Calculate In:";
+			// 
+			// chkAntialias
+			// 
+			this.chkAntialias.AutoSize = true;
+			this.chkAntialias.Location = new System.Drawing.Point(12, 66);
+			this.chkAntialias.Name = "chkAntialias";
+			this.chkAntialias.Size = new System.Drawing.Size(79, 17);
+			this.chkAntialias.TabIndex = 10;
+			this.chkAntialias.Text = "Antialiasing";
+			this.chkAntialias.UseVisualStyleBackColor = true;
+			this.chkAntialias.CheckedChanged += new System.EventHandler(this.chkAntialias_CheckedChanged);
+			// 
+			// Options
+			// 
+			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.ClientSize = new System.Drawing.Size(164, 210);
+			this.Controls.Add(this.chkAntialias);
+			this.Controls.Add(this.label2);
+			this.Controls.Add(this.chkThousands);
+			this.Controls.Add(this.radioHex);
+			this.Controls.Add(this.radioScientific);
+			this.Controls.Add(this.radioStandard);
+			this.Controls.Add(this.label1);
+			this.Controls.Add(this.numRounding);
+			this.Controls.Add(this.btnTrig);
+			this.Controls.Add(this.chkOnTop);
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+			this.Name = "Options";
+			this.Text = "Options";
+			((System.ComponentModel.ISupportInitialize)(this.numRounding)).EndInit();
+			this.ResumeLayout(false);
+			this.PerformLayout();
+
+		}
+
+		#endregion
+
+		private System.Windows.Forms.CheckBox chkOnTop;
+		private System.Windows.Forms.Button btnTrig;
+		private System.Windows.Forms.NumericUpDown numRounding;
+		private System.Windows.Forms.Label label1;
+		private System.Windows.Forms.RadioButton radioStandard;
+		private System.Windows.Forms.RadioButton radioScientific;
+		private System.Windows.Forms.RadioButton radioHex;
+		private System.Windows.Forms.CheckBox chkThousands;
+		private System.Windows.Forms.Label label2;
+		private System.Windows.Forms.CheckBox chkAntialias;
+	}
+}
