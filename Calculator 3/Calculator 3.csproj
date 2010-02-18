@@ -77,6 +77,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Grammar\CalcMath.cs" />
     <Compile Include="Grammar\CalculatorLexer.cs" />
     <Compile Include="Grammar\CalculatorParser.cs" />
     <Compile Include="Grammar\MemoryManager.cs" />
@@ -177,29 +178,29 @@
   <ItemGroup>
     <PublishFile Include="antlr.runtime">
       <Visible>False</Visible>
-      <PublishState>Exclude</PublishState>
       <Group>
       </Group>
       <TargetPath>
       </TargetPath>
+      <PublishState>Exclude</PublishState>
       <FileType>Assembly</FileType>
     </PublishFile>
     <PublishFile Include="StringTemplate">
       <Visible>False</Visible>
-      <PublishState>Exclude</PublishState>
       <Group>
       </Group>
       <TargetPath>
       </TargetPath>
+      <PublishState>Exclude</PublishState>
       <FileType>Assembly</FileType>
     </PublishFile>
     <PublishFile Include="Tasks.txt">
       <Visible>False</Visible>
-      <PublishState>Exclude</PublishState>
       <Group>
       </Group>
       <TargetPath>
       </TargetPath>
+      <PublishState>Exclude</PublishState>
       <FileType>File</FileType>
     </PublishFile>
   </ItemGroup>

@@ -12,8 +12,11 @@ namespace Calculator.Windows
 	{
 		private Calc parent;
 		private MemoryManager Memory;
+		private PointF[][] lines;
+		private RectangleF ViewRect;
 		public Graph(Calc Parent, MemoryManager memory)
 		{
+			ViewRect = new RectangleF(-1, -1, 2, 2);
 			TopMost = Program.AlwaysOnTop;
 			Memory = memory;
 			parent = Parent;
@@ -31,13 +34,17 @@ namespace Calculator.Windows
 				grfx.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
 			}
 			grfx.Clear(Color.White);
-			var lines = new PointF[parent.Statements.Count()][];
-			for(int i = 0; i < lines.Length; i++)
-				lines[i] = new PointF[ClientSize.Width];
+			if (lines == null || lines.Length != parent.Statements.Count())
+			{
+				lines = new PointF[parent.Statements.Count()][];
+				if(lines[0] == null || lines[0].Length != ClientSize.Width)
+					for (int i = 0; i < lines.Length; i++)
+						lines[i] = new PointF[ClientSize.Width];
+			}
+			Memory.Push();
 			for (int i = 0; i < ClientSize.Width; i++)
 			{
-				Memory.Push();
-				Memory.SetVariable("x", i);
+				Memory.SetVariable("x", CalcMath.Lerp(ViewRect.Left, ViewRect.Right, i / (double)ClientSize.Width));
 				int j = 0;
 				foreach (var stat in parent.Statements)
 				{
@@ -46,11 +53,17 @@ namespace Calculator.Windows
 						lines[j][0].Y = float.NaN;
 					j++;
 				}
-				Memory.Pop();
 			}
+			Memory.Pop();
 			for (int i = 0; i < lines.Length; i++)
-				if(!float.IsNaN(lines[i][0].Y))
-					grfx.DrawLines(Pens.Black, lines[i]);
+				if (!float.IsNaN(lines[i][0].Y))
+				{
+					try
+					{
+						grfx.DrawLines(Pens.Black, lines[i]);
+					}
+					catch { }
+				}
 		}
 		public void Recalculate()
 		{
