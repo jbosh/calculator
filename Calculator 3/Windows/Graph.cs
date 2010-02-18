@@ -48,7 +48,11 @@ namespace Calculator.Windows
 				int j = 0;
 				foreach (var stat in parent.Statements)
 				{
-					lines[j][i] = new PointF(i, ClientSize.Height - (float)stat.Execute());
+					var y = (float)stat.Execute();
+					//a + (b - a) * amt
+					//y/rectHeight = viewY/viewHeight
+					y = ClientSize.Height - (y - ViewRect.Top) / ViewRect.Height * ClientSize.Height;
+					lines[j][i] = new PointF(i, y);
 					if (float.IsNaN(lines[j][i].Y))
 						lines[j][0].Y = float.NaN;
 					j++;
