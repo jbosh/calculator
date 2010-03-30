@@ -58,6 +58,8 @@ namespace Calculator
 
 			TestFunction("-.27", -.27);
 			TestFunction("2E17", 2E17);
+			TestFunction("3.16E2", 316);
+			TestFunction(".3E2", 30);
 			TestFunction("203,20,2", 203202);
 			TestFunction("2e 17", 92.42);
 

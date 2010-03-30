@@ -90,8 +90,6 @@ namespace Calculator.Grammar
 				VariableType = VariableType.Error;
 				VariableName = "";
 			}
-
-			
 		}
 		private static string Preprocess(string source)
 		{

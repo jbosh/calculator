@@ -88,10 +88,10 @@ namespace Calculator
 		[STAThread]
 		private static void Main(string[] args)
 		{
-#if RUN_TESTS
-			int benchStart = Environment.TickCount;
-			RunTests();
-			int benchEnd = Environment.TickCount;
+#if DEBUG
+			var benchStart = Environment.TickCount;
+			Tests.RunTests();
+			var benchEnd = Environment.TickCount;
 			Console.WriteLine("Tests run in {0}ms.", benchEnd - benchStart);
 #endif
 

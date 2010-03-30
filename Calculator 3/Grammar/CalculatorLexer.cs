@@ -1,4 +1,4 @@
-// $ANTLR 3.2 Sep 23, 2009 12:02:23 Calculator.g 2010-02-10 23:44:47
+// $ANTLR 3.2 Sep 23, 2009 12:02:23 Calculator.g 2010-03-30 16:58:38
 
 // The variable 'variable' is assigned but its value is never used.
 #pragma warning disable 168, 219
@@ -763,10 +763,10 @@ public partial class CalculatorLexer : Lexer {
     		{
             int _type = DOUBLE;
     	int _channel = DEFAULT_TOKEN_CHANNEL;
-            // Calculator.g:106:2: ( ( '0' .. '9' )+ '.' ( '0' .. '9' )* | '.' ( '0' .. '9' )+ | ( '0' .. '9' )+ | ( '0' .. '9' )+ 'E' ( '0' .. '9' )+ )
-            int alt8 = 4;
-            alt8 = dfa8.Predict(input);
-            switch (alt8) 
+            // Calculator.g:106:2: ( ( '0' .. '9' )+ '.' ( '0' .. '9' )* | '.' ( '0' .. '9' )+ | ( '0' .. '9' )+ | ( '0' .. '9' )+ 'E' ( '0' .. '9' )+ | ( '0' .. '9' )+ 'E' '.' ( '0' .. '9' )+ | ( '0' .. '9' )+ 'E' ( '0' .. '9' )+ '.' ( '0' .. '9' )* | '.' ( '0' .. '9' )+ 'E' ( '0' .. '9' )+ | '.' ( '0' .. '9' )+ 'E' '.' ( '0' .. '9' )+ | '.' ( '0' .. '9' )+ 'E' ( '0' .. '9' )+ '.' ( '0' .. '9' )* | ( '0' .. '9' )+ '.' ( '0' .. '9' )* 'E' ( '0' .. '9' )+ | ( '0' .. '9' )+ '.' ( '0' .. '9' )* 'E' '.' ( '0' .. '9' )+ | ( '0' .. '9' )+ '.' ( '0' .. '9' )* 'E' ( '0' .. '9' )+ '.' ( '0' .. '9' )* )
+            int alt30 = 12;
+            alt30 = dfa30.Predict(input);
+            switch (alt30) 
             {
                 case 1 :
                     // Calculator.g:106:4: ( '0' .. '9' )+ '.' ( '0' .. '9' )*
@@ -924,9 +924,9 @@ public partial class CalculatorLexer : Lexer {
                     }
                     break;
                 case 4 :
-                    // Calculator.g:109:4: ( '0' .. '9' )+ 'E' ( '0' .. '9' )+
+                    // Calculator.g:110:4: ( '0' .. '9' )+ 'E' ( '0' .. '9' )+
                     {
-                    	// Calculator.g:109:4: ( '0' .. '9' )+
+                    	// Calculator.g:110:4: ( '0' .. '9' )+
                     	int cnt6 = 0;
                     	do 
                     	{
@@ -942,7 +942,7 @@ public partial class CalculatorLexer : Lexer {
                     	    switch (alt6) 
                     		{
                     			case 1 :
-                    			    // Calculator.g:109:5: '0' .. '9'
+                    			    // Calculator.g:110:5: '0' .. '9'
                     			    {
                     			    	MatchRange('0','9'); 
 
@@ -962,7 +962,7 @@ public partial class CalculatorLexer : Lexer {
                     		;	// Stops C# compiler whining that label 'loop6' has no statements
 
                     	Match('E'); 
-                    	// Calculator.g:109:20: ( '0' .. '9' )+
+                    	// Calculator.g:110:20: ( '0' .. '9' )+
                     	int cnt7 = 0;
                     	do 
                     	{
@@ -978,7 +978,7 @@ public partial class CalculatorLexer : Lexer {
                     	    switch (alt7) 
                     		{
                     			case 1 :
-                    			    // Calculator.g:109:21: '0' .. '9'
+                    			    // Calculator.g:110:21: '0' .. '9'
                     			    {
                     			    	MatchRange('0','9'); 
 
@@ -996,6 +996,814 @@ public partial class CalculatorLexer : Lexer {
 
                     	loop7:
                     		;	// Stops C# compiler whining that label 'loop7' has no statements
+
+
+                    }
+                    break;
+                case 5 :
+                    // Calculator.g:111:4: ( '0' .. '9' )+ 'E' '.' ( '0' .. '9' )+
+                    {
+                    	// Calculator.g:111:4: ( '0' .. '9' )+
+                    	int cnt8 = 0;
+                    	do 
+                    	{
+                    	    int alt8 = 2;
+                    	    int LA8_0 = input.LA(1);
+
+                    	    if ( ((LA8_0 >= '0' && LA8_0 <= '9')) )
+                    	    {
+                    	        alt8 = 1;
+                    	    }
+
+
+                    	    switch (alt8) 
+                    		{
+                    			case 1 :
+                    			    // Calculator.g:111:5: '0' .. '9'
+                    			    {
+                    			    	MatchRange('0','9'); 
+
+                    			    }
+                    			    break;
+
+                    			default:
+                    			    if ( cnt8 >= 1 ) goto loop8;
+                    		            EarlyExitException eee8 =
+                    		                new EarlyExitException(8, input);
+                    		            throw eee8;
+                    	    }
+                    	    cnt8++;
+                    	} while (true);
+
+                    	loop8:
+                    		;	// Stops C# compiler whining that label 'loop8' has no statements
+
+                    	Match('E'); 
+                    	Match('.'); 
+                    	// Calculator.g:111:24: ( '0' .. '9' )+
+                    	int cnt9 = 0;
+                    	do 
+                    	{
+                    	    int alt9 = 2;
+                    	    int LA9_0 = input.LA(1);
+
+                    	    if ( ((LA9_0 >= '0' && LA9_0 <= '9')) )
+                    	    {
+                    	        alt9 = 1;
+                    	    }
+
+
+                    	    switch (alt9) 
+                    		{
+                    			case 1 :
+                    			    // Calculator.g:111:25: '0' .. '9'
+                    			    {
+                    			    	MatchRange('0','9'); 
+
+                    			    }
+                    			    break;
+
+                    			default:
+                    			    if ( cnt9 >= 1 ) goto loop9;
+                    		            EarlyExitException eee9 =
+                    		                new EarlyExitException(9, input);
+                    		            throw eee9;
+                    	    }
+                    	    cnt9++;
+                    	} while (true);
+
+                    	loop9:
+                    		;	// Stops C# compiler whining that label 'loop9' has no statements
+
+
+                    }
+                    break;
+                case 6 :
+                    // Calculator.g:112:4: ( '0' .. '9' )+ 'E' ( '0' .. '9' )+ '.' ( '0' .. '9' )*
+                    {
+                    	// Calculator.g:112:4: ( '0' .. '9' )+
+                    	int cnt10 = 0;
+                    	do 
+                    	{
+                    	    int alt10 = 2;
+                    	    int LA10_0 = input.LA(1);
+
+                    	    if ( ((LA10_0 >= '0' && LA10_0 <= '9')) )
+                    	    {
+                    	        alt10 = 1;
+                    	    }
+
+
+                    	    switch (alt10) 
+                    		{
+                    			case 1 :
+                    			    // Calculator.g:112:5: '0' .. '9'
+                    			    {
+                    			    	MatchRange('0','9'); 
+
+                    			    }
+                    			    break;
+
+                    			default:
+                    			    if ( cnt10 >= 1 ) goto loop10;
+                    		            EarlyExitException eee10 =
+                    		                new EarlyExitException(10, input);
+                    		            throw eee10;
+                    	    }
+                    	    cnt10++;
+                    	} while (true);
+
+                    	loop10:
+                    		;	// Stops C# compiler whining that label 'loop10' has no statements
+
+                    	Match('E'); 
+                    	// Calculator.g:112:20: ( '0' .. '9' )+
+                    	int cnt11 = 0;
+                    	do 
+                    	{
+                    	    int alt11 = 2;
+                    	    int LA11_0 = input.LA(1);
+
+                    	    if ( ((LA11_0 >= '0' && LA11_0 <= '9')) )
+                    	    {
+                    	        alt11 = 1;
+                    	    }
+
+
+                    	    switch (alt11) 
+                    		{
+                    			case 1 :
+                    			    // Calculator.g:112:21: '0' .. '9'
+                    			    {
+                    			    	MatchRange('0','9'); 
+
+                    			    }
+                    			    break;
+
+                    			default:
+                    			    if ( cnt11 >= 1 ) goto loop11;
+                    		            EarlyExitException eee11 =
+                    		                new EarlyExitException(11, input);
+                    		            throw eee11;
+                    	    }
+                    	    cnt11++;
+                    	} while (true);
+
+                    	loop11:
+                    		;	// Stops C# compiler whining that label 'loop11' has no statements
+
+                    	Match('.'); 
+                    	// Calculator.g:112:36: ( '0' .. '9' )*
+                    	do 
+                    	{
+                    	    int alt12 = 2;
+                    	    int LA12_0 = input.LA(1);
+
+                    	    if ( ((LA12_0 >= '0' && LA12_0 <= '9')) )
+                    	    {
+                    	        alt12 = 1;
+                    	    }
+
+
+                    	    switch (alt12) 
+                    		{
+                    			case 1 :
+                    			    // Calculator.g:112:37: '0' .. '9'
+                    			    {
+                    			    	MatchRange('0','9'); 
+
+                    			    }
+                    			    break;
+
+                    			default:
+                    			    goto loop12;
+                    	    }
+                    	} while (true);
+
+                    	loop12:
+                    		;	// Stops C# compiler whining that label 'loop12' has no statements
+
+
+                    }
+                    break;
+                case 7 :
+                    // Calculator.g:114:4: '.' ( '0' .. '9' )+ 'E' ( '0' .. '9' )+
+                    {
+                    	Match('.'); 
+                    	// Calculator.g:114:8: ( '0' .. '9' )+
+                    	int cnt13 = 0;
+                    	do 
+                    	{
+                    	    int alt13 = 2;
+                    	    int LA13_0 = input.LA(1);
+
+                    	    if ( ((LA13_0 >= '0' && LA13_0 <= '9')) )
+                    	    {
+                    	        alt13 = 1;
+                    	    }
+
+
+                    	    switch (alt13) 
+                    		{
+                    			case 1 :
+                    			    // Calculator.g:114:9: '0' .. '9'
+                    			    {
+                    			    	MatchRange('0','9'); 
+
+                    			    }
+                    			    break;
+
+                    			default:
+                    			    if ( cnt13 >= 1 ) goto loop13;
+                    		            EarlyExitException eee13 =
+                    		                new EarlyExitException(13, input);
+                    		            throw eee13;
+                    	    }
+                    	    cnt13++;
+                    	} while (true);
+
+                    	loop13:
+                    		;	// Stops C# compiler whining that label 'loop13' has no statements
+
+                    	Match('E'); 
+                    	// Calculator.g:114:24: ( '0' .. '9' )+
+                    	int cnt14 = 0;
+                    	do 
+                    	{
+                    	    int alt14 = 2;
+                    	    int LA14_0 = input.LA(1);
+
+                    	    if ( ((LA14_0 >= '0' && LA14_0 <= '9')) )
+                    	    {
+                    	        alt14 = 1;
+                    	    }
+
+
+                    	    switch (alt14) 
+                    		{
+                    			case 1 :
+                    			    // Calculator.g:114:25: '0' .. '9'
+                    			    {
+                    			    	MatchRange('0','9'); 
+
+                    			    }
+                    			    break;
+
+                    			default:
+                    			    if ( cnt14 >= 1 ) goto loop14;
+                    		            EarlyExitException eee14 =
+                    		                new EarlyExitException(14, input);
+                    		            throw eee14;
+                    	    }
+                    	    cnt14++;
+                    	} while (true);
+
+                    	loop14:
+                    		;	// Stops C# compiler whining that label 'loop14' has no statements
+
+
+                    }
+                    break;
+                case 8 :
+                    // Calculator.g:115:4: '.' ( '0' .. '9' )+ 'E' '.' ( '0' .. '9' )+
+                    {
+                    	Match('.'); 
+                    	// Calculator.g:115:8: ( '0' .. '9' )+
+                    	int cnt15 = 0;
+                    	do 
+                    	{
+                    	    int alt15 = 2;
+                    	    int LA15_0 = input.LA(1);
+
+                    	    if ( ((LA15_0 >= '0' && LA15_0 <= '9')) )
+                    	    {
+                    	        alt15 = 1;
+                    	    }
+
+
+                    	    switch (alt15) 
+                    		{
+                    			case 1 :
+                    			    // Calculator.g:115:9: '0' .. '9'
+                    			    {
+                    			    	MatchRange('0','9'); 
+
+                    			    }
+                    			    break;
+
+                    			default:
+                    			    if ( cnt15 >= 1 ) goto loop15;
+                    		            EarlyExitException eee15 =
+                    		                new EarlyExitException(15, input);
+                    		            throw eee15;
+                    	    }
+                    	    cnt15++;
+                    	} while (true);
+
+                    	loop15:
+                    		;	// Stops C# compiler whining that label 'loop15' has no statements
+
+                    	Match('E'); 
+                    	Match('.'); 
+                    	// Calculator.g:115:28: ( '0' .. '9' )+
+                    	int cnt16 = 0;
+                    	do 
+                    	{
+                    	    int alt16 = 2;
+                    	    int LA16_0 = input.LA(1);
+
+                    	    if ( ((LA16_0 >= '0' && LA16_0 <= '9')) )
+                    	    {
+                    	        alt16 = 1;
+                    	    }
+
+
+                    	    switch (alt16) 
+                    		{
+                    			case 1 :
+                    			    // Calculator.g:115:29: '0' .. '9'
+                    			    {
+                    			    	MatchRange('0','9'); 
+
+                    			    }
+                    			    break;
+
+                    			default:
+                    			    if ( cnt16 >= 1 ) goto loop16;
+                    		            EarlyExitException eee16 =
+                    		                new EarlyExitException(16, input);
+                    		            throw eee16;
+                    	    }
+                    	    cnt16++;
+                    	} while (true);
+
+                    	loop16:
+                    		;	// Stops C# compiler whining that label 'loop16' has no statements
+
+
+                    }
+                    break;
+                case 9 :
+                    // Calculator.g:116:4: '.' ( '0' .. '9' )+ 'E' ( '0' .. '9' )+ '.' ( '0' .. '9' )*
+                    {
+                    	Match('.'); 
+                    	// Calculator.g:116:8: ( '0' .. '9' )+
+                    	int cnt17 = 0;
+                    	do 
+                    	{
+                    	    int alt17 = 2;
+                    	    int LA17_0 = input.LA(1);
+
+                    	    if ( ((LA17_0 >= '0' && LA17_0 <= '9')) )
+                    	    {
+                    	        alt17 = 1;
+                    	    }
+
+
+                    	    switch (alt17) 
+                    		{
+                    			case 1 :
+                    			    // Calculator.g:116:9: '0' .. '9'
+                    			    {
+                    			    	MatchRange('0','9'); 
+
+                    			    }
+                    			    break;
+
+                    			default:
+                    			    if ( cnt17 >= 1 ) goto loop17;
+                    		            EarlyExitException eee17 =
+                    		                new EarlyExitException(17, input);
+                    		            throw eee17;
+                    	    }
+                    	    cnt17++;
+                    	} while (true);
+
+                    	loop17:
+                    		;	// Stops C# compiler whining that label 'loop17' has no statements
+
+                    	Match('E'); 
+                    	// Calculator.g:116:24: ( '0' .. '9' )+
+                    	int cnt18 = 0;
+                    	do 
+                    	{
+                    	    int alt18 = 2;
+                    	    int LA18_0 = input.LA(1);
+
+                    	    if ( ((LA18_0 >= '0' && LA18_0 <= '9')) )
+                    	    {
+                    	        alt18 = 1;
+                    	    }
+
+
+                    	    switch (alt18) 
+                    		{
+                    			case 1 :
+                    			    // Calculator.g:116:25: '0' .. '9'
+                    			    {
+                    			    	MatchRange('0','9'); 
+
+                    			    }
+                    			    break;
+
+                    			default:
+                    			    if ( cnt18 >= 1 ) goto loop18;
+                    		            EarlyExitException eee18 =
+                    		                new EarlyExitException(18, input);
+                    		            throw eee18;
+                    	    }
+                    	    cnt18++;
+                    	} while (true);
+
+                    	loop18:
+                    		;	// Stops C# compiler whining that label 'loop18' has no statements
+
+                    	Match('.'); 
+                    	// Calculator.g:116:40: ( '0' .. '9' )*
+                    	do 
+                    	{
+                    	    int alt19 = 2;
+                    	    int LA19_0 = input.LA(1);
+
+                    	    if ( ((LA19_0 >= '0' && LA19_0 <= '9')) )
+                    	    {
+                    	        alt19 = 1;
+                    	    }
+
+
+                    	    switch (alt19) 
+                    		{
+                    			case 1 :
+                    			    // Calculator.g:116:41: '0' .. '9'
+                    			    {
+                    			    	MatchRange('0','9'); 
+
+                    			    }
+                    			    break;
+
+                    			default:
+                    			    goto loop19;
+                    	    }
+                    	} while (true);
+
+                    	loop19:
+                    		;	// Stops C# compiler whining that label 'loop19' has no statements
+
+
+                    }
+                    break;
+                case 10 :
+                    // Calculator.g:118:4: ( '0' .. '9' )+ '.' ( '0' .. '9' )* 'E' ( '0' .. '9' )+
+                    {
+                    	// Calculator.g:118:4: ( '0' .. '9' )+
+                    	int cnt20 = 0;
+                    	do 
+                    	{
+                    	    int alt20 = 2;
+                    	    int LA20_0 = input.LA(1);
+
+                    	    if ( ((LA20_0 >= '0' && LA20_0 <= '9')) )
+                    	    {
+                    	        alt20 = 1;
+                    	    }
+
+
+                    	    switch (alt20) 
+                    		{
+                    			case 1 :
+                    			    // Calculator.g:118:5: '0' .. '9'
+                    			    {
+                    			    	MatchRange('0','9'); 
+
+                    			    }
+                    			    break;
+
+                    			default:
+                    			    if ( cnt20 >= 1 ) goto loop20;
+                    		            EarlyExitException eee20 =
+                    		                new EarlyExitException(20, input);
+                    		            throw eee20;
+                    	    }
+                    	    cnt20++;
+                    	} while (true);
+
+                    	loop20:
+                    		;	// Stops C# compiler whining that label 'loop20' has no statements
+
+                    	Match('.'); 
+                    	// Calculator.g:118:20: ( '0' .. '9' )*
+                    	do 
+                    	{
+                    	    int alt21 = 2;
+                    	    int LA21_0 = input.LA(1);
+
+                    	    if ( ((LA21_0 >= '0' && LA21_0 <= '9')) )
+                    	    {
+                    	        alt21 = 1;
+                    	    }
+
+
+                    	    switch (alt21) 
+                    		{
+                    			case 1 :
+                    			    // Calculator.g:118:21: '0' .. '9'
+                    			    {
+                    			    	MatchRange('0','9'); 
+
+                    			    }
+                    			    break;
+
+                    			default:
+                    			    goto loop21;
+                    	    }
+                    	} while (true);
+
+                    	loop21:
+                    		;	// Stops C# compiler whining that label 'loop21' has no statements
+
+                    	Match('E'); 
+                    	// Calculator.g:118:36: ( '0' .. '9' )+
+                    	int cnt22 = 0;
+                    	do 
+                    	{
+                    	    int alt22 = 2;
+                    	    int LA22_0 = input.LA(1);
+
+                    	    if ( ((LA22_0 >= '0' && LA22_0 <= '9')) )
+                    	    {
+                    	        alt22 = 1;
+                    	    }
+
+
+                    	    switch (alt22) 
+                    		{
+                    			case 1 :
+                    			    // Calculator.g:118:37: '0' .. '9'
+                    			    {
+                    			    	MatchRange('0','9'); 
+
+                    			    }
+                    			    break;
+
+                    			default:
+                    			    if ( cnt22 >= 1 ) goto loop22;
+                    		            EarlyExitException eee22 =
+                    		                new EarlyExitException(22, input);
+                    		            throw eee22;
+                    	    }
+                    	    cnt22++;
+                    	} while (true);
+
+                    	loop22:
+                    		;	// Stops C# compiler whining that label 'loop22' has no statements
+
+
+                    }
+                    break;
+                case 11 :
+                    // Calculator.g:119:4: ( '0' .. '9' )+ '.' ( '0' .. '9' )* 'E' '.' ( '0' .. '9' )+
+                    {
+                    	// Calculator.g:119:4: ( '0' .. '9' )+
+                    	int cnt23 = 0;
+                    	do 
+                    	{
+                    	    int alt23 = 2;
+                    	    int LA23_0 = input.LA(1);
+
+                    	    if ( ((LA23_0 >= '0' && LA23_0 <= '9')) )
+                    	    {
+                    	        alt23 = 1;
+                    	    }
+
+
+                    	    switch (alt23) 
+                    		{
+                    			case 1 :
+                    			    // Calculator.g:119:5: '0' .. '9'
+                    			    {
+                    			    	MatchRange('0','9'); 
+
+                    			    }
+                    			    break;
+
+                    			default:
+                    			    if ( cnt23 >= 1 ) goto loop23;
+                    		            EarlyExitException eee23 =
+                    		                new EarlyExitException(23, input);
+                    		            throw eee23;
+                    	    }
+                    	    cnt23++;
+                    	} while (true);
+
+                    	loop23:
+                    		;	// Stops C# compiler whining that label 'loop23' has no statements
+
+                    	Match('.'); 
+                    	// Calculator.g:119:20: ( '0' .. '9' )*
+                    	do 
+                    	{
+                    	    int alt24 = 2;
+                    	    int LA24_0 = input.LA(1);
+
+                    	    if ( ((LA24_0 >= '0' && LA24_0 <= '9')) )
+                    	    {
+                    	        alt24 = 1;
+                    	    }
+
+
+                    	    switch (alt24) 
+                    		{
+                    			case 1 :
+                    			    // Calculator.g:119:21: '0' .. '9'
+                    			    {
+                    			    	MatchRange('0','9'); 
+
+                    			    }
+                    			    break;
+
+                    			default:
+                    			    goto loop24;
+                    	    }
+                    	} while (true);
+
+                    	loop24:
+                    		;	// Stops C# compiler whining that label 'loop24' has no statements
+
+                    	Match('E'); 
+                    	Match('.'); 
+                    	// Calculator.g:119:40: ( '0' .. '9' )+
+                    	int cnt25 = 0;
+                    	do 
+                    	{
+                    	    int alt25 = 2;
+                    	    int LA25_0 = input.LA(1);
+
+                    	    if ( ((LA25_0 >= '0' && LA25_0 <= '9')) )
+                    	    {
+                    	        alt25 = 1;
+                    	    }
+
+
+                    	    switch (alt25) 
+                    		{
+                    			case 1 :
+                    			    // Calculator.g:119:41: '0' .. '9'
+                    			    {
+                    			    	MatchRange('0','9'); 
+
+                    			    }
+                    			    break;
+
+                    			default:
+                    			    if ( cnt25 >= 1 ) goto loop25;
+                    		            EarlyExitException eee25 =
+                    		                new EarlyExitException(25, input);
+                    		            throw eee25;
+                    	    }
+                    	    cnt25++;
+                    	} while (true);
+
+                    	loop25:
+                    		;	// Stops C# compiler whining that label 'loop25' has no statements
+
+
+                    }
+                    break;
+                case 12 :
+                    // Calculator.g:120:4: ( '0' .. '9' )+ '.' ( '0' .. '9' )* 'E' ( '0' .. '9' )+ '.' ( '0' .. '9' )*
+                    {
+                    	// Calculator.g:120:4: ( '0' .. '9' )+
+                    	int cnt26 = 0;
+                    	do 
+                    	{
+                    	    int alt26 = 2;
+                    	    int LA26_0 = input.LA(1);
+
+                    	    if ( ((LA26_0 >= '0' && LA26_0 <= '9')) )
+                    	    {
+                    	        alt26 = 1;
+                    	    }
+
+
+                    	    switch (alt26) 
+                    		{
+                    			case 1 :
+                    			    // Calculator.g:120:5: '0' .. '9'
+                    			    {
+                    			    	MatchRange('0','9'); 
+
+                    			    }
+                    			    break;
+
+                    			default:
+                    			    if ( cnt26 >= 1 ) goto loop26;
+                    		            EarlyExitException eee26 =
+                    		                new EarlyExitException(26, input);
+                    		            throw eee26;
+                    	    }
+                    	    cnt26++;
+                    	} while (true);
+
+                    	loop26:
+                    		;	// Stops C# compiler whining that label 'loop26' has no statements
+
+                    	Match('.'); 
+                    	// Calculator.g:120:20: ( '0' .. '9' )*
+                    	do 
+                    	{
+                    	    int alt27 = 2;
+                    	    int LA27_0 = input.LA(1);
+
+                    	    if ( ((LA27_0 >= '0' && LA27_0 <= '9')) )
+                    	    {
+                    	        alt27 = 1;
+                    	    }
+
+
+                    	    switch (alt27) 
+                    		{
+                    			case 1 :
+                    			    // Calculator.g:120:21: '0' .. '9'
+                    			    {
+                    			    	MatchRange('0','9'); 
+
+                    			    }
+                    			    break;
+
+                    			default:
+                    			    goto loop27;
+                    	    }
+                    	} while (true);
+
+                    	loop27:
+                    		;	// Stops C# compiler whining that label 'loop27' has no statements
+
+                    	Match('E'); 
+                    	// Calculator.g:120:36: ( '0' .. '9' )+
+                    	int cnt28 = 0;
+                    	do 
+                    	{
+                    	    int alt28 = 2;
+                    	    int LA28_0 = input.LA(1);
+
+                    	    if ( ((LA28_0 >= '0' && LA28_0 <= '9')) )
+                    	    {
+                    	        alt28 = 1;
+                    	    }
+
+
+                    	    switch (alt28) 
+                    		{
+                    			case 1 :
+                    			    // Calculator.g:120:37: '0' .. '9'
+                    			    {
+                    			    	MatchRange('0','9'); 
+
+                    			    }
+                    			    break;
+
+                    			default:
+                    			    if ( cnt28 >= 1 ) goto loop28;
+                    		            EarlyExitException eee28 =
+                    		                new EarlyExitException(28, input);
+                    		            throw eee28;
+                    	    }
+                    	    cnt28++;
+                    	} while (true);
+
+                    	loop28:
+                    		;	// Stops C# compiler whining that label 'loop28' has no statements
+
+                    	Match('.'); 
+                    	// Calculator.g:120:52: ( '0' .. '9' )*
+                    	do 
+                    	{
+                    	    int alt29 = 2;
+                    	    int LA29_0 = input.LA(1);
+
+                    	    if ( ((LA29_0 >= '0' && LA29_0 <= '9')) )
+                    	    {
+                    	        alt29 = 1;
+                    	    }
+
+
+                    	    switch (alt29) 
+                    		{
+                    			case 1 :
+                    			    // Calculator.g:120:53: '0' .. '9'
+                    			    {
+                    			    	MatchRange('0','9'); 
+
+                    			    }
+                    			    break;
+
+                    			default:
+                    			    goto loop29;
+                    	    }
+                    	} while (true);
+
+                    	loop29:
+                    		;	// Stops C# compiler whining that label 'loop29' has no statements
 
 
                     }
@@ -1018,21 +1826,21 @@ public partial class CalculatorLexer : Lexer {
     		{
             int _type = NEWLINE;
     	int _channel = DEFAULT_TOKEN_CHANNEL;
-            // Calculator.g:112:8: ( ( '\\r' )? '\\n' )
-            // Calculator.g:112:10: ( '\\r' )? '\\n'
+            // Calculator.g:123:8: ( ( '\\r' )? '\\n' )
+            // Calculator.g:123:10: ( '\\r' )? '\\n'
             {
-            	// Calculator.g:112:10: ( '\\r' )?
-            	int alt9 = 2;
-            	int LA9_0 = input.LA(1);
+            	// Calculator.g:123:10: ( '\\r' )?
+            	int alt31 = 2;
+            	int LA31_0 = input.LA(1);
 
-            	if ( (LA9_0 == '\r') )
+            	if ( (LA31_0 == '\r') )
             	{
-            	    alt9 = 1;
+            	    alt31 = 1;
             	}
-            	switch (alt9) 
+            	switch (alt31) 
             	{
             	    case 1 :
-            	        // Calculator.g:112:10: '\\r'
+            	        // Calculator.g:123:10: '\\r'
             	        {
             	        	Match('\r'); 
 
@@ -1061,23 +1869,23 @@ public partial class CalculatorLexer : Lexer {
     		{
             int _type = WS;
     	int _channel = DEFAULT_TOKEN_CHANNEL;
-            // Calculator.g:113:3: ( ( ' ' | '\\t' | '\\n' | '\\r' )+ )
-            // Calculator.g:113:5: ( ' ' | '\\t' | '\\n' | '\\r' )+
+            // Calculator.g:124:3: ( ( ' ' | '\\t' | '\\n' | '\\r' )+ )
+            // Calculator.g:124:5: ( ' ' | '\\t' | '\\n' | '\\r' )+
             {
-            	// Calculator.g:113:5: ( ' ' | '\\t' | '\\n' | '\\r' )+
-            	int cnt10 = 0;
+            	// Calculator.g:124:5: ( ' ' | '\\t' | '\\n' | '\\r' )+
+            	int cnt32 = 0;
             	do 
             	{
-            	    int alt10 = 2;
-            	    int LA10_0 = input.LA(1);
+            	    int alt32 = 2;
+            	    int LA32_0 = input.LA(1);
 
-            	    if ( ((LA10_0 >= '\t' && LA10_0 <= '\n') || LA10_0 == '\r' || LA10_0 == ' ') )
+            	    if ( ((LA32_0 >= '\t' && LA32_0 <= '\n') || LA32_0 == '\r' || LA32_0 == ' ') )
             	    {
-            	        alt10 = 1;
+            	        alt32 = 1;
             	    }
 
 
-            	    switch (alt10) 
+            	    switch (alt32) 
             		{
             			case 1 :
             			    // Calculator.g:
@@ -1098,16 +1906,16 @@ public partial class CalculatorLexer : Lexer {
             			    break;
 
             			default:
-            			    if ( cnt10 >= 1 ) goto loop10;
-            		            EarlyExitException eee10 =
-            		                new EarlyExitException(10, input);
-            		            throw eee10;
+            			    if ( cnt32 >= 1 ) goto loop32;
+            		            EarlyExitException eee32 =
+            		                new EarlyExitException(32, input);
+            		            throw eee32;
             	    }
-            	    cnt10++;
+            	    cnt32++;
             	} while (true);
 
-            	loop10:
-            		;	// Stops C# compiler whining that label 'loop10' has no statements
+            	loop32:
+            		;	// Stops C# compiler whining that label 'loop32' has no statements
 
             	Skip();
 
@@ -1125,9 +1933,9 @@ public partial class CalculatorLexer : Lexer {
     override public void mTokens() // throws RecognitionException 
     {
         // Calculator.g:1:8: ( T__33 | T__34 | T__35 | T__36 | T__37 | EXCLAIMATION | SQRT | LN | LOG | RAD | DEG | SIN | COS | TAN | ATAN | ACOS | ASIN | ABS | NEGATE | MOD | POW | EQUALS | PLUS | MINUS | MULT | DIVIDE | ID | DOUBLE | NEWLINE | WS )
-        int alt11 = 30;
-        alt11 = dfa11.Predict(input);
-        switch (alt11) 
+        int alt33 = 30;
+        alt33 = dfa33.Predict(input);
+        switch (alt33) 
         {
             case 1 :
                 // Calculator.g:1:10: T__33
@@ -1345,94 +2153,119 @@ public partial class CalculatorLexer : Lexer {
     }
 
 
-    protected DFA8 dfa8;
-    protected DFA11 dfa11;
+    protected DFA30 dfa30;
+    protected DFA33 dfa33;
 	private void InitializeCyclicDFAs()
 	{
-	    this.dfa8 = new DFA8(this);
-	    this.dfa11 = new DFA11(this);
+	    this.dfa30 = new DFA30(this);
+	    this.dfa33 = new DFA33(this);
 	}
 
-    const string DFA8_eotS =
-        "\x01\uffff\x01\x04\x04\uffff";
-    const string DFA8_eofS =
-        "\x06\uffff";
-    const string DFA8_minS =
-        "\x02\x2e\x04\uffff";
-    const string DFA8_maxS =
-        "\x01\x39\x01\x45\x04\uffff";
-    const string DFA8_acceptS =
-        "\x02\uffff\x01\x02\x01\x04\x01\x03\x01\x01";
-    const string DFA8_specialS =
-        "\x06\uffff}>";
-    static readonly string[] DFA8_transitionS = {
+    const string DFA30_eotS =
+        "\x01\uffff\x01\x04\x03\uffff\x01\x0b\x01\x0d\x01\uffff\x01\x0e"+
+        "\x01\x0b\x07\uffff\x01\x14\x01\uffff\x01\x17\x04\uffff";
+    const string DFA30_eofS =
+        "\x18\uffff";
+    const string DFA30_minS =
+        "\x02\x2e\x01\x30\x01\x2e\x01\uffff\x02\x30\x01\uffff\x01\x2e\x01"+
+        "\x30\x01\x2e\x01\uffff\x01\x2e\x04\uffff\x01\x2e\x01\uffff\x01\x2e"+
+        "\x04\uffff";
+    const string DFA30_maxS =
+        "\x01\x39\x01\x45\x02\x39\x01\uffff\x02\x45\x01\uffff\x01\x39\x01"+
+        "\x45\x01\x39\x01\uffff\x01\x39\x04\uffff\x01\x39\x01\uffff\x01\x39"+
+        "\x04\uffff";
+    const string DFA30_acceptS =
+        "\x04\uffff\x01\x03\x02\uffff\x01\x05\x03\uffff\x01\x01\x01\uffff"+
+        "\x01\x02\x01\x04\x01\x06\x01\x0b\x01\uffff\x01\x08\x01\uffff\x01"+
+        "\x0a\x01\x0c\x01\x09\x01\x07";
+    const string DFA30_specialS =
+        "\x18\uffff}>";
+    static readonly string[] DFA30_transitionS = {
             "\x01\x02\x01\uffff\x0a\x01",
             "\x01\x05\x01\uffff\x0a\x01\x0b\uffff\x01\x03",
+            "\x0a\x06",
+            "\x01\x07\x01\uffff\x0a\x08",
+            "",
+            "\x0a\x09\x0b\uffff\x01\x0a",
+            "\x0a\x06\x0b\uffff\x01\x0c",
+            "",
+            "\x01\x0f\x01\uffff\x0a\x08",
+            "\x0a\x09\x0b\uffff\x01\x0a",
+            "\x01\x10\x01\uffff\x0a\x11",
+            "",
+            "\x01\x12\x01\uffff\x0a\x13",
+            "",
+            "",
+            "",
+            "",
+            "\x01\x15\x01\uffff\x0a\x11",
+            "",
+            "\x01\x16\x01\uffff\x0a\x13",
             "",
             "",
             "",
             ""
     };
 
-    static readonly short[] DFA8_eot = DFA.UnpackEncodedString(DFA8_eotS);
-    static readonly short[] DFA8_eof = DFA.UnpackEncodedString(DFA8_eofS);
-    static readonly char[] DFA8_min = DFA.UnpackEncodedStringToUnsignedChars(DFA8_minS);
-    static readonly char[] DFA8_max = DFA.UnpackEncodedStringToUnsignedChars(DFA8_maxS);
-    static readonly short[] DFA8_accept = DFA.UnpackEncodedString(DFA8_acceptS);
-    static readonly short[] DFA8_special = DFA.UnpackEncodedString(DFA8_specialS);
-    static readonly short[][] DFA8_transition = DFA.UnpackEncodedStringArray(DFA8_transitionS);
+    static readonly short[] DFA30_eot = DFA.UnpackEncodedString(DFA30_eotS);
+    static readonly short[] DFA30_eof = DFA.UnpackEncodedString(DFA30_eofS);
+    static readonly char[] DFA30_min = DFA.UnpackEncodedStringToUnsignedChars(DFA30_minS);
+    static readonly char[] DFA30_max = DFA.UnpackEncodedStringToUnsignedChars(DFA30_maxS);
+    static readonly short[] DFA30_accept = DFA.UnpackEncodedString(DFA30_acceptS);
+    static readonly short[] DFA30_special = DFA.UnpackEncodedString(DFA30_specialS);
+    static readonly short[][] DFA30_transition = DFA.UnpackEncodedStringArray(DFA30_transitionS);
 
-    protected class DFA8 : DFA
+    protected class DFA30 : DFA
     {
-        public DFA8(BaseRecognizer recognizer)
+        public DFA30(BaseRecognizer recognizer)
         {
             this.recognizer = recognizer;
-            this.decisionNumber = 8;
-            this.eot = DFA8_eot;
-            this.eof = DFA8_eof;
-            this.min = DFA8_min;
-            this.max = DFA8_max;
-            this.accept = DFA8_accept;
-            this.special = DFA8_special;
-            this.transition = DFA8_transition;
+            this.decisionNumber = 30;
+            this.eot = DFA30_eot;
+            this.eof = DFA30_eof;
+            this.min = DFA30_min;
+            this.max = DFA30_max;
+            this.accept = DFA30_accept;
+            this.special = DFA30_special;
+            this.transition = DFA30_transition;
 
         }
 
         override public string Description
         {
-            get { return "105:1: DOUBLE : ( ( '0' .. '9' )+ '.' ( '0' .. '9' )* | '.' ( '0' .. '9' )+ | ( '0' .. '9' )+ | ( '0' .. '9' )+ 'E' ( '0' .. '9' )+ );"; }
+            get { return "105:1: DOUBLE : ( ( '0' .. '9' )+ '.' ( '0' .. '9' )* | '.' ( '0' .. '9' )+ | ( '0' .. '9' )+ | ( '0' .. '9' )+ 'E' ( '0' .. '9' )+ | ( '0' .. '9' )+ 'E' '.' ( '0' .. '9' )+ | ( '0' .. '9' )+ 'E' ( '0' .. '9' )+ '.' ( '0' .. '9' )* | '.' ( '0' .. '9' )+ 'E' ( '0' .. '9' )+ | '.' ( '0' .. '9' )+ 'E' '.' ( '0' .. '9' )+ | '.' ( '0' .. '9' )+ 'E' ( '0' .. '9' )+ '.' ( '0' .. '9' )* | ( '0' .. '9' )+ '.' ( '0' .. '9' )* 'E' ( '0' .. '9' )+ | ( '0' .. '9' )+ '.' ( '0' .. '9' )* 'E' '.' ( '0' .. '9' )+ | ( '0' .. '9' )+ '.' ( '0' .. '9' )* 'E' ( '0' .. '9' )+ '.' ( '0' .. '9' )* );"; }
         }
 
     }
 
-    const string DFA11_eotS =
+    const string DFA33_eotS =
         "\x07\uffff\x07\x16\x0a\uffff\x01\x1a\x01\x27\x01\uffff\x02\x16"+
         "\x01\x2a\x09\x16\x01\uffff\x01\x16\x01\x35\x01\uffff\x01\x36\x01"+
         "\x37\x01\x38\x01\x39\x01\x3a\x03\x16\x01\x3e\x01\x3f\x06\uffff\x01"+
         "\x40\x01\x41\x01\x42\x05\uffff";
-    const string DFA11_eofS =
+    const string DFA33_eofS =
         "\x43\uffff";
-    const string DFA11_minS =
+    const string DFA33_minS =
         "\x01\x09\x06\uffff\x01\x69\x01\x6e\x01\x61\x01\x65\x01\x6f\x01"+
         "\x61\x01\x62\x0a\uffff\x01\x0a\x01\x09\x01\uffff\x01\x72\x01\x6e"+
         "\x01\x30\x01\x67\x01\x64\x01\x67\x01\x73\x01\x6e\x01\x61\x01\x6f"+
         "\x01\x69\x01\x73\x01\uffff\x01\x74\x01\x30\x01\uffff\x05\x30\x01"+
         "\x6e\x01\x73\x01\x6e\x02\x30\x06\uffff\x03\x30\x05\uffff";
-    const string DFA11_maxS =
+    const string DFA33_maxS =
         "\x01\uffff\x06\uffff\x01\x71\x01\x6f\x01\x61\x01\x65\x01\x6f\x01"+
         "\x61\x01\x74\x0a\uffff\x01\x0a\x01\x20\x01\uffff\x01\x72\x01\x6e"+
         "\x01\uffff\x01\x67\x01\x64\x01\x67\x01\x73\x01\x6e\x01\x61\x01\x6f"+
         "\x01\x69\x01\x73\x01\uffff\x01\x74\x01\uffff\x01\uffff\x05\uffff"+
         "\x01\x6e\x01\x73\x01\x6e\x02\uffff\x06\uffff\x03\uffff\x05\uffff";
-    const string DFA11_acceptS =
+    const string DFA33_acceptS =
         "\x01\uffff\x01\x01\x01\x02\x01\x03\x01\x04\x01\x05\x01\x06\x07"+
         "\uffff\x01\x13\x01\x14\x01\x15\x01\x16\x01\x17\x01\x18\x01\x19\x01"+
         "\x1a\x01\x1b\x01\x1c\x02\uffff\x01\x1e\x0c\uffff\x01\x1d\x02\uffff"+
         "\x01\x08\x0a\uffff\x01\x0c\x01\x09\x01\x0a\x01\x0b\x01\x0d\x01\x0e"+
         "\x03\uffff\x01\x12\x01\x07\x01\x0f\x01\x10\x01\x11";
-    const string DFA11_specialS =
+    const string DFA33_specialS =
         "\x43\uffff}>";
-    static readonly string[] DFA11_transitionS = {
+    static readonly string[] DFA33_transitionS = {
             "\x01\x1a\x01\x19\x02\uffff\x01\x18\x12\uffff\x01\x1a\x01\x06"+
             "\x03\uffff\x01\x0f\x02\uffff\x01\x03\x01\x04\x01\x14\x01\x12"+
             "\x01\uffff\x01\x13\x01\x17\x01\x15\x0a\x17\x01\uffff\x01\x05"+
@@ -1520,27 +2353,27 @@ public partial class CalculatorLexer : Lexer {
             ""
     };
 
-    static readonly short[] DFA11_eot = DFA.UnpackEncodedString(DFA11_eotS);
-    static readonly short[] DFA11_eof = DFA.UnpackEncodedString(DFA11_eofS);
-    static readonly char[] DFA11_min = DFA.UnpackEncodedStringToUnsignedChars(DFA11_minS);
-    static readonly char[] DFA11_max = DFA.UnpackEncodedStringToUnsignedChars(DFA11_maxS);
-    static readonly short[] DFA11_accept = DFA.UnpackEncodedString(DFA11_acceptS);
-    static readonly short[] DFA11_special = DFA.UnpackEncodedString(DFA11_specialS);
-    static readonly short[][] DFA11_transition = DFA.UnpackEncodedStringArray(DFA11_transitionS);
+    static readonly short[] DFA33_eot = DFA.UnpackEncodedString(DFA33_eotS);
+    static readonly short[] DFA33_eof = DFA.UnpackEncodedString(DFA33_eofS);
+    static readonly char[] DFA33_min = DFA.UnpackEncodedStringToUnsignedChars(DFA33_minS);
+    static readonly char[] DFA33_max = DFA.UnpackEncodedStringToUnsignedChars(DFA33_maxS);
+    static readonly short[] DFA33_accept = DFA.UnpackEncodedString(DFA33_acceptS);
+    static readonly short[] DFA33_special = DFA.UnpackEncodedString(DFA33_specialS);
+    static readonly short[][] DFA33_transition = DFA.UnpackEncodedStringArray(DFA33_transitionS);
 
-    protected class DFA11 : DFA
+    protected class DFA33 : DFA
     {
-        public DFA11(BaseRecognizer recognizer)
+        public DFA33(BaseRecognizer recognizer)
         {
             this.recognizer = recognizer;
-            this.decisionNumber = 11;
-            this.eot = DFA11_eot;
-            this.eof = DFA11_eof;
-            this.min = DFA11_min;
-            this.max = DFA11_max;
-            this.accept = DFA11_accept;
-            this.special = DFA11_special;
-            this.transition = DFA11_transition;
+            this.decisionNumber = 33;
+            this.eot = DFA33_eot;
+            this.eof = DFA33_eof;
+            this.min = DFA33_min;
+            this.max = DFA33_max;
+            this.accept = DFA33_accept;
+            this.special = DFA33_special;
+            this.transition = DFA33_transition;
 
         }
 
