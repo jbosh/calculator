@@ -20,6 +20,8 @@ namespace Calculator.Windows
 			TopMost = Program.AlwaysOnTop;
 			Memory = memory;
 			parent = Parent;
+			lines = new PointF[parent.Statements.Count()][];
+			lines[0] = new PointF[0];
 			ResizeEnd += (o, e) => Refresh();
 			Paint += Graph_Paint;
 		}
@@ -34,15 +36,14 @@ namespace Calculator.Windows
 				grfx.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
 			}
 			grfx.Clear(Color.White);
-			if (lines == null || lines.Length != parent.Statements.Count())
+			if (lines.Length != parent.Statements.Count() || lines[0].Length != ClientSize.Width)
 			{
 				lines = new PointF[parent.Statements.Count()][];
-				if(lines[0] == null || lines[0].Length != ClientSize.Width)
-					for (int i = 0; i < lines.Length; i++)
-						lines[i] = new PointF[ClientSize.Width];
+				for (int i = 0; i < lines.Length; i++)
+					lines[i] = new PointF[ClientSize.Width];
 			}
 			Memory.Push();
-			for (int i = 0; i < ClientSize.Width; i++)
+			for (int i = 0; i < lines[0].Length; i++)
 			{
 				Memory.SetVariable("x", CalcMath.Lerp(ViewRect.Left, ViewRect.Right, i / (double)ClientSize.Width));
 				int j = 0;
