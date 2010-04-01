@@ -1,4 +1,4 @@
-// $ANTLR 3.2 Sep 23, 2009 12:02:23 Calculator.g 2010-04-01 11:00:17
+// $ANTLR 3.2 Sep 23, 2009 12:02:23 Calculator.g 2010-04-01 13:19:04
 
 // The variable 'variable' is assigned but its value is never used.
 #pragma warning disable 168, 219
@@ -690,8 +690,8 @@ public partial class CalculatorLexer : Lexer {
     		{
             int _type = ID;
     	int _channel = DEFAULT_TOKEN_CHANNEL;
-            // Calculator.g:104:3: ( ( '_' | 'a' .. 'z' | 'A' .. 'Z' | '\\\\' | '\\u00C0' .. '\\uFFFF' ) ( '_' | 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '\\\\' | '\\u00C0' .. '\\uFFFF' )* )
-            // Calculator.g:104:5: ( '_' | 'a' .. 'z' | 'A' .. 'Z' | '\\\\' | '\\u00C0' .. '\\uFFFF' ) ( '_' | 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '\\\\' | '\\u00C0' .. '\\uFFFF' )*
+            // Calculator.g:104:3: ( ( '_' | 'a' .. 'z' | 'A' .. 'Z' | '\\\\' | '\\u00C0' .. '\\uFFFF' ) ( '_' | '.' | 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '\\\\' | '\\u00C0' .. '\\uFFFF' )* )
+            // Calculator.g:104:5: ( '_' | 'a' .. 'z' | 'A' .. 'Z' | '\\\\' | '\\u00C0' .. '\\uFFFF' ) ( '_' | '.' | 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '\\\\' | '\\u00C0' .. '\\uFFFF' )*
             {
             	if ( (input.LA(1) >= 'A' && input.LA(1) <= 'Z') || input.LA(1) == '\\' || input.LA(1) == '_' || (input.LA(1) >= 'a' && input.LA(1) <= 'z') || (input.LA(1) >= '\u00C0' && input.LA(1) <= '\uFFFF') ) 
             	{
@@ -704,13 +704,13 @@ public partial class CalculatorLexer : Lexer {
             	    Recover(mse);
             	    throw mse;}
 
-            	// Calculator.g:104:52: ( '_' | 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '\\\\' | '\\u00C0' .. '\\uFFFF' )*
+            	// Calculator.g:104:52: ( '_' | '.' | 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '\\\\' | '\\u00C0' .. '\\uFFFF' )*
             	do 
             	{
             	    int alt1 = 2;
             	    int LA1_0 = input.LA(1);
 
-            	    if ( ((LA1_0 >= '0' && LA1_0 <= '9') || (LA1_0 >= 'A' && LA1_0 <= 'Z') || LA1_0 == '\\' || LA1_0 == '_' || (LA1_0 >= 'a' && LA1_0 <= 'z') || (LA1_0 >= '\u00C0' && LA1_0 <= '\uFFFF')) )
+            	    if ( (LA1_0 == '.' || (LA1_0 >= '0' && LA1_0 <= '9') || (LA1_0 >= 'A' && LA1_0 <= 'Z') || LA1_0 == '\\' || LA1_0 == '_' || (LA1_0 >= 'a' && LA1_0 <= 'z') || (LA1_0 >= '\u00C0' && LA1_0 <= '\uFFFF')) )
             	    {
             	        alt1 = 1;
             	    }
@@ -721,7 +721,7 @@ public partial class CalculatorLexer : Lexer {
             			case 1 :
             			    // Calculator.g:
             			    {
-            			    	if ( (input.LA(1) >= '0' && input.LA(1) <= '9') || (input.LA(1) >= 'A' && input.LA(1) <= 'Z') || input.LA(1) == '\\' || input.LA(1) == '_' || (input.LA(1) >= 'a' && input.LA(1) <= 'z') || (input.LA(1) >= '\u00C0' && input.LA(1) <= '\uFFFF') ) 
+            			    	if ( input.LA(1) == '.' || (input.LA(1) >= '0' && input.LA(1) <= '9') || (input.LA(1) >= 'A' && input.LA(1) <= 'Z') || input.LA(1) == '\\' || input.LA(1) == '_' || (input.LA(1) >= 'a' && input.LA(1) <= 'z') || (input.LA(1) >= '\u00C0' && input.LA(1) <= '\uFFFF') ) 
             			    	{
             			    	    input.Consume();
 
@@ -2248,9 +2248,9 @@ public partial class CalculatorLexer : Lexer {
     const string DFA33_minS =
         "\x01\x09\x06\uffff\x01\x69\x01\x6e\x01\x61\x01\x65\x01\x6f\x01"+
         "\x61\x01\x62\x0a\uffff\x01\x0a\x01\x09\x01\uffff\x01\x72\x01\x6e"+
-        "\x01\x30\x01\x67\x01\x64\x01\x67\x01\x73\x01\x6e\x01\x61\x01\x6f"+
-        "\x01\x69\x01\x73\x01\uffff\x01\x74\x01\x30\x01\uffff\x05\x30\x01"+
-        "\x6e\x01\x73\x01\x6e\x02\x30\x06\uffff\x03\x30\x05\uffff";
+        "\x01\x2e\x01\x67\x01\x64\x01\x67\x01\x73\x01\x6e\x01\x61\x01\x6f"+
+        "\x01\x69\x01\x73\x01\uffff\x01\x74\x01\x2e\x01\uffff\x05\x2e\x01"+
+        "\x6e\x01\x73\x01\x6e\x02\x2e\x06\uffff\x03\x2e\x05\uffff";
     const string DFA33_maxS =
         "\x01\uffff\x06\uffff\x01\x71\x01\x6f\x01\x61\x01\x65\x01\x6f\x01"+
         "\x61\x01\x74\x0a\uffff\x01\x0a\x01\x20\x01\uffff\x01\x72\x01\x6e"+
@@ -2301,8 +2301,8 @@ public partial class CalculatorLexer : Lexer {
             "",
             "\x01\x28",
             "\x01\x29",
-            "\x0a\x16\x07\uffff\x1a\x16\x01\uffff\x01\x16\x02\uffff\x01"+
-            "\x16\x01\uffff\x1a\x16\x45\uffff\uff40\x16",
+            "\x01\x16\x01\uffff\x0a\x16\x07\uffff\x1a\x16\x01\uffff\x01"+
+            "\x16\x02\uffff\x01\x16\x01\uffff\x1a\x16\x45\uffff\uff40\x16",
             "\x01\x2b",
             "\x01\x2c",
             "\x01\x2d",
@@ -2314,38 +2314,38 @@ public partial class CalculatorLexer : Lexer {
             "\x01\x33",
             "",
             "\x01\x34",
-            "\x0a\x16\x07\uffff\x1a\x16\x01\uffff\x01\x16\x02\uffff\x01"+
-            "\x16\x01\uffff\x1a\x16\x45\uffff\uff40\x16",
+            "\x01\x16\x01\uffff\x0a\x16\x07\uffff\x1a\x16\x01\uffff\x01"+
+            "\x16\x02\uffff\x01\x16\x01\uffff\x1a\x16\x45\uffff\uff40\x16",
             "",
-            "\x0a\x16\x07\uffff\x1a\x16\x01\uffff\x01\x16\x02\uffff\x01"+
-            "\x16\x01\uffff\x1a\x16\x45\uffff\uff40\x16",
-            "\x0a\x16\x07\uffff\x1a\x16\x01\uffff\x01\x16\x02\uffff\x01"+
-            "\x16\x01\uffff\x1a\x16\x45\uffff\uff40\x16",
-            "\x0a\x16\x07\uffff\x1a\x16\x01\uffff\x01\x16\x02\uffff\x01"+
-            "\x16\x01\uffff\x1a\x16\x45\uffff\uff40\x16",
-            "\x0a\x16\x07\uffff\x1a\x16\x01\uffff\x01\x16\x02\uffff\x01"+
-            "\x16\x01\uffff\x1a\x16\x45\uffff\uff40\x16",
-            "\x0a\x16\x07\uffff\x1a\x16\x01\uffff\x01\x16\x02\uffff\x01"+
-            "\x16\x01\uffff\x1a\x16\x45\uffff\uff40\x16",
+            "\x01\x16\x01\uffff\x0a\x16\x07\uffff\x1a\x16\x01\uffff\x01"+
+            "\x16\x02\uffff\x01\x16\x01\uffff\x1a\x16\x45\uffff\uff40\x16",
+            "\x01\x16\x01\uffff\x0a\x16\x07\uffff\x1a\x16\x01\uffff\x01"+
+            "\x16\x02\uffff\x01\x16\x01\uffff\x1a\x16\x45\uffff\uff40\x16",
+            "\x01\x16\x01\uffff\x0a\x16\x07\uffff\x1a\x16\x01\uffff\x01"+
+            "\x16\x02\uffff\x01\x16\x01\uffff\x1a\x16\x45\uffff\uff40\x16",
+            "\x01\x16\x01\uffff\x0a\x16\x07\uffff\x1a\x16\x01\uffff\x01"+
+            "\x16\x02\uffff\x01\x16\x01\uffff\x1a\x16\x45\uffff\uff40\x16",
+            "\x01\x16\x01\uffff\x0a\x16\x07\uffff\x1a\x16\x01\uffff\x01"+
+            "\x16\x02\uffff\x01\x16\x01\uffff\x1a\x16\x45\uffff\uff40\x16",
             "\x01\x3b",
             "\x01\x3c",
             "\x01\x3d",
-            "\x0a\x16\x07\uffff\x1a\x16\x01\uffff\x01\x16\x02\uffff\x01"+
-            "\x16\x01\uffff\x1a\x16\x45\uffff\uff40\x16",
-            "\x0a\x16\x07\uffff\x1a\x16\x01\uffff\x01\x16\x02\uffff\x01"+
-            "\x16\x01\uffff\x1a\x16\x45\uffff\uff40\x16",
+            "\x01\x16\x01\uffff\x0a\x16\x07\uffff\x1a\x16\x01\uffff\x01"+
+            "\x16\x02\uffff\x01\x16\x01\uffff\x1a\x16\x45\uffff\uff40\x16",
+            "\x01\x16\x01\uffff\x0a\x16\x07\uffff\x1a\x16\x01\uffff\x01"+
+            "\x16\x02\uffff\x01\x16\x01\uffff\x1a\x16\x45\uffff\uff40\x16",
             "",
             "",
             "",
             "",
             "",
             "",
-            "\x0a\x16\x07\uffff\x1a\x16\x01\uffff\x01\x16\x02\uffff\x01"+
-            "\x16\x01\uffff\x1a\x16\x45\uffff\uff40\x16",
-            "\x0a\x16\x07\uffff\x1a\x16\x01\uffff\x01\x16\x02\uffff\x01"+
-            "\x16\x01\uffff\x1a\x16\x45\uffff\uff40\x16",
-            "\x0a\x16\x07\uffff\x1a\x16\x01\uffff\x01\x16\x02\uffff\x01"+
-            "\x16\x01\uffff\x1a\x16\x45\uffff\uff40\x16",
+            "\x01\x16\x01\uffff\x0a\x16\x07\uffff\x1a\x16\x01\uffff\x01"+
+            "\x16\x02\uffff\x01\x16\x01\uffff\x1a\x16\x45\uffff\uff40\x16",
+            "\x01\x16\x01\uffff\x0a\x16\x07\uffff\x1a\x16\x01\uffff\x01"+
+            "\x16\x02\uffff\x01\x16\x01\uffff\x1a\x16\x45\uffff\uff40\x16",
+            "\x01\x16\x01\uffff\x0a\x16\x07\uffff\x1a\x16\x01\uffff\x01"+
+            "\x16\x02\uffff\x01\x16\x01\uffff\x1a\x16\x45\uffff\uff40\x16",
             "",
             "",
             "",

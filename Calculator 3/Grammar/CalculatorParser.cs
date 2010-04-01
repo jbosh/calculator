@@ -1,4 +1,4 @@
-// $ANTLR 3.2 Sep 23, 2009 12:02:23 Calculator.g 2010-04-01 11:00:17
+// $ANTLR 3.2 Sep 23, 2009 12:02:23 Calculator.g 2010-04-01 13:19:03
 
 // The variable 'variable' is assigned but its value is never used.
 #pragma warning disable 168, 219
@@ -308,7 +308,7 @@ public partial class CalculatorParser : Parser
 
 
                     	// AST REWRITE
-                    	// elements:          ID, expr, EQUALS
+                    	// elements:          EQUALS, expr, ID
                     	// token labels:      
                     	// rule labels:       retval
                     	// token list labels: 
@@ -1037,7 +1037,7 @@ public partial class CalculatorParser : Parser
 
 
             	        	// AST REWRITE
-            	        	// elements:          func, EXCLAIMATION
+            	        	// elements:          EXCLAIMATION, func
             	        	// token labels:      
             	        	// rule labels:       retval
             	        	// token list labels: 

@@ -76,6 +76,7 @@ namespace Calculator
 			}
 		}
 		private static Version Version { get; set; }
+		private static string UpdateFolder;
 		public static OutputFormat Format
 		{
 			get { return format; }
@@ -124,7 +125,7 @@ namespace Calculator
 					}
 				}
 			}
-			CheckForUpdates();
+			ThreadPool.QueueUserWorkItem(o => CheckForUpdates());
 			Window = new List<ICalculator>();
 			NewWindow(new Calc());
 
@@ -136,6 +137,8 @@ namespace Calculator
 				Thread.Sleep(60);
 			}
 			SaveSettings();
+			if (!string.IsNullOrEmpty(UpdateFolder))
+				Update();
 		}
 		private static void LoadSettings()
 		{
@@ -213,8 +216,15 @@ namespace Calculator
 			var request = WebRequest.Create("http://jbosh.net/calculator.ashx");
 			request.Method = "POST";
 			request.ContentType = "text";
-			using(var writer = new StreamWriter(request.GetRequestStream()))
-				writer.WriteLine(Version.ToString(4));
+			try
+			{
+				using (var writer = new StreamWriter(request.GetRequestStream()))
+					writer.WriteLine(Version.ToString(4));
+			}
+			catch(Exception)
+			{
+				return;
+			}
 			var response = request.GetResponse();
 			using (var reader = new BinaryReader(response.GetResponseStream()))
 			{

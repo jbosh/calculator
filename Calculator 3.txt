@@ -11,12 +11,14 @@ Parenthesis highlighting ()[]
 : {} <>
 
 Graphing
+-Save images
 -Polar graphs
 -Intersections
 -Tracing
 -Derivative
 -Integral
 -Booleans (|| && true*(...) false*(...))
+-Colors on all graphs
 
 Latex
 \mu
@@ -40,12 +42,10 @@ y1, y2, ... yn
 Row Deletion
 Row Pushing (insert here)
 
-Saving (name goes in title bar, * when changes)
 Resizing
 Clean up F1
 Press Alt to drop down menu (F2 option for permanent)
 Savable constant menu
-
 
 mass.sun
 mass.earth

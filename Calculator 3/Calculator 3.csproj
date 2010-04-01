@@ -121,7 +121,6 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="SharpZip\AssemblyInfo.cs" />
     <Compile Include="SharpZip\BZip2\BZip2.cs" />
     <Compile Include="SharpZip\BZip2\BZip2Constants.cs" />
     <Compile Include="SharpZip\BZip2\BZip2Exception.cs" />
