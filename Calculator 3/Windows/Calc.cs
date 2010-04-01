@@ -72,6 +72,7 @@ namespace Calculator.Windows
 						if (graph == null)
 						{
 							graph = new Graph(this, Memory);
+							graph.FormClosed += (o, args) => graph = null;
 							Program.NewWindow(graph);
 						}
 						else
