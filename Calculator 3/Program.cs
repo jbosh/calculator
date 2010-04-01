@@ -1,11 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Threading;
 using System.Windows.Forms;
+using System.Xml;
 using Calculator.Properties;
 using Calculator.Windows;
 using Calculator.Grammar;
+using Enumerable=System.Linq.Enumerable;
 using Help = Calculator.Windows.Help;
 
 namespace Calculator
@@ -71,6 +74,7 @@ namespace Calculator
 				RecalculateWindows();
 			}
 		}
+		private static Version Version { get; set; }
 		public static OutputFormat Format
 		{
 			get { return format; }
@@ -80,6 +84,7 @@ namespace Calculator
 				RecalculateWindows();
 			}
 		}
+		public static string WorkingDirectory { get; set; }
 		private static void RecalculateWindows()
 		{
 			foreach (ICalculator form in Window)
@@ -94,39 +99,32 @@ namespace Calculator
 			var benchEnd = Environment.TickCount;
 			Console.WriteLine("Tests run in {0}ms.", benchEnd - benchStart);
 #endif
-
-			AlwaysOnTop = Settings.Default.AlwaysOnTop;
-			Radians = Settings.Default.InRadians;
-			ThousandsSeperator = Settings.Default.ThousandsSeperator;
-			Rounding = Settings.Default.Rounding;
-			Format = (OutputFormat)Settings.Default.OutputFormat;
-			Antialiasing = Settings.Default.Antialias;
-			Window = new List<ICalculator>();
+			LoadSettings();
 
 			for (int i = 0; i < args.Length; i++)
 			{
 				switch (args[i])
 				{
 					case "-c":
-						NewWindow(new Calc());
-						break;
-					case "-p":
-						//SpawnNewWindow(new Equations.PhysicsSolver());
-						break;
-					case "-q":
-						//SpawnNewWindow(new Equations.QuadraticFormula());
-						break;
-					case "-s":
-						throw new NotImplementedException();
-						//string formula = "";
-						//for (i++; i < args.Length; i++)
-						//    formula += args[i];
-						//Console.WriteLine(Expression.Parse(formula));
-						//break;
+					{
+						var formula = string.Concat(Enumerable.Skip(args, 1));
+						var Memory = new MemoryManager();
+						Memory.SetVariable("G", 6.67428E-11);
+						Memory.SetVariable("g", 9.8);
+						Memory.SetVariable("pi", Math.PI);
+						Memory.SetVariable("e", Math.E);
+						Memory.SetVariable("c", 299792458.0);
+						Memory.SetVariable("x", 0);
+						Memory.Push();
+						var stat = new Statement(Memory);
+						stat.ProcessString(formula);
+						Console.WriteLine(stat.Execute());
+						return;
+					}
 				}
 			}
-			if (args.Length == 0)
-				NewWindow(new Calc());
+			Window = new List<ICalculator>();
+			NewWindow(new Calc());
 
 			Thread.CurrentThread.IsBackground = true;
 			Thread.CurrentThread.Priority = ThreadPriority.BelowNormal;
@@ -135,14 +133,80 @@ namespace Calculator
 				Application.DoEvents();
 				Thread.Sleep(60);
 			}
-			Settings.Default.Antialias = Antialiasing;
-			Settings.Default.AlwaysOnTop = AlwaysOnTop;
-			Settings.Default.InRadians = Radians;
-			Settings.Default.ThousandsSeperator = ThousandsSeperator;
-			Settings.Default.Rounding = Rounding;
-			Settings.Default.OutputFormat = (int)Format;
-			Settings.Default.Save();
+			SaveSettings();
 		}
+		private static void LoadSettings()
+		{
+			var path = Path.ChangeExtension(Application.ExecutablePath, ".xml");
+			using(var reader = XmlReader.Create(path))
+				while(reader.Read())
+				{
+					if(reader.NodeType != XmlNodeType.Element)
+						continue;
+					switch(reader.Name)
+					{
+						case "calculator":
+							Version = new Version(reader.GetAttribute("version"));
+							break;
+						case "alwaysOnTop":
+							AlwaysOnTop = reader.ReadElementContentAsBoolean();
+							break;
+						case "inRadans":
+							Radians = reader.ReadElementContentAsBoolean();
+							break;
+						case "thousandsSeperator":
+							ThousandsSeperator = reader.ReadElementContentAsBoolean();
+							break;
+						case "rounding":
+							Rounding = reader.ReadElementContentAsInt();
+							break;
+						case "outputFormat":
+							switch (reader.ReadElementContentAsString().ToLower())
+							{
+								case "scientific":
+									Format = OutputFormat.Scientific;
+									break;
+								case "hex":
+									Format = OutputFormat.Hex;
+									break;
+								case "standard":
+									Format = OutputFormat.Standard;
+									break;
+								default:
+									Format = OutputFormat.Standard;
+									break;
+							}
+							break;
+						case "antiAlias":
+							Antialiasing = reader.ReadElementContentAsBoolean();
+							break;
+						case "workingDir":
+							WorkingDirectory = reader.ReadElementContentAsString();
+							break;
+					}
+				}
+		}
+		private static void SaveSettings()
+		{
+			var path = Path.ChangeExtension(Application.ExecutablePath, ".xml");
+			using (var writer = XmlWriter.Create(path))
+			{
+				writer.WriteStartElement("calculator");
+				writer.WriteAttributeString("version", Version.ToString(4));
+				//Boolean values must be lower case.
+				writer.WriteElementString("alwaysOnTop", AlwaysOnTop.ToString().ToLower());
+				writer.WriteElementString("inRadans", Radians.ToString().ToLower());
+				writer.WriteElementString("thousandsSeperator", ThousandsSeperator.ToString().ToLower());
+				writer.WriteElementString("antiAlias", Antialiasing.ToString().ToLower());
+
+				writer.WriteElementString("rounding", Rounding.ToString());
+				writer.WriteComment("outputFormat can be hex, scientific, or standard.");
+				writer.WriteElementString("outputFormat", Format.ToString());
+				writer.WriteElementString("workingDir", WorkingDirectory);
+				writer.WriteEndElement();
+			}
+		}
+
 		public static Form NewWindow(Form form)
 		{
 			if (form == null)

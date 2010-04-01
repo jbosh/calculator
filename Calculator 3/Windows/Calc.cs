@@ -155,7 +155,7 @@ namespace Calculator.Windows
 		{
 			var sfd = new SaveFileDialog
 			          	{
-			          		InitialDirectory = Settings.Default.WorkingDirectory,
+			          		InitialDirectory = Program.WorkingDirectory,
 			          		Filter = "Text Files|*.txt;*.rtf|All Files|*",
 			          		OverwritePrompt = true,
 			          		CreatePrompt = true
@@ -167,7 +167,7 @@ namespace Calculator.Windows
 					throw new NotImplementedException("Don't know what to do with \"None\" flag on File Dialog result.");
 				case DialogResult.OK:
 				case DialogResult.Yes:
-					Settings.Default.WorkingDirectory = Path.GetDirectoryName(sfd.FileName);
+					Program.WorkingDirectory = Path.GetDirectoryName(sfd.FileName);
 					sfd.FileName = Path.ChangeExtension(sfd.FileName, ".txt");
 					SaveFile(sfd.FileName);
 					break;
@@ -192,7 +192,7 @@ namespace Calculator.Windows
 		{
 			var ofd = new OpenFileDialog
 			          	{
-			          		InitialDirectory = Settings.Default.WorkingDirectory,
+			          		InitialDirectory = Program.WorkingDirectory,
 			          		Multiselect = false,
 			          		ShowReadOnly = true,
 			          		Filter = "Text Files|*.txt;*.rtf|All Files|*",
@@ -207,7 +207,7 @@ namespace Calculator.Windows
 					throw new NotImplementedException("Don't know what to do with \"None\" flag on File Dialog result.");
 				case DialogResult.OK:
 				case DialogResult.Yes:
-					Settings.Default.WorkingDirectory = Path.GetDirectoryName(ofd.FileName);
+					Program.WorkingDirectory = Path.GetDirectoryName(ofd.FileName);
 					while (fields.Count != 1)
 						Pop();
 					using (var file = new StreamReader(ofd.OpenFile()))

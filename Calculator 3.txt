@@ -1,0 +1,54 @@
+﻿Vector: {2;1;2}
+: . (dot product)
+: */÷ (multiply all)
+: +/- (add)
+: X (cross)
+Units: 9.8<m/s^2> || 9.8<m/s/s>
+Variables: [_a-zA-Z][_a-zA-Z0-9\.]+
+
+2g -> 2*g
+Parenthesis highlighting ()[]
+: {} <>
+
+Graphing
+-Polar graphs
+-Intersections
+-Tracing
+-Derivative
+-Integral
+-Booleans (|| && true*(...) false*(...))
+
+Latex
+\mu
+\omega
+\pi
+\snowman
+\theta
+...
+
+Constants:
+c
+g
+G
+e
+pi
+X
+x (graphing only)
+θ (graphing only)
+y1, y2, ... yn
+
+Row Deletion
+Row Pushing (insert here)
+
+Saving (name goes in title bar, * when changes)
+Resizing
+Clean up F1
+Press Alt to drop down menu (F2 option for permanent)
+Savable constant menu
+
+
+mass.sun
+mass.earth
+...
+
+Installer

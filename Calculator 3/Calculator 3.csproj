@@ -19,13 +19,13 @@
     <GenerateManifests>false</GenerateManifests>
     <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
     <ApplicationIcon>Calculator.ico</ApplicationIcon>
-    <PublishUrl>publish\</PublishUrl>
+    <PublishUrl>C:\Users\Justin\Projects\Calculator 3\publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
     <UpdateEnabled>true</UpdateEnabled>
     <UpdateMode>Background</UpdateMode>
-    <UpdateInterval>7</UpdateInterval>
-    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdateInterval>2</UpdateInterval>
+    <UpdateIntervalUnits>Weeks</UpdateIntervalUnits>
     <UpdatePeriodically>true</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
@@ -175,6 +175,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <Content Include="Calculator.ico" />
+    <Content Include="Calculator.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Tasks.txt" />
   </ItemGroup>
   <ItemGroup>
