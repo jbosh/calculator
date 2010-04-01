@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Net;
 using System.Threading;
 using System.Windows.Forms;
 using System.Xml;
@@ -123,6 +124,7 @@ namespace Calculator
 					}
 				}
 			}
+			CheckForUpdates();
 			Window = new List<ICalculator>();
 			NewWindow(new Calc());
 
@@ -206,7 +208,24 @@ namespace Calculator
 				writer.WriteEndElement();
 			}
 		}
-
+		private static void CheckForUpdates()
+		{
+			var request = WebRequest.Create("http://jbosh.net/calculator.ashx");
+			request.Method = "POST";
+			request.ContentType = "text";
+			using(var writer = new StreamWriter(request.GetRequestStream()))
+				writer.WriteLine(Version.ToString(4));
+			var response = request.GetResponse();
+			using (var reader = new BinaryReader(response.GetResponseStream()))
+			{
+				var buffer = reader.ReadBytes(4096);
+				throw new NotImplementedException();
+			}
+		}
+		private static void Update()
+		{
+			throw new NotImplementedException();
+		}
 		public static Form NewWindow(Form form)
 		{
 			if (form == null)
