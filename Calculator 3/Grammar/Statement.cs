@@ -403,7 +403,7 @@ namespace Calculator.Grammar
 				throw new ArgumentException();
 			if (il != null)
 			{
-				var info = typeof(CalcMath).GetMethod("Factorial", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
+				var info = typeof(Statement).GetMethod("Factorial", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
 				for (int i = 0; i < node.ChildCount - 1; i++)
 				{
 					il.EmitCall(OpCodes.Call, info, null);
@@ -483,6 +483,13 @@ namespace Calculator.Grammar
 			var min = (VariableType)Math.Min((int)a, (int)b);
 			//var max = (NodeType)Math.Max((int)a, (int)b);
 			return min;
+		}
+		public static double Factorial(double d)
+		{
+			double output = 1;
+			for (int i = (int)d; i >= 1; i--)
+				output *= i;
+			return output;
 		}
 	}
 }

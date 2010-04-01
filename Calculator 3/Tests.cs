@@ -31,7 +31,7 @@ namespace Calculator
 			TestFunction("(1/107+(35*35)/(2*-107))/-9.8)))+2", .58);
 			TestFunction("---107", -107);
 			TestFunction("-(35*35)", -1225);
-			
+
 			TestFunction("(4*10^6)g(15)", 588000000);
 			TestFunction("g(g(g(g(g(g", 885842.38);
 			TestFunction("2*g*e", 53.28);
@@ -58,6 +58,9 @@ namespace Calculator
 
 			TestFunction("-.27", -.27);
 			TestFunction("2E17", 2E17);
+			TestFunction("3.16E2", 316);
+			TestFunction(".3E2", 30);
+			TestFunction("0.2E12", 200000000000);
 			TestFunction("203,20,2", 203202);
 			TestFunction("2e 17", 92.42);
 

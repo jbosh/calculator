@@ -17,7 +17,6 @@ namespace Calculator.Windows
 			get { return fields.Select(f => f.statement); }
 		}
 		private readonly List<CalculatorField> fields;
-		private string SaveFileLocation;
 		private Graph graph;
 		public Calc()
 		{
@@ -144,16 +143,8 @@ namespace Calculator.Windows
 				case Keys.S:
 					if (e.Control)
 					{
-						if (e.Shift || SaveFileLocation == null)
-						{
-							e.Handled = true;
-							SaveFile();
-						}
-						else
-						{
-							e.Handled = true;
-							SaveFile(SaveFileLocation);
-						}
+						e.Handled = true;
+						SaveFile();
 					}
 					break;
 			}
@@ -169,7 +160,7 @@ namespace Calculator.Windows
 			          		OverwritePrompt = true,
 			          		CreatePrompt = true
 			          	};
-			DialogResult result = sfd.ShowDialog();
+			var result = sfd.ShowDialog();
 			switch (result)
 			{
 				case DialogResult.None:
@@ -179,7 +170,6 @@ namespace Calculator.Windows
 					Settings.Default.WorkingDirectory = Path.GetDirectoryName(sfd.FileName);
 					sfd.FileName = Path.ChangeExtension(sfd.FileName, ".txt");
 					SaveFile(sfd.FileName);
-					SaveFileLocation = sfd.FileName;
 					break;
 				case DialogResult.Cancel:
 				case DialogResult.Abort:
@@ -210,7 +200,7 @@ namespace Calculator.Windows
 			          		DereferenceLinks = true,
 			          		AddExtension = true
 			          	};
-			DialogResult result = ofd.ShowDialog();
+			var result = ofd.ShowDialog();
 			switch (result)
 			{
 				case DialogResult.None:
@@ -218,13 +208,18 @@ namespace Calculator.Windows
 				case DialogResult.OK:
 				case DialogResult.Yes:
 					Settings.Default.WorkingDirectory = Path.GetDirectoryName(ofd.FileName);
-					string file = new StreamReader(ofd.OpenFile()).ReadToEnd();
 					while (fields.Count != 1)
 						Pop();
-					string[] lines = file.Split('\n', '\r');
-					fields[0].Text = lines.Length == 0 ? "" : lines[0];
-					for (int i = 1; i < lines.Length; i++)
-						Push(lines[i]);
+					using (var file = new StreamReader(ofd.OpenFile()))
+					{
+						var line = file.ReadLine();
+						fields[0].Text = string.IsNullOrEmpty(line) ? "" : line;
+						while (!file.EndOfStream)
+						{
+							line = file.ReadLine();
+							Push(line);
+						}
+					}
 					break;
 				case DialogResult.Cancel:
 				case DialogResult.Abort:
