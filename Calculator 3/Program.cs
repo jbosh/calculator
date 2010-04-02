@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Threading;
@@ -9,6 +10,7 @@ using System.Xml;
 using Calculator.Properties;
 using Calculator.Windows;
 using Calculator.Grammar;
+using ICSharpCode.SharpZipLib.Zip;
 using Enumerable=System.Linq.Enumerable;
 using Help = Calculator.Windows.Help;
 
@@ -125,6 +127,14 @@ namespace Calculator
 					}
 				}
 			}
+			{
+				var newVersionPath = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "NewVersion.txt");
+				if (File.Exists(newVersionPath))
+				{
+					Version = new Version(File.ReadAllText(newVersionPath));
+					File.Delete(newVersionPath);
+				}
+			}
 			ThreadPool.QueueUserWorkItem(o => CheckForUpdates());
 			Window = new List<ICalculator>();
 			NewWindow(new Calc());
@@ -220,21 +230,50 @@ namespace Calculator
 			{
 				using (var writer = new StreamWriter(request.GetRequestStream()))
 					writer.WriteLine(Version.ToString(4));
+				var response = request.GetResponse();
+				byte[] bytes = null;
+				using (var reader = new BinaryReader(response.GetResponseStream()))
+					bytes = reader.ReadBytes((int)response.ContentLength);
+				var zStream = new ZipInputStream(new MemoryStream(bytes));
+				
+				var dir = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+				Directory.CreateDirectory(dir);
+
+				var entry = zStream.GetNextEntry();
+				while(entry != null)
+				{
+					var dirPath = Path.GetDirectoryName(entry.Name);
+					var filePath = Path.GetFileName(entry.Name);
+					if (dirPath.Length > 0)
+						Directory.CreateDirectory(Path.Combine(dir, dirPath));
+					if(!string.IsNullOrEmpty(filePath))
+					{
+						using(var fs = File.Create(Path.Combine(dir, entry.Name)))
+						{
+							var buffer = new byte[2048];
+							while(true)
+							{
+								var i = zStream.Read(buffer, 0, 2048);
+								if(i > 0)
+									fs.Write(buffer, 0, i);
+								else
+									break;
+							}
+						}
+					}
+					entry = zStream.GetNextEntry();
+				}
+				UpdateFolder = dir;
 			}
-			catch(Exception)
+			catch (Exception ex)
 			{
-				return;
-			}
-			var response = request.GetResponse();
-			using (var reader = new BinaryReader(response.GetResponseStream()))
-			{
-				var buffer = reader.ReadBytes(4096);
-				throw new NotImplementedException();
 			}
 		}
 		private static void Update()
 		{
-			throw new NotImplementedException();
+			var dir = Path.GetDirectoryName(Application.ExecutablePath);
+			Process.Start(Path.Combine(dir, "Updater.exe"),
+				string.Format("\"{0}\" \"{1}\"", dir, UpdateFolder));
 		}
 		public static Form NewWindow(Form form)
 		{

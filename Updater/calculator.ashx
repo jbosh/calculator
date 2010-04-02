@@ -19,19 +19,19 @@ namespace JBosh
 
 			var bytes = context.Request.BinaryRead(context.Request.TotalBytes);	
 			var request = System.Text.Encoding.UTF8.GetString(bytes);
-			var version = new Version(request);			
+			Version version = null;
+			try
+			{
+				version = new Version(request);
+			}
+			catch(Exception){}			
 			context.Response.Cache.SetExpires(DateTime.Now);
 			context.Response.Cache.SetCacheability(HttpCacheability.Public);
-			if(version < LatestVersion)
+			if(version != null && version < LatestVersion)
 			{
-				var response = BuildResponse();
-				context.Response.Write(response);
+				context.Response.WriteFile("/srv/www/htdocs/updates/calculator.zip");
 			}
-		}
-		private byte[] BuildResponse()
-		{
-			return System.IO.File.ReadAllBytes("updates/calculator.zip");
-		}
+		}
 		public bool IsReusable
 		{
 			get { return false; }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace Updater
@@ -11,15 +12,18 @@ namespace Updater
 	{
 		static void Main(string[] args)
 		{
-			if(args.Length == 0)
+			if(args.Length != 2)
 				return;
-			var path = Path.GetDirectoryName(Application.ExecutablePath);
-			var dst = Path.Combine(path, "Calculator.exe");
-			var src = args[0];
-			if (!File.Exists(src))
-				return;
-			File.Copy(src, dst, true);
-			File.Delete(src);
+			Thread.Sleep(200);
+			var dst = args[0];
+			var src = args[1];
+			foreach(var file in Directory.GetFiles(src))
+			{
+				var name = Path.GetFileName(file);
+				File.Copy(file, Path.Combine(dst, name), true);
+				File.Delete(file);
+			}
+			Directory.Delete(src);
 		}
 	}
 }

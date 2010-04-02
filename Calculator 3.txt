@@ -20,14 +20,6 @@ Graphing
 -Booleans (|| && true*(...) false*(...))
 -Colors on all graphs
 
-Latex
-\mu
-\omega
-\pi
-\snowman
-\theta
-...
-
 Constants:
 c
 g
