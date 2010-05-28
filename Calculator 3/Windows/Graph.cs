@@ -1,21 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using Calculator.Grammar;
-using System.Drawing;
 
 namespace Calculator.Windows
 {
 	public class Graph : Form, ICalculator
 	{
+		
 		private Calc parent;
 		private MemoryManager Memory;
 		private PointF[][] lines;
 		private bool grabbed;
 		private PointF mouseGrab, mousePos;
 		private RectangleF ViewRect, oldViewRect;
+	
 		public Graph(Calc Parent, MemoryManager memory)
 		{
 			DoubleBuffered = true;
@@ -118,9 +118,10 @@ namespace Calculator.Windows
 					//a + (b - a) * amt
 					//y/rectHeight = viewY/viewHeight
 					y = ClientSize.Height - (y - ViewRect.Top) / ViewRect.Height * ClientSize.Height;
-					lines[j][i] = new PointF(i, y);
-					if (float.IsNaN(lines[j][i].Y))
+					if(float.IsNaN(y))
 						lines[j][0].Y = float.NaN;
+					else
+						lines[j][i] = new PointF(i, y);						
 					j++;
 				}
 			}
@@ -135,7 +136,7 @@ namespace Calculator.Windows
 					catch { }
 				}
 		}
-		public void Recalculate()
+		public void Recalculate(bool global)
 		{
 			if (TopMost != Program.AlwaysOnTop)
 				TopMost = Program.AlwaysOnTop;

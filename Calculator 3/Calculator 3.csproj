@@ -96,6 +96,10 @@
       <DependentUpon>Calc.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="Windows\Graph.resx">
+      <DependentUpon>Graph.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Windows\Help.resx">
       <DependentUpon>Help.cs</DependentUpon>
       <SubType>Designer</SubType>

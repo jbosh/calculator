@@ -64,6 +64,8 @@ namespace Calculator
 			TestFunction("203,20,2", 203202);
 			TestFunction("2e 17", 92.42);
 
+			TestFunction("2E.2", 3.17);
+
 			TestFunction("-", double.NaN);
 			TestFunction("alpha", double.NaN);
 			TestFunction("*-2", double.NaN);

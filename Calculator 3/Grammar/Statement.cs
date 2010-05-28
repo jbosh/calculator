@@ -25,6 +25,12 @@ namespace Calculator.Grammar
 			= new Regex(@"[\d\.]+E[\d\.]", RegexOptions.Compiled);
 		public string VariableName { get; private set; }
 		public VariableType VariableType { get; private set; }
+
+		public string Text
+		{
+			get; private set;
+		}
+
 		private Dictionary<int, Func<ITree, VariableType>> Dispatch;
 		private DynamicMethod method;
 		private ILGenerator il;
@@ -69,6 +75,7 @@ namespace Calculator.Grammar
 				VariableName = "";
 				return;
 			}
+			Text = source;
 			var preprocess = Preprocess(source);
 			var stream = new MemoryStream(Encoding.UTF8.GetBytes(preprocess));
 			var input = new ANTLRInputStream(stream);
@@ -461,8 +468,19 @@ namespace Calculator.Grammar
 		{
 			if(il != null)
 			{
-				var d = double.Parse(node.Text);
-				il.Emit(OpCodes.Ldc_R8, d);
+				if (node.Text.Contains("E"))
+				{
+					var split = node.Text.Split('E');
+					var b = double.Parse(split[0]);
+					var e = double.Parse(split[1]);
+					var d = b * Math.Pow(10, e);
+					il.Emit(OpCodes.Ldc_R8, d);
+				}
+				else
+				{
+					var d = double.Parse(node.Text);
+					il.Emit(OpCodes.Ldc_R8, d);
+				}
 			}
 			return VariableType.Double;
 		}

@@ -36,7 +36,7 @@ namespace Calculator.Windows
 
 			fields = new List<CalculatorField>();
 			var field = new CalculatorField(Memory);
-			field.txtQuestion.TextChanged += (o, e) => Recalculate();
+			field.txtQuestion.TextChanged += (o, e) => Recalculate(false);
 			fields.Add(field);
 			Controls.Add(field.lblEquals);
 			Controls.Add(field.lblAnswer);
@@ -46,15 +46,15 @@ namespace Calculator.Windows
 			Show();
 		}
 		#region ICalculator Members
-		public void Recalculate()
+		public void Recalculate(bool global)
 		{
 			if (TopMost != Program.AlwaysOnTop)
 				TopMost = Program.AlwaysOnTop;
 			Memory.Push();
 			foreach (CalculatorField field in fields)
-				field.Calculate();
+				field.Calculate(global);
 			if(graph != null)
-				graph.Recalculate();
+				graph.Recalculate(global);
 			Memory.Pop();
 		}
 		#endregion
@@ -239,7 +239,7 @@ namespace Calculator.Windows
 			if (fields.Count >= 24)
 				return;
 			var field = new CalculatorField(Memory, fields[fields.Count - 1]);
-			field.txtQuestion.TextChanged += (o, e) => Recalculate();
+			field.txtQuestion.TextChanged += (o, e) => Recalculate(false);
 			fields.Add(field);
 			Controls.Add(field.lblEquals);
 			Controls.Add(field.lblAnswer);
@@ -331,8 +331,10 @@ namespace Calculator.Windows
 				lblEquals.Location = new Point(434, txtQuestion.Top + 4);
 			}
 			#endregion
-			public void Calculate()
+			public void Calculate(bool global)
 			{
+				if(global)
+					statement.ProcessString(txtQuestion.Text);
 				var parse = statement.Execute();
 				lblAnswer.Text = Program.FormatOutput(parse);
 			}
@@ -354,7 +356,7 @@ namespace Calculator.Windows
 					.Replace("\\Delta", "Δ");
 
 				statement.ProcessString(txtQuestion.Text);
-				Calculate();
+				Calculate(false);
 			}
 
 			public void lblAnswer_Click(object sender, EventArgs e)

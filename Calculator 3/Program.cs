@@ -38,7 +38,7 @@ namespace Calculator
 			set
 			{
 				radians = value;
-				RecalculateWindows();
+				RecalculateWindows(true);
 			}
 		}
 		public static bool AlwaysOnTop
@@ -47,7 +47,7 @@ namespace Calculator
 			set
 			{
 				alwaysOnTop = value;
-				RecalculateWindows();
+				RecalculateWindows(false);
 			}
 		}
 		public static bool ThousandsSeperator
@@ -56,7 +56,7 @@ namespace Calculator
 			set
 			{
 				thousandsSeperator = value;
-				RecalculateWindows();
+				RecalculateWindows(false);
 			}
 		}
 		public static bool Antialiasing
@@ -65,7 +65,7 @@ namespace Calculator
 			set
 			{
 				antialias = value;
-				RecalculateWindows();
+				RecalculateWindows(false);
 			}
 		}
 		public static int Rounding
@@ -74,7 +74,7 @@ namespace Calculator
 			set
 			{
 				rounding = value;
-				RecalculateWindows();
+				RecalculateWindows(false);
 			}
 		}
 		private static Version Version { get; set; }
@@ -85,14 +85,14 @@ namespace Calculator
 			set
 			{
 				format = value;
-				RecalculateWindows();
+				RecalculateWindows(false);
 			}
 		}
 		public static string WorkingDirectory { get; set; }
-		private static void RecalculateWindows()
+		private static void RecalculateWindows(bool global)
 		{
 			foreach (ICalculator form in Window)
-				form.Recalculate();
+				form.Recalculate(global);
 		}
 		[STAThread]
 		private static void Main(string[] args)
@@ -128,6 +128,7 @@ namespace Calculator
 				}
 			}
 			{
+				
 				var newVersionPath = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "NewVersion.txt");
 				if (File.Exists(newVersionPath))
 				{
@@ -135,7 +136,7 @@ namespace Calculator
 					File.Delete(newVersionPath);
 				}
 			}
-			ThreadPool.QueueUserWorkItem(o => CheckForUpdates());
+			//ThreadPool.QueueUserWorkItem(o => CheckForUpdates());
 			Window = new List<ICalculator>();
 			NewWindow(new Calc());
 
@@ -284,7 +285,7 @@ namespace Calculator
 				form.Closing += FormClosing;
 				form.Show();
 				Window.Add((ICalculator)form);
-				((ICalculator)form).Recalculate();
+				((ICalculator)form).Recalculate(false);
 			}
 			return form;
 		}

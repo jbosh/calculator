@@ -10,6 +10,7 @@ namespace Calculator.Windows
 		/// <summary>
 		/// Reload settings and recalculate values.
 		/// </summary>
-		void Recalculate();
+		/// <param name="global">If true, a global parameter has been changed.</param>
+		void Recalculate(bool global);
 	}
 }

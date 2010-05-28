@@ -17,7 +17,7 @@ namespace Calculator.Windows
 			TopMost = true;
 		}
 		#region ICalculator Members
-		public void Recalculate()
+		public void Recalculate(bool global)
 		{
 			TopMost = Program.AlwaysOnTop;
 		}

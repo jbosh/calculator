@@ -17,7 +17,7 @@ namespace Calculator.Windows
 			radioHex.Enabled = false;
 		}
 		#region ICalculator Members
-		public void Recalculate()
+		public void Recalculate(bool global)
 		{
 			lock (this)
 			{
