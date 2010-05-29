@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Collections;
 
@@ -10,11 +11,11 @@ namespace Calitha.goldparser.structure
 	/// </summary>
 	public class RecordCollection : IEnumerable
 	{
-		private IList list;
+		private List<Record> list;
 
 		public RecordCollection()
 		{
-			list = new ArrayList();
+			list = new List<Record>();
 		}
 		
 		public IEnumerator GetEnumerator()
@@ -22,14 +23,14 @@ namespace Calitha.goldparser.structure
 			return list.GetEnumerator();
 		}
 		
-		public int Add(Record record)
+		public void Add(Record record)
 		{
-			return list.Add(record);
+			list.Add(record);
 		}
 		
 		public override string ToString()
 		{
-			StringBuilder str = new StringBuilder();
+			var str = new StringBuilder();
 			str.Append("Records:\n");
 			foreach (Record record in this)
 			{
@@ -39,22 +40,11 @@ namespace Calitha.goldparser.structure
 			}
 			return str.ToString();
 		}			
-
-		public Record Get(int index)
-		{
-			if (index < 0 || index >= list.Count)
-				return null;
-			else
-				return list[index] as Record;
-		}
-			
-
-	
 		public Record this[int index]
 		{
 			get
 			{
-				return Get(index);
+				return list[index];
 			}
 		}
 		

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Text;
 using Calitha.goldparser.lalr;
 using Calitha.goldparser.lalr;
@@ -19,8 +20,8 @@ namespace Calitha.goldparser
 		private IStringTokenizer tokenizer;
 		private StateCollection states;
 		private State startState;
-		private StateStack stateStack;
-		private TokenStack tokenStack;
+		private Stack<State> stateStack;
+		private Stack<Token> tokenStack;
 		private TerminalToken lookahead;
 		private bool continueParsing;
 		private bool accepted;
@@ -47,9 +48,9 @@ namespace Calitha.goldparser
 
 		private void Reset()
 		{
-			stateStack = new StateStack();
+			stateStack = new Stack<State>();
 			stateStack.Push(startState);
-			tokenStack = new TokenStack();
+			tokenStack = new Stack<Token>();
 			lookahead = null;
 			continueParsing = true;
 			accepted = false;

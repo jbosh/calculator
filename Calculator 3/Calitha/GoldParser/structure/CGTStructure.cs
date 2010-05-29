@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Text;
 
 namespace Calitha.goldparser.structure
@@ -10,22 +11,18 @@ namespace Calitha.goldparser.structure
 	/// </summary>
 	public class CGTStructure
 	{
-		private string header;
-		private RecordCollection records;
-
-		public CGTStructure(string header, RecordCollection records)
+		public CGTStructure(string header, List<Record> records)
 		{
-		    this.header = header;
-		    this.records = records;
+		    this.Header = header;
+		    this.Records = records;
 		}
 		
         public override string ToString()
         {
-			return header.ToString()+"\n"+records.ToString();
+        	return string.Concat(Header, '\n', Records);
 		}
-		
-		public string Header{ get{return header;} }
-		public RecordCollection Records{ get{return records;} }
-		
+
+		public string Header { get; private set; }
+		public List<Record> Records { get; private set; }
 	}
 }

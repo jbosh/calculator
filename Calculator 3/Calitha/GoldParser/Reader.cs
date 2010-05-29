@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Collections;
@@ -81,7 +82,7 @@ namespace Calitha.goldparser
 			{
 				Reset();
 				this.stream = stream;
-				CalithaBinReader reader = new CalithaBinReader(stream);
+				var reader = new CalithaBinReader(stream);
 				string header = "";
 				try
 				{
@@ -93,7 +94,7 @@ namespace Calitha.goldparser
 				{
 					throw new CGTStructureException("File header is invalid",e);
 				}
-				RecordCollection records = new RecordCollection();
+				var records = new List<Record>();
 				while (!(stream.Position == stream.Length))
 				{
 					records.Add(ReadRecord(reader));
