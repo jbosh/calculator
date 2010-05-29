@@ -1,6 +1,6 @@
-using System;
+using System.Collections.Generic;
 
-namespace Calitha.goldparser.dfa
+namespace Calitha.GoldParser.dfa
 {
 	/// <summary>
 	/// The interface for the Deterministic Finite Automata
@@ -22,38 +22,37 @@ namespace Calitha.goldparser.dfa
 		/// <summary>
 		/// The current state in the DFA.
 		/// </summary>
-		State CurrentState {get;}
+		State CurrentState { get; }
 	}
-	
+
 	/// <summary>
 	/// Implementation of a Deterministic Finite Automata.
 	/// </summary>
 	public class DFA : IDFA
 	{
-		private StateCollection states;
+		private List<State> states;
 		private State startState;
-		private State currentState;
 
 		/// <summary>
 		/// Creates a new DFA.
 		/// </summary>
 		/// <param name="states">The states that are part of the DFA.</param>
 		/// <param name="startState">The starting state</param>
-		public DFA(StateCollection states, State startState)
+		public DFA(List<State> states, State startState)
 		{
-			this.states       = states;
-			this.startState   = startState;
-			this.currentState = startState;
+			this.states = states;
+			this.startState = startState;
+			CurrentState = startState;
 		}
-		
+
 		/// <summary>
 		/// Sets the DFA back to the starting state, so it can be used to get a new token.
 		/// </summary>
 		public void Reset()
 		{
-			this.currentState = startState;
+			CurrentState = startState;
 		}
-		
+
 		/// <summary>
 		/// Goto the next state depending on an input character.
 		/// </summary>
@@ -61,19 +60,16 @@ namespace Calitha.goldparser.dfa
 		/// <returns>The new current state.</returns>
 		public State GotoNext(char ch)
 		{
-			Transition transition = currentState.Transitions.Find(ch);
-			if (transition != null)
-			{
-				currentState = transition.Target;
-				return currentState;
-			}
-			else
+			var transition = CurrentState.Transitions.Find(ch);
+			if (transition == null)
 				return null;
+			CurrentState = transition.Target;
+			return CurrentState;
 		}
-			
+
 		/// <summary>
 		/// The current state in the DFA.
 		/// </summary>
-		public State CurrentState {get {return currentState;}}
+		public State CurrentState { get; private set; }
 	}
 }

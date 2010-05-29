@@ -8,7 +8,7 @@ using System.Reflection.Emit;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Reflection;
-using Calitha.goldparser;
+using Calitha.GoldParser;
 
 namespace Calculator.Grammar
 {
@@ -116,7 +116,12 @@ namespace Calculator.Grammar
 			}
 			Text = source;
 			var preprocess = Preprocess(source);
-
+			var split = preprocess.Split('=');
+			if(split.Length == 2)
+			{
+				VariableName = split[0];
+				preprocess = split[1];
+			}
 			try
 			{
 				var root = parser.Parse(preprocess);

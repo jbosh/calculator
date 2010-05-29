@@ -1,20 +1,16 @@
 using System;
 using System.Diagnostics;
-using Calitha.goldparser;
 
-namespace Calitha.goldparser
+namespace Calitha.GoldParser
 {
-
 	/// <summary>
 	/// Abstract class representing both terminal and nonterminal tokens.
 	/// </summary>
 	public abstract class Token
 	{
-		private Object userObject;
-
-		public Token()
+		protected Token()
 		{
-			this.userObject = null;
+			UserObject = null;
 		}
 
 		/// <summary>
@@ -22,12 +18,7 @@ namespace Calitha.goldparser
 		/// event. This makes it possible to create a tree when the
 		/// source is being parsed.
 		/// </summary>
-		public Object UserObject
-		{
-			get {return userObject;}
-			set {this.userObject = value;}
-		}
-
+		public object UserObject { get; set; }
 	}
 
 	/// <summary>
@@ -35,10 +26,6 @@ namespace Calitha.goldparser
 	/// </summary>
 	public class TerminalToken : Token
 	{
-		private SymbolTerminal symbol;
-		private string text;
-		private Location location;
-
 		/// <summary>
 		/// Creates a new terminal token object.
 		/// </summary>
@@ -48,34 +35,34 @@ namespace Calitha.goldparser
 		/// has been found.</param>
 		public TerminalToken(SymbolTerminal symbol, string text, Location location)
 		{
-			this.symbol = symbol;
-			this.text   = text;
-			this.location = location;
+			this.Symbol = symbol;
+			this.Text = text;
+			this.Location = location;
 		}
-		
+
 		/// <summary>
 		/// String representation of the token.
 		/// </summary>
 		/// <returns></returns>
-		public override String ToString()
+		public override string ToString()
 		{
-			return text;
+			return Text;
 		}
 
 		/// <summary>
 		/// The symbol that this token represents.
 		/// </summary>
-		public SymbolTerminal Symbol {[DebuggerStepThrough]get {return symbol;}}
+		public SymbolTerminal Symbol { get; private set; }
 
 		/// <summary>
 		/// The text from the input that is this token.
 		/// </summary>
-		public string Text {get {return text;}}
+		public string Text { get; private set; }
 
 		/// <summary>
 		/// The location in the input that this token was found.
 		/// </summary>
-		public Location Location {get {return location;}}
+		public Location Location { get; private set; }
 	}
 
 	/// <summary>
@@ -83,9 +70,6 @@ namespace Calitha.goldparser
 	/// </summary>
 	public class NonterminalToken : Token
 	{
-		private Token[] tokens;
-		private Rule rule;
-
 		/// <summary>
 		/// Creates a new nonterminal token.
 		/// </summary>
@@ -93,13 +77,13 @@ namespace Calitha.goldparser
 		/// <param name="tokens">The tokens that are reduced.</param>
 		public NonterminalToken(Rule rule, Token[] tokens)
 		{
-			this.rule = rule;
-			this.tokens = tokens;			
+			this.Rule = rule;
+			this.Tokens = tokens;
 		}
 
 		public void ClearTokens()
 		{
-			tokens = new Token[0];
+			Tokens = new Token[0];
 		}
 
 		/// <summary>
@@ -108,10 +92,10 @@ namespace Calitha.goldparser
 		/// <returns>The string.</returns>
 		public override string ToString()
 		{
-			String str = rule.Lhs+" = [";
-			for (int i = 0; i < tokens.Length; i++)
+			var str = Rule.Lhs + " = [";
+			for (var i = 0; i < Tokens.Length; i++)
 			{
-				str += tokens[i]+"]";
+				str += Tokens[i] + "]";
 			}
 			return str;
 		}
@@ -120,20 +104,20 @@ namespace Calitha.goldparser
 		/// <summary>
 		/// The symbol that this nonterminal token represents.
 		/// </summary>
-		
-		public SymbolNonterminal Symbol {[DebuggerStepThrough]get{return rule.Lhs;}}
+		public SymbolNonterminal Symbol
+		{
+			[DebuggerStepThrough]
+			get { return Rule.Lhs; }
+		}
 
 		/// <summary>
 		/// The tokens that are reduced.
 		/// </summary>
-		public Token[] Tokens {[DebuggerStepThrough]get{return tokens;}}
+		public Token[] Tokens { get; private set; }
 
 		/// <summary>
 		/// The rule that caused the reduction.
 		/// </summary>
-		public Rule Rule {get{return rule;}}
-
+		public Rule Rule { get; private set; }
 	}
-
-
 }

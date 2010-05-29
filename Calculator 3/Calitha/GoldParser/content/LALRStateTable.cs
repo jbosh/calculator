@@ -1,9 +1,7 @@
-using System;
 using System.Collections;
-using Calitha.goldparser.structure;
-using Calitha.goldparser.structure;
+using Calitha.GoldParser.structure;
 
-namespace Calitha.goldparser.content
+namespace Calitha.GoldParser.content
 {
 	/// <summary>
 	/// LALRStateTable is a list of records the define LALR states.
@@ -15,11 +13,11 @@ namespace Calitha.goldparser.content
 		public LALRStateTable(CGTStructure structure, int start, int count)
 		{
 			list = new ArrayList();
-			for (int i=start;i<start+count;i++)
+			for (var i = start; i < start + count; i++)
 			{
-				LALRStateRecord lalrState = new LALRStateRecord(structure.Records[i]);
+				var lalrState = new LALRStateRecord(structure.Records[i]);
 				list.Add(lalrState);
-			}			
+			}
 		}
 
 		public IEnumerator GetEnumerator()
@@ -34,13 +32,12 @@ namespace Calitha.goldparser.content
 
 		public LALRStateRecord this[int index]
 		{
-			get
-			{
-				return Get(index);
-			}
+			get { return Get(index); }
 		}
 
-		public int Count {get{return list.Count;}}
-
+		public int Count
+		{
+			get { return list.Count; }
+		}
 	}
 }

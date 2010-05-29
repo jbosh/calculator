@@ -1,11 +1,8 @@
-using System;
 using System.Collections;
-using Calitha.goldparser.structure;
-using Calitha.goldparser.structure;
+using Calitha.GoldParser.structure;
 
-namespace Calitha.goldparser.content
+namespace Calitha.GoldParser.content
 {
-
 	/// <summary>
 	/// EdgeSubRecordCollection contains a part of a DFA state record.
 	/// It defines the edges (transactions) between DFA states.
@@ -17,11 +14,11 @@ namespace Calitha.goldparser.content
 		public EdgeSubRecordCollection(Record record, int start)
 		{
 			list = new ArrayList();
-			if ((record.Entries.Count-start) % 3 != 0)
+			if ((record.Entries.Count - start) % 3 != 0)
 				throw new CGTContentException("Invalid number of entries for edges in DFA state");
-			for (int i=start;i<record.Entries.Count;i=i+3)
+			for (var i = start; i < record.Entries.Count; i = i + 3)
 			{
-				EdgeSubRecord edgeRecord = new EdgeSubRecord(record.Entries[i],record.Entries[i+1]);
+				var edgeRecord = new EdgeSubRecord(record.Entries[i], record.Entries[i + 1]);
 				list.Add(edgeRecord);
 			}
 		}
@@ -30,7 +27,6 @@ namespace Calitha.goldparser.content
 		{
 			return list.GetEnumerator();
 		}
-
 	}
 
 	/// <summary>
@@ -40,13 +36,12 @@ namespace Calitha.goldparser.content
 	{
 		public EdgeSubRecord(Entry charSetEntry, Entry targetEntry)
 		{
-			this.characterSetIndex = charSetEntry.ToIntValue();
-			this.targetIndex = targetEntry.ToIntValue();
+			CharacterSetIndex = charSetEntry.ToIntValue();
+			TargetIndex = targetEntry.ToIntValue();
 		}
-		
-		protected int characterSetIndex;
-		protected int targetIndex;
-		public int CharacterSetIndex{get{return characterSetIndex;}}
-		public int TargetIndex{get{return targetIndex;}}
+
+		public int CharacterSetIndex { get; protected set; }
+
+		public int TargetIndex { get; protected set; }
 	}
 }

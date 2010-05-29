@@ -6,7 +6,7 @@
     <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{4AECED1F-409F-46C4-B158-7F538154EAA6}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Calculator</RootNamespace>
     <AssemblyName>Calculator</AssemblyName>
@@ -39,7 +39,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;RUN_TESTS</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>x86</PlatformTarget>
@@ -48,9 +48,10 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE;RUN_TESTS</DefineConstants>
+    <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -70,32 +71,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Calitha\Common\AbstractSet.cs" />
-    <Compile Include="Calitha\Common\ArraySet.cs" />
-    <Compile Include="Calitha\Common\BinaryReader.cs" />
-    <Compile Include="Calitha\Common\FileUtil.cs" />
-    <Compile Include="Calitha\Common\HashSet.cs" />
-    <Compile Include="Calitha\Common\IntegerList.cs" />
-    <Compile Include="Calitha\Common\ISet.cs" />
-    <Compile Include="Calitha\Common\ResourceUtil.cs" />
-    <Compile Include="Calitha\Common\StringUtil.cs" />
-    <Compile Include="Calitha\Common\Util.cs" />
+    <Compile Include="Calitha\Util.cs" />
     <Compile Include="Calitha\GoldParser\content\ActionSubRecord.cs" />
     <Compile Include="Calitha\GoldParser\content\CGTContent.cs" />
     <Compile Include="Calitha\GoldParser\content\CGTContentException.cs" />
     <Compile Include="Calitha\GoldParser\content\CharacterSetRecord.cs" />
-    <Compile Include="Calitha\GoldParser\content\CharacterSetTable.cs" />
     <Compile Include="Calitha\GoldParser\content\DFAStateRecord.cs" />
-    <Compile Include="Calitha\GoldParser\content\DFAStateTable.cs" />
     <Compile Include="Calitha\GoldParser\content\EdgeSubRecord.cs" />
     <Compile Include="Calitha\GoldParser\content\InitialStatesRecord.cs" />
     <Compile Include="Calitha\GoldParser\content\LALRStateRecord.cs" />
     <Compile Include="Calitha\GoldParser\content\LALRStateTable.cs" />
     <Compile Include="Calitha\GoldParser\content\Parameters.cs" />
     <Compile Include="Calitha\GoldParser\content\RuleRecord.cs" />
-    <Compile Include="Calitha\GoldParser\content\RuleTable.cs" />
     <Compile Include="Calitha\GoldParser\content\SymbolRecord.cs" />
-    <Compile Include="Calitha\GoldParser\content\SymbolTable.cs" />
     <Compile Include="Calitha\GoldParser\content\TableCounts.cs" />
     <Compile Include="Calitha\GoldParser\dfa\DFA.cs" />
     <Compile Include="Calitha\GoldParser\dfa\State.cs" />
@@ -113,7 +101,6 @@
     <Compile Include="Calitha\GoldParser\ParserException.cs" />
     <Compile Include="Calitha\GoldParser\Reader.cs" />
     <Compile Include="Calitha\GoldParser\Rule.cs" />
-    <Compile Include="Calitha\GoldParser\StateStack.cs" />
     <Compile Include="Calitha\GoldParser\StringTokenizer.cs" />
     <Compile Include="Calitha\GoldParser\structure\CGTStructure.cs" />
     <Compile Include="Calitha\GoldParser\structure\CGTStructureException.cs" />
@@ -123,7 +110,6 @@
     <Compile Include="Calitha\GoldParser\Symbol.cs" />
     <Compile Include="Calitha\GoldParser\SymbolFactory.cs" />
     <Compile Include="Calitha\GoldParser\Token.cs" />
-    <Compile Include="Calitha\GoldParser\TokenStack.cs" />
     <Compile Include="Grammar\CalcMath.cs" />
     <Compile Include="Grammar\MemoryManager.cs" />
     <Compile Include="Grammar\Statement.cs" />

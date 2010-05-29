@@ -2,52 +2,13 @@ using System;
 using System.Collections;
 using System.Diagnostics;
 
-namespace Calitha.goldparser
+namespace Calitha.GoldParser
 {
-
-	/// <summary>
-	/// Type-safe list of Rule objects.
-	/// </summary>
-	public class RuleCollection : IEnumerable
-	{
-		private IList list;
-
-		public RuleCollection()
-		{
-			list = new ArrayList();
-		}
-
-		public IEnumerator GetEnumerator()
-		{
-			return list.GetEnumerator();
-		}
-
-		public void Add(Rule rule)
-		{
-			list.Add(rule);
-		}
-
-		public Rule Get(int index)
-		{
-			return list[index] as Rule;
-		}
-
-		public Rule this[int index]
-		{
-			get {return Get(index);}
-		}
-	}
-
-
 	/// <summary>
 	/// The Rule consists of the symbols that can be reduced to another symbol.
 	/// </summary>
 	public class Rule
 	{
-		private int id;
-		private SymbolNonterminal lhs;
-		private Symbol[] rhs;
-
 		/// <summary>
 		/// Creates a new rule.
 		/// </summary>
@@ -57,39 +18,39 @@ namespace Calitha.goldparser
 		/// <param name="rhs">The right hand side. The symbols that can be reduced.</param>
 		public Rule(int id, SymbolNonterminal lhs, Symbol[] rhs)
 		{
-			this.id = id;
-			this.lhs = lhs;
-			this.rhs = rhs;
+			this.Id = id;
+			this.Lhs = lhs;
+			this.Rhs = rhs;
 		}
 
 		/// <summary>
 		/// String representation of the rule.
 		/// </summary>
 		/// <returns>The string.</returns>
-		public override String ToString()
+		public override string ToString()
 		{
-			String str = lhs+" ::= ";
-			for (int i=0; i < rhs.Length; i++)
+			var str = Lhs + " ::= ";
+			for (var i = 0; i < Rhs.Length; i++)
 			{
-				str += rhs[i]+" ";
+				str += Rhs[i] + " ";
 			}
-			return str.Substring(0,str.Length-1);
+			return str.Substring(0, str.Length - 1);
 		}
 
 		/// <summary>
 		/// Id of this rule.
 		/// </summary>
-		public int Id {get{return id;}}
+		public int Id { get; private set; }
 
 		/// <summary>
 		/// Left hand side. The other symbols can be reduced to
 		/// this symbol.
 		/// </summary>
-		public SymbolNonterminal Lhs {[DebuggerStepThrough]get{return lhs;}}
+		public SymbolNonterminal Lhs { get; private set; }
 
 		/// <summary>
 		/// Right hand side. The symbols that can be reduced.
 		/// </summary>
-		public Symbol[] Rhs {get{return rhs;}}
+		public Symbol[] Rhs { get; private set; }
 	}
 }

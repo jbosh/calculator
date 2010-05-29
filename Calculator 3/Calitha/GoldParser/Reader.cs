@@ -1,27 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
-using System.Collections;
-using System.Resources;
 using Calitha.Common;
-using Calitha.goldparser.content;
-using Calitha.goldparser.dfa;
-using Calitha.goldparser.lalr;
-using Calitha.goldparser.structure;
-using Calitha.Common;
-using Calitha.goldparser.content;
-using Calitha.goldparser.structure;
-using Calitha.goldparser.lalr;
-using DFA = Calitha.goldparser.dfa;
-using System.Runtime.Serialization;
-using Action=Calitha.goldparser.lalr.Action;
-using EndState=Calitha.goldparser.dfa.EndState;
-using State=Calitha.goldparser.dfa.State;
-using StateCollection=Calitha.goldparser.dfa.StateCollection;
-using Transition=Calitha.goldparser.dfa.Transition;
+using Calitha.GoldParser.content;
+using Calitha.GoldParser.dfa;
+using Calitha.GoldParser.lalr;
+using Calitha.GoldParser.structure;
+using DFA = Calitha.GoldParser.dfa;
+using State=Calitha.GoldParser.dfa.State;
 
-namespace Calitha.goldparser
+namespace Calitha.GoldParser
 {
 	
 	/// <summary>
@@ -33,10 +21,8 @@ namespace Calitha.goldparser
 		private Stream stream;
 	    private CGTStructure structure;
 	    private CGTContent content;
-		private StateCollection dfaStates;
-		private lalr.StateCollection parserStates;
-		private SymbolCollection symbols;
-		private RuleCollection rules;
+		private List<State> dfaStates;
+		private List<lalr.State> parserStates;
 
 		/// <summary>
 		/// Creates a new reader that will read a Compiler Grammar Table
@@ -67,8 +53,8 @@ namespace Calitha.goldparser
 			content = null;
 			dfaStates = null;
 			parserStates = null;
-			symbols = null;
-			rules = null;
+			Symbols = null;
+			Rules = null;
 		}
 
 		/// <summary>
@@ -82,8 +68,8 @@ namespace Calitha.goldparser
 			{
 				Reset();
 				this.stream = stream;
-				var reader = new CalithaBinReader(stream);
-				string header = "";
+				var reader = new BinaryReader(stream);
+				var header = "";
 				try
 				{
 					header = reader.ReadUnicodeString();
@@ -117,8 +103,8 @@ namespace Calitha.goldparser
 		/// <returns></returns>
 		public StringTokenizer CreateNewTokenizer()
 		{
-			State startState = dfaStates[content.InitialStates.DFA];
-			dfa.DFA dfa = new dfa.DFA(dfaStates,startState);
+			var startState = dfaStates[content.InitialStates.DFA];
+			var dfa = new dfa.DFA(dfaStates,startState);
 			return new StringTokenizer(dfa);
 		}
 
@@ -128,34 +114,34 @@ namespace Calitha.goldparser
 		/// <returns></returns>
 		public LALRParser CreateNewParser()
 		{
-			lalr.State startState = parserStates[content.InitialStates.LALR];
+			var startState = parserStates[content.InitialStates.LALR];
 			return new LALRParser(CreateNewTokenizer(),
 			                      parserStates,
 			                      startState,
 			                      Symbols);
 		}
 
-		private SymbolCollection CreateSymbols(CGTContent content)
+		private List<Symbol> CreateSymbols(CGTContent content)
 		{
-			SymbolCollection symbols = new SymbolCollection();
-			foreach (SymbolRecord symbolRecord in content.SymbolTable)
+			var symbols = new List<Symbol>();
+			foreach (var symbolRecord in content.SymbolTable)
 			{
-				Symbol symbol = SymbolFactory.CreateSymbol(symbolRecord);
+				var symbol = SymbolFactory.CreateSymbol(symbolRecord);
 				symbols.Add(symbol);
 			}
 			return symbols;
 		}
 		
-		private StateCollection CreateDFAStates(CGTContent content)
+		private List<State> CreateDFAStates(CGTContent content)
 		{
-			symbols = CreateSymbols(content);
-			StateCollection states = new StateCollection();
-			foreach (DFAStateRecord stateRecord in content.DFAStateTable)
+			Symbols = CreateSymbols(content);
+			var states = new List<State>();
+			foreach (var stateRecord in content.DFAStateTable)
 			{
 				State state;
 				if (stateRecord.AcceptState)
 				{
-					Symbol symbol = symbols[stateRecord.AcceptIndex];
+					var symbol = Symbols[stateRecord.AcceptIndex];
 
 					state = new EndState(stateRecord.Index,(SymbolTerminal)symbol);
 					//todo: type checking (exception?)
@@ -167,104 +153,100 @@ namespace Calitha.goldparser
 				states.Add(state);				
 			}
 			
-			foreach (DFAStateRecord stateRecord in content.DFAStateTable)
+			foreach (var stateRecord in content.DFAStateTable)
 			{
 				foreach (EdgeSubRecord edgeRecord in stateRecord.EdgeSubRecords)
 				{
-					State source = states[stateRecord.Index];
-					State target = states[edgeRecord.TargetIndex];
-					CharacterSetRecord charsetRec = content.CharacterSetTable[edgeRecord.CharacterSetIndex];
-					Transition transition = new Transition(target,charsetRec.Characters);
+					var source = states[stateRecord.Index];
+					var target = states[edgeRecord.TargetIndex];
+					var charsetRec = content.CharacterSetTable[edgeRecord.CharacterSetIndex];
+					var transition = new Transition(target,charsetRec.Characters);
 					source.Transitions.Add(transition);
 				}
 			}
 			return states;
 		}
 
-		private RuleCollection CreateRules(CGTContent content)
+		private List<Rule> CreateRules(CGTContent content)
 		{
-			RuleCollection rules = new RuleCollection();
-			foreach (RuleRecord ruleRecord in content.RuleTable)
+			var rules = new List<Rule>();
+			foreach (var ruleRecord in content.RuleTable)
 			{
-				SymbolNonterminal lhs = symbols[ruleRecord.Nonterminal] as SymbolNonterminal;
+				var lhs = Symbols[ruleRecord.Nonterminal] as SymbolNonterminal;
 				//todo: exception handling?
-				Symbol[] rhs = new Symbol[ruleRecord.Symbols.Count];
-				for (int i = 0; i< rhs.Length; i++)
+				var rhs = new Symbol[ruleRecord.Symbols.Count];
+				for (var i = 0; i< rhs.Length; i++)
 				{
-					rhs[i] = symbols[ruleRecord.Symbols[i]];
+					rhs[i] = Symbols[ruleRecord.Symbols[i]];
 				}
 
-				Rule rule = new Rule(ruleRecord.Index,lhs,rhs);
+				var rule = new Rule(ruleRecord.Index,lhs,rhs);
 				rules.Add(rule);
 			}
 			return rules;
 		}
 
-		private lalr.StateCollection CreateParserStates(CGTContent content)
+		private List<lalr.State> CreateParserStates(CGTContent content)
 		{
-			rules = CreateRules(content);
+			Rules = CreateRules(content);
 
-			lalr.StateCollection states = new lalr.StateCollection();
-			foreach (LALRStateRecord record in content.LALRStateTable)
+			var states = new List<lalr.State>();
+			foreach (var record in content.LALRStateTable)
 			{
-				lalr.State state = new lalr.State(record.Index);
+				var state = new lalr.State(record.Index);
 				states.Add(state);
 			}
 			
-			foreach (LALRStateRecord record in content.LALRStateTable)
+			foreach (var record in content.LALRStateTable)
 			{
-				lalr.State state = states[record.Index];
+				var state = states[record.Index];
 				foreach (ActionSubRecord subRecord in record.ActionSubRecords)
 				{
-					Action action =
+					var action =
 						ActionFactory.CreateAction(subRecord,
 						                           states,
-						                           symbols,
-						                           rules);
-					state.Actions.Add(action);
+						                           Symbols,
+						                           Rules);
+					state.Actions.Add(action.symbol, action);
 				}
 
 			}
 			return states;
 		}
 
-		private Record ReadRecord(CalithaBinReader reader)
+		private Record ReadRecord(BinaryReader reader)
 		{
-			Record record = new Record();
-            byte entriesHeader = reader.ReadByte();
+			var record = new Record();
+            var entriesHeader = reader.ReadByte();
             if (entriesHeader != 77) // 'M'
             {
 				throw new CGTStructureException("Invalid entries header at byte "+(stream.Position-1));
             }
-            ushort entriesCount = reader.ReadUInt16();
-            
-            for (int i=0;i<entriesCount;i++)
-            {
-                record.Entries.Add(ReadEntry(reader));
-            }
-            return record;
+            var entriesCount = reader.ReadUInt16();
+
+			for (var i = 0; i < entriesCount; i++)
+			{
+				record.Entries.Add(ReadEntry(reader));
+			}
+			return record;
 		}
 		
-		private Entry ReadEntry(CalithaBinReader reader)
+		private Entry ReadEntry(BinaryReader reader)
 		{
-			Entry entry = EntryFactory.CreateEntry(reader);
+			var entry = EntryFactory.CreateEntry(reader);
 			if (entry == null)
 				throw new CGTStructureException("Invalid entry type at byte "+(stream.Position-1));
             return entry;
 		}
-		
-		private CGTStructure Structure {get{return structure;}}
-		private CGTContent Content {get{return content;}}
 
 		/// <summary>
 		/// The symbols that are used in the loaded grammar.
 		/// </summary>
-		private SymbolCollection Symbols {get{return symbols;}}
+		private List<Symbol> Symbols { get; set; }
 
 		/// <summary>
 		/// The rules that are used in the loaded grammar.
 		/// </summary>
-		public RuleCollection Rules {get{return rules;}}
-
+		public List<Rule> Rules { get; private set; }
 	}
 }

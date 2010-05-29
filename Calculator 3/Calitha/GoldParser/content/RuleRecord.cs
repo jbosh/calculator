@@ -1,40 +1,33 @@
-using System;
-using Calitha.Common;
-using Calitha.goldparser.structure;
-using Calitha.Common;
-using Calitha.goldparser.structure;
+using System.Collections.Generic;
+using Calitha.GoldParser.structure;
 
-namespace Calitha.goldparser.content
+namespace Calitha.GoldParser.content
 {
 	/// <summary>
 	/// The RuleRecord is a record the defines a rule to reduce tokens.
 	/// </summary>
 	public class RuleRecord
 	{
-		private int index;
-		private int nonterminal;
-		private IntegerList symbols;
-
 		public RuleRecord(Record record)
 		{
 			if (record.Entries.Count < 4)
 				throw new CGTContentException("Invalid number of entries for rule");
-			byte header = record.Entries[0].ToByteValue();
+			var header = record.Entries[0].ToByteValue();
 			if (header != 82) //'R'
 				throw new CGTContentException("Invalid rule header");
-			this.index = record.Entries[1].ToIntValue();
-			this.nonterminal = record.Entries[2].ToIntValue();		
+			Index = record.Entries[1].ToIntValue();
+			Nonterminal = record.Entries[2].ToIntValue();
 			//skip reserved empty entry
-			this.symbols = new IntegerList();
-			for (int i=4;i<record.Entries.Count;i++)
+			Symbols = new List<int>();
+			for (var i = 4; i < record.Entries.Count; i++)
 			{
-				int symbol = record.Entries[i].ToIntValue();
-				symbols.Add(symbol);
+				var symbol = record.Entries[i].ToIntValue();
+				Symbols.Add(symbol);
 			}
 		}
-		
-		public int Index{get{return index;}}
-		public int Nonterminal{get{return nonterminal;}}
-		public IntegerList Symbols{get{return symbols;}}
+
+		public int Index { get; private set; }
+		public int Nonterminal { get; private set; }
+		public List<int> Symbols { get; private set; }
 	}
 }

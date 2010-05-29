@@ -3,16 +3,15 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Windows.Forms;
 using System.Xml;
-using Calculator.Properties;
-using Calculator.Windows;
 using Calculator.Grammar;
+using Calculator.Windows;
 using ICSharpCode.SharpZipLib.Zip;
-using Enumerable=System.Linq.Enumerable;
-using Help = Calculator.Windows.Help;
+using Help=Calculator.Windows.Help;
 
 namespace Calculator
 {
@@ -22,15 +21,16 @@ namespace Calculator
 		Hex = 1,
 		Scientific = 2
 	}
-	internal static partial class Program
+	internal static class Program
 	{
 		private static bool alwaysOnTop;
+		private static bool antialias;
 		private static OutputFormat format;
 		private static Form HelpForm, OptionsForm;
 		private static bool radians;
 		private static int rounding;
 		private static bool thousandsSeperator;
-		private static bool antialias;
+		private static string UpdateFolder;
 		private static List<ICalculator> Window = new List<ICalculator>();
 		public static bool Radians
 		{
@@ -78,7 +78,6 @@ namespace Calculator
 			}
 		}
 		private static Version Version { get; set; }
-		private static string UpdateFolder;
 		public static OutputFormat Format
 		{
 			get { return format; }
@@ -91,7 +90,7 @@ namespace Calculator
 		public static string WorkingDirectory { get; set; }
 		private static void RecalculateWindows(bool global)
 		{
-			foreach (ICalculator form in Window)
+			foreach (var form in Window)
 				form.Recalculate(global);
 		}
 		[STAThread]
@@ -99,21 +98,20 @@ namespace Calculator
 		{
 #if RUN_TESTS
 			var benchWatch = Stopwatch.StartNew();
-			for (int i = 0; i < 100; i++)
+			//for (int i = 0; i < 250; i++)
 				Tests.RunTests();
 			benchWatch.Stop();
 			Console.WriteLine("Tests run in {0}ms.", benchWatch.ElapsedMilliseconds);
-			return;
 #endif
 			LoadSettings();
 
-			for (int i = 0; i < args.Length; i++)
+			for (var i = 0; i < args.Length; i++)
 			{
 				switch (args[i])
 				{
 					case "-c":
 					{
-						var formula = string.Concat(Enumerable.Skip(args, 1));
+						var formula = string.Concat(args.Skip(1));
 						var Memory = new MemoryManager();
 						Memory.SetVariable("G", 6.67428E-11);
 						Memory.SetVariable("g", 9.8);
@@ -130,7 +128,6 @@ namespace Calculator
 				}
 			}
 			{
-				
 				var newVersionPath = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "NewVersion.txt");
 				if (File.Exists(newVersionPath))
 				{
@@ -156,12 +153,12 @@ namespace Calculator
 		private static void LoadSettings()
 		{
 			var path = Path.ChangeExtension(Application.ExecutablePath, ".xml");
-			using(var reader = XmlReader.Create(path))
-				while(reader.Read())
+			using (var reader = XmlReader.Create(path))
+				while (reader.Read())
 				{
-					if(reader.NodeType != XmlNodeType.Element)
+					if (reader.NodeType != XmlNodeType.Element)
 						continue;
-					switch(reader.Name)
+					switch (reader.Name)
 					{
 						case "calculator":
 							Version = new Version(reader.GetAttribute("version"));
@@ -236,28 +233,28 @@ namespace Calculator
 				var response = request.GetResponse();
 				byte[] bytes = null;
 				using (var reader = new BinaryReader(response.GetResponseStream()))
-					bytes = reader.ReadBytes((int)response.ContentLength);
+					bytes = reader.ReadBytes((int) response.ContentLength);
 				var zStream = new ZipInputStream(new MemoryStream(bytes));
-				
+
 				var dir = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
 				Directory.CreateDirectory(dir);
 
 				var entry = zStream.GetNextEntry();
-				while(entry != null)
+				while (entry != null)
 				{
 					var dirPath = Path.GetDirectoryName(entry.Name);
 					var filePath = Path.GetFileName(entry.Name);
 					if (dirPath.Length > 0)
 						Directory.CreateDirectory(Path.Combine(dir, dirPath));
-					if(!string.IsNullOrEmpty(filePath))
+					if (!string.IsNullOrEmpty(filePath))
 					{
-						using(var fs = File.Create(Path.Combine(dir, entry.Name)))
+						using (var fs = File.Create(Path.Combine(dir, entry.Name)))
 						{
 							var buffer = new byte[2048];
-							while(true)
+							while (true)
 							{
 								var i = zStream.Read(buffer, 0, 2048);
-								if(i > 0)
+								if (i > 0)
 									fs.Write(buffer, 0, i);
 								else
 									break;
@@ -268,15 +265,13 @@ namespace Calculator
 				}
 				UpdateFolder = dir;
 			}
-			catch (Exception ex)
-			{
-			}
+			catch (Exception ex) {}
 		}
 		private static void Update()
 		{
 			var dir = Path.GetDirectoryName(Application.ExecutablePath);
 			Process.Start(Path.Combine(dir, "Updater.exe"),
-				string.Format("\"{0}\" \"{1}\"", dir, UpdateFolder));
+			              string.Format("\"{0}\" \"{1}\"", dir, UpdateFolder));
 		}
 		public static Form NewWindow(Form form)
 		{
@@ -286,15 +281,15 @@ namespace Calculator
 			{
 				form.Closing += FormClosing;
 				form.Show();
-				Window.Add((ICalculator)form);
-				((ICalculator)form).Recalculate(false);
+				Window.Add((ICalculator) form);
+				((ICalculator) form).Recalculate(false);
 			}
 			return form;
 		}
 		private static void FormClosing(object sender, CancelEventArgs e)
 		{
 			lock (Window)
-				Window.Remove((ICalculator)sender);
+				Window.Remove((ICalculator) sender);
 		}
 		public static void GlobalKeyDown(KeyEventArgs e)
 		{
@@ -344,14 +339,14 @@ namespace Calculator
 					else
 						return value.ToString();
 				case OutputFormat.Hex:
-					return "0x" + ((int)value).ToString("X");
+					return "0x" + ((int) value).ToString("X");
 				case OutputFormat.Scientific:
 					string scientific;
 					if (Rounding == -1)
 						scientific = value.ToString("E");
 					else
 						scientific = value.ToString("E" + Rounding + "");
-					int index = scientific.IndexOf('E') + 1;
+					var index = scientific.IndexOf('E') + 1;
 					if (scientific[index] == '-')
 						index++;
 					if (scientific[index] == '+')

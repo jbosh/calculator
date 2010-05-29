@@ -1,37 +1,32 @@
-using System;
-using Calitha.goldparser.structure;
-using Calitha.goldparser.structure;
+using Calitha.GoldParser.structure;
 
-namespace Calitha.goldparser.content
+namespace Calitha.GoldParser.content
 {
 	/// <summary>
 	/// The DFAStateRecord is a record that defines a DFA state.
 	/// </summary>
 	public class DFAStateRecord
 	{
-		private int index;
-		private bool acceptState;
-		private int acceptIndex;
-		private EdgeSubRecordCollection edgeSubRecords;
-
 		public DFAStateRecord(Record record)
 		{
 			if (record.Entries.Count < 5)
 				throw new CGTContentException("Invalid number of entries for DFA state");
-			byte header = record.Entries[0].ToByteValue();
+			var header = record.Entries[0].ToByteValue();
 			if (header != 68) //'D'
 				throw new CGTContentException("Invalid DFA state header");
-			this.index = record.Entries[1].ToIntValue();
-			this.acceptState = record.Entries[2].ToBoolValue();
-			this.acceptIndex = record.Entries[3].ToIntValue();
+			Index = record.Entries[1].ToIntValue();
+			AcceptState = record.Entries[2].ToBoolValue();
+			AcceptIndex = record.Entries[3].ToIntValue();
 			//skip empty reserved entry
-			edgeSubRecords = new EdgeSubRecordCollection(record,5);
+			EdgeSubRecords = new EdgeSubRecordCollection(record, 5);
 		}
 
-		public int Index{get{return index;}}
-		public bool AcceptState{get{return acceptState;}}
-		public int AcceptIndex{get{return acceptIndex;}}
-		public EdgeSubRecordCollection EdgeSubRecords{get{return edgeSubRecords;}}
+		public int Index { get; private set; }
+
+		public bool AcceptState { get; private set; }
+
+		public int AcceptIndex { get; private set; }
+
+		public EdgeSubRecordCollection EdgeSubRecords { get; private set; }
 	}
-	
 }

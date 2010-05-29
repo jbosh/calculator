@@ -1,12 +1,8 @@
-using System;
 using System.Collections;
-using Calitha.goldparser.structure;
-using Calitha.goldparser.content;
-using Calitha.goldparser.structure;
+using Calitha.GoldParser.structure;
 
-namespace Calitha.goldparser.content
+namespace Calitha.GoldParser.content
 {
-
 	/// <summary>
 	/// ActionSubRecordCollection contains parts a record that define the actions in a LALR state.
 	/// </summary>
@@ -17,13 +13,13 @@ namespace Calitha.goldparser.content
 		public ActionSubRecordCollection(Record record, int start)
 		{
 			list = new ArrayList();
-			if ((record.Entries.Count-start) % 4 != 0)
+			if ((record.Entries.Count - start) % 4 != 0)
 				throw new CGTContentException("Invalid number of entries for actions in LALR state");
-			for (int i=start;i<record.Entries.Count;i=i+4)
+			for (var i = start; i < record.Entries.Count; i = i + 4)
 			{
-				ActionSubRecord actionRecord = new ActionSubRecord(record.Entries[i],
-																   record.Entries[i+1],
-																   record.Entries[i+2]);
+				var actionRecord = new ActionSubRecord(record.Entries[i],
+				                                       record.Entries[i + 1],
+				                                       record.Entries[i + 2]);
 				list.Add(actionRecord);
 			}
 		}
@@ -32,7 +28,6 @@ namespace Calitha.goldparser.content
 		{
 			return list.GetEnumerator();
 		}
-
 	}
 
 	/// <summary>
@@ -42,16 +37,15 @@ namespace Calitha.goldparser.content
 	{
 		public ActionSubRecord(Entry symbolEntry, Entry actionEntry, Entry targetEntry)
 		{
-			this.symbolIndex = symbolEntry.ToIntValue();
-			this.action = actionEntry.ToIntValue();
-			this.target = targetEntry.ToIntValue();
+			SymbolIndex = symbolEntry.ToIntValue();
+			Action = actionEntry.ToIntValue();
+			Target = targetEntry.ToIntValue();
 		}
 
-		protected int symbolIndex;
-		protected int action;
-		protected int target;
-		public int SymbolIndex{get{return symbolIndex;}}
-		public int Action{get{return action;}}
-		public int Target{get{return target;}}
+		public int SymbolIndex { get; protected set; }
+
+		public int Action { get; protected set; }
+
+		public int Target { get; protected set; }
 	}
 }

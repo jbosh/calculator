@@ -1,17 +1,11 @@
-using System;
-using System.Collections;
-
-namespace Calitha.goldparser.lalr
+namespace Calitha.GoldParser.lalr
 {
-
 	/// <summary>
 	/// ReduceAction is an action that tells the LALR parser to reduce tokens according
 	/// to a rule.
 	/// </summary>
-	public class ReduceAction  : Action
+	public class ReduceAction : Action
 	{
-		private Rule rule;
-
 		/// <summary>
 		/// Creates a new ReduceAction.
 		/// </summary>
@@ -21,17 +15,20 @@ namespace Calitha.goldparser.lalr
 		public ReduceAction(SymbolTerminal symbol, Rule rule)
 		{
 			this.symbol = symbol;
-			this.rule = rule;
+			this.Rule = rule;
 		}
 
 		/// <summary>
 		/// the criteria of this action to be done.
 		/// </summary>
-		public SymbolTerminal Symbol {get{return (SymbolTerminal)symbol;}}
+		public SymbolTerminal Symbol
+		{
+			get { return (SymbolTerminal) symbol; }
+		}
 
 		/// <summary>
 		/// The rule to reduce the tokens.
 		/// </summary>
-		public Rule Rule {get{return rule;}}
+		public Rule Rule { get; private set; }
 	}
 }

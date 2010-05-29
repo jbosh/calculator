@@ -1,30 +1,21 @@
 using System;
 using System.Runtime.Serialization;
 
-namespace Calitha.goldparser
+namespace Calitha.GoldParser
 {
-
 	/// <summary>
 	/// ParserException is throws when an unexpected situation occurs while parsing.
 	/// For example if the LALR parser is in a state where no actions can be taken.
 	/// </summary>
-	[Serializable()]
-	public class ParserException : System.ApplicationException
+	[Serializable]
+	public class ParserException : ApplicationException
 	{
-		public ParserException(string message) : base(message)
-		{
-		}
+		public ParserException(string message) : base(message) {}
 
 		public ParserException(string message,
-			                   Exception inner) : base(message, inner)
-		{
-		}
+		                       Exception inner) : base(message, inner) {}
 
 		protected ParserException(SerializationInfo info,
-			                      StreamingContext context) : base(info, context)
-		{
-		}
-
+		                          StreamingContext context) : base(info, context) {}
 	}
-
 }

@@ -1,16 +1,10 @@
-using System;
-
-namespace Calitha.goldparser
+namespace Calitha.GoldParser
 {
 	/// <summary>
 	/// The Location defines positional information of the input that is being parsed.
 	/// </summary>
 	public class Location
 	{
-		private int position;
-		private int lineNr;
-		private int columnNr;
-
 		/// <summary>
 		/// Creates a new Location object.
 		/// </summary>
@@ -19,7 +13,7 @@ namespace Calitha.goldparser
 		/// <param name="columnNr">Zero based column number.</param>
 		public Location(int position, int lineNr, int columnNr)
 		{
-			Init(position,lineNr,columnNr);
+			Init(position, lineNr, columnNr);
 		}
 
 		/// <summary>
@@ -28,14 +22,14 @@ namespace Calitha.goldparser
 		/// <param name="location">Positional information will be copied from this object.</param>
 		public Location(Location location)
 		{
-			Init(location.position,location.lineNr,location.columnNr);
+			Init(location.Position, location.LineNr, location.ColumnNr);
 		}
 
 		private void Init(int position, int lineNr, int columnNr)
 		{
-			this.position = position;
-			this.lineNr = lineNr;
-			this.columnNr = columnNr;
+			this.Position = position;
+			this.LineNr = lineNr;
+			this.ColumnNr = columnNr;
 		}
 
 		public Location Clone()
@@ -50,7 +44,7 @@ namespace Calitha.goldparser
 		/// <returns>The output string.</returns>
 		public override string ToString()
 		{
-			return "(pos: "+(position+0)+", ln: "+(lineNr+1)+", col: "+(columnNr+1)+")"; 
+			return "(pos: " + (Position + 0) + ", ln: " + (LineNr + 1) + ", col: " + (ColumnNr + 1) + ")";
 		}
 
 		/// <summary>
@@ -58,9 +52,9 @@ namespace Calitha.goldparser
 		/// </summary>
 		public void NextLine()
 		{
-			position++;
-			lineNr++;
-			columnNr = 0;
+			Position++;
+			LineNr++;
+			ColumnNr = 0;
 		}
 
 		/// <summary>
@@ -68,33 +62,23 @@ namespace Calitha.goldparser
 		/// </summary>
 		public void NextColumn()
 		{
-			position++;
-			columnNr++;
+			Position++;
+			ColumnNr++;
 		}
 
 		/// <summary>
 		/// The zero-based position.
 		/// </summary>
-		public int Position
-		{
-			get{return position;}
-		}
+		public int Position { get; private set; }
 
 		/// <summary>
 		/// The zero-based line number.
 		/// </summary>
-		public int LineNr
-		{
-			get{return lineNr;}
-		}
+		public int LineNr { get; private set; }
 
 		/// <summary>
 		/// The zero-based column number.
 		/// </summary>
-		public int ColumnNr
-		{
-			get{return columnNr;}
-		}
+		public int ColumnNr { get; private set; }
 	}
-
 }

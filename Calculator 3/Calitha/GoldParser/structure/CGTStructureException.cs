@@ -1,29 +1,22 @@
 using System;
+using System.IO;
 using System.Runtime.Serialization;
 
-namespace Calitha.goldparser.structure
+namespace Calitha.GoldParser.structure
 {
 	/// <summary>
 	/// This exception will be thrown when something is wrong in the cgt structure.
 	/// For example if the entry type is unknown.
 	/// </summary>
-	[Serializable()]
-	public class CGTStructureException : System.IO.IOException
+	[Serializable]
+	public class CGTStructureException : IOException
 	{
-		public CGTStructureException(string message) : base(message)
-		{
-		}
+		public CGTStructureException(string message) : base(message) {}
 
 		public CGTStructureException(string message,
-			Exception inner) : base(message, inner)
-		{
-		}
+		                             Exception inner) : base(message, inner) {}
 
 		protected CGTStructureException(SerializationInfo info,
-			StreamingContext context) : base(info, context)
-		{
-		}
-
+		                                StreamingContext context) : base(info, context) {}
 	}
-
 }

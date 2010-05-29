@@ -1,39 +1,30 @@
 using System;
-using Calitha.goldparser.lalr;
-using Calitha.goldparser.lalr;
+using System.Collections.Generic;
+using Calitha.GoldParser.lalr;
 
-namespace Calitha.goldparser
+namespace Calitha.GoldParser
 {
-
 	/// <summary>
 	/// Event arguments for the TokenRead event.
 	/// </summary>
 	public class TokenReadEventArgs : EventArgs
 	{
-		private TerminalToken token;
-		private bool contin;
-
 		public TokenReadEventArgs(TerminalToken token)
 		{
-			this.token = token;
-			contin = true;
+			this.Token = token;
+			Continue = true;
 		}
 
 		/// <summary>
 		/// The terminal token that will be processed by the LALR parser.
 		/// </summary>
-		public TerminalToken Token {get{return token;}}
+		public TerminalToken Token { get; private set; }
 
 		/// <summary>
 		/// Determines if the parse process should continue
 		/// after this event. True by default.
 		/// </summary>
-		public bool Continue
-		{
-			get {return contin;} 
-			set {contin = value;}
-		}
-
+		public bool Continue { get; set; }
 	}
 
 	/// <summary>
@@ -41,24 +32,21 @@ namespace Calitha.goldparser
 	/// </summary>
 	public class ShiftEventArgs : EventArgs
 	{
-		private TerminalToken token;
-		private State newState;
-
 		public ShiftEventArgs(TerminalToken token, State newState)
 		{
-			this.token = token;
-			this.newState = newState;
+			this.Token = token;
+			this.NewState = newState;
 		}
 
 		/// <summary>
 		/// The terminal token that is shifted onto the stack.
 		/// </summary>
-		public TerminalToken Token{get{return token;}}
+		public TerminalToken Token { get; private set; }
 
 		/// <summary>
 		/// The state that the parser is in after the shift.
 		/// </summary>
-		public State NewState{get{return newState;}}
+		public State NewState { get; private set; }
 	}
 
 	/// <summary>
@@ -66,44 +54,35 @@ namespace Calitha.goldparser
 	/// </summary>
 	public class ReduceEventArgs : EventArgs
 	{
-		private Rule rule;
-		private NonterminalToken token;
-		private State newState;
-		private bool contin;
-
 		public ReduceEventArgs(Rule rule, NonterminalToken token, State newState)
 		{
-			this.rule = rule;
-			this.token = token;
-			this.newState = newState;
-			this.contin = true;
+			this.Rule = rule;
+			this.Token = token;
+			this.NewState = newState;
+			Continue = true;
 		}
 
 		/// <summary>
 		/// The rule that was used to reduce tokens.
 		/// </summary>
-		public Rule Rule{get{return rule;}}
+		public Rule Rule { get; private set; }
 
 		/// <summary>
 		/// The nonterminal token that consists of nonterminal or terminal
 		/// tokens that has been reduced by the rule.
 		/// </summary>
-		public NonterminalToken Token{get{return token;}}
+		public NonterminalToken Token { get; private set; }
 
 		/// <summary>
 		/// The state after the reduction.
 		/// </summary>
-		public State NewState{get{return newState;}}
+		public State NewState { get; private set; }
 
 		/// <summary>
 		/// Determines if the parse process should continue
 		/// after this event. True by default.
 		/// </summary>
-		public bool Continue
-		{
-			get {return contin;} 
-			set {contin = value;}
-		}
+		public bool Continue { get; set; }
 	}
 
 	/// <summary>
@@ -111,24 +90,21 @@ namespace Calitha.goldparser
 	/// </summary>
 	public class GotoEventArgs : EventArgs
 	{
-		private SymbolNonterminal symbol;
-		private State newState;
-
 		public GotoEventArgs(SymbolNonterminal symbol, State newState)
 		{
-			this.symbol = symbol;
-			this.newState = newState;
+			this.Symbol = symbol;
+			this.NewState = newState;
 		}
 
 		/// <summary>
 		/// The symbol that causes the goto event.
 		/// </summary>
-		public SymbolNonterminal Symbol{get{return symbol;}}
+		public SymbolNonterminal Symbol { get; private set; }
 
 		/// <summary>
 		/// The state after the goto event.
 		/// </summary>
-		public State NewState{get{return newState;}}
+		public State NewState { get; private set; }
 	}
 
 	/// <summary>
@@ -136,18 +112,16 @@ namespace Calitha.goldparser
 	/// </summary>
 	public class AcceptEventArgs : EventArgs
 	{
-		private NonterminalToken token;
-
 		public AcceptEventArgs(NonterminalToken token)
 		{
-			this.token = token;
+			this.Token = token;
 		}
 
 		/// <summary>
 		/// The fully reduced nonterminal token that consists of
 		/// all the other reduced tokens.
 		/// </summary>
-		public NonterminalToken Token{get{return token;}}
+		public NonterminalToken Token { get; private set; }
 	}
 
 	/// <summary>
@@ -155,34 +129,32 @@ namespace Calitha.goldparser
 	/// </summary>
 	public class TokenErrorEventArgs : EventArgs
 	{
-		private TerminalToken token;
-		private bool contin;
-
 		public TokenErrorEventArgs(TerminalToken token)
 		{
-			this.token = token;
-			this.contin = false;
+			this.Token = token;
+			Continue = false;
 		}
 
 		/// <summary>
 		/// The error token that also consists of the character that causes the
 		/// token read error.
 		/// </summary>
-		public TerminalToken Token {get{return token;}}
+		public TerminalToken Token { get; private set; }
 
 		/// <summary>
 		/// The continue property can be set during the token error event,
 		/// to continue the parsing process. The current token will be ignored.
 		/// Default value is false.
 		/// </summary>
-		public bool Continue
-		{
-			get{return contin;}
-			set{this.contin = value;}
-		}
+		public bool Continue { get; set; }
 	}
 
-    public enum ContinueMode {Stop, Insert, Skip}
+	public enum ContinueMode
+	{
+		Stop,
+		Insert,
+		Skip
+	}
 
 
 	/// <summary>
@@ -190,29 +162,24 @@ namespace Calitha.goldparser
 	/// </summary>
 	public class ParseErrorEventArgs : EventArgs
 	{
-		private TerminalToken unexpectedToken;
-		private SymbolCollection expectedTokens;
-		private ContinueMode contin;
-		private TerminalToken nextToken;
-
 		public ParseErrorEventArgs(TerminalToken unexpectedToken,
-			                       SymbolCollection expectedTokens)
+		                           List<Symbol> expectedTokens)
 		{
-			this.unexpectedToken = unexpectedToken;
-			this.expectedTokens = expectedTokens;
-			this.contin = ContinueMode.Stop;
-			this.nextToken = null;
+			UnexpectedToken = unexpectedToken;
+			ExpectedTokens = expectedTokens;
+			Continue = ContinueMode.Stop;
+			NextToken = null;
 		}
 
 		/// <summary>
 		/// The token that caused this parser error.
 		/// </summary>
-		public TerminalToken UnexpectedToken { get{return unexpectedToken;}}
+		public TerminalToken UnexpectedToken { get; private set; }
 
 		/// <summary>
 		/// The symbols that were expected by the parser.
 		/// </summary>
-		public SymbolCollection ExpectedTokens{get{return expectedTokens;}}
+		public List<Symbol> ExpectedTokens { get; private set; }
 
 		/// <summary>
 		/// The continue property can be set during the parse error event.
@@ -224,11 +191,7 @@ namespace Calitha.goldparser
 		///     the input as if nothing happened.
 		/// The default value is Stop.
 		/// </summary>
-		public ContinueMode Continue
-		{
-			get{return contin;}
-			set{this.contin = value;}
-		}
+		public ContinueMode Continue { get; set; }
 
 		/// <summary>
 		/// If the continue property is set to true, then NextToken will be the
@@ -237,12 +200,7 @@ namespace Calitha.goldparser
 		/// normal input stream.
 		/// stream.
 		/// </summary>
-		public TerminalToken NextToken
-		{
-			get{return nextToken;}
-			set{this.nextToken = value;}
-		}
-
+		public TerminalToken NextToken { get; set; }
 	}
 
 	/// <summary>
@@ -250,42 +208,35 @@ namespace Calitha.goldparser
 	/// </summary>
 	public class CommentReadEventArgs : EventArgs
 	{
-		private string comment;
-		private string content;
-		private bool lineComment;
-
-        /// <summary>
-        /// Creates a new arguments object for a CommentRead event.
-        /// </summary>
-        /// <param name="comment">The comment including comment characters</param>
-        /// <param name="content">The content of the comment</param>
-        /// <param name="lineComment">True for a line comment, otherwise a 
-        ///                           block comment.</param>
+		/// <summary>
+		/// Creates a new arguments object for a CommentRead event.
+		/// </summary>
+		/// <param name="comment">The comment including comment characters</param>
+		/// <param name="content">The content of the comment</param>
+		/// <param name="lineComment">True for a line comment, otherwise a 
+		///                           block comment.</param>
 		public CommentReadEventArgs(string comment,
-			                        string content,
-			                        bool lineComment)
+		                            string content,
+		                            bool lineComment)
 		{
-			this.comment = comment;
-			this.content = content;
-			this.lineComment = lineComment;
+			Comment = comment;
+			Content = content;
+			LineComment = lineComment;
 		}
 
 		/// <summary>
 		/// The comment that has been read, including comment characters.
 		/// </summary>
-		public string Comment{get{return comment;}}
+		public string Comment { get; private set; }
 
 		/// <summary>
 		/// The content of the comment.
 		/// </summary>
-		public string Content{get{return content;}}
+		public string Content { get; private set; }
 
 		/// <summary>
 		/// Determines if it is a line or block comment.
 		/// </summary>
-		public bool LineComment{get{return lineComment;}}
-	
+		public bool LineComment { get; private set; }
 	}
-
-
 }

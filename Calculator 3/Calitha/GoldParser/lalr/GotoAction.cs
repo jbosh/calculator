@@ -1,17 +1,11 @@
-using System;
-using System.Collections;
-
-namespace Calitha.goldparser.lalr
+namespace Calitha.GoldParser.lalr
 {
-
 	/// <summary>
 	/// A GotoAction is an action that tells the LALR parser to go to a new state.
 	/// A goto action happens after a reduction.
 	/// </summary>
-	public class GotoAction	: Action
+	public class GotoAction : Action
 	{
-		private State state;
-
 		/// <summary>
 		/// Creates a new goto action. 
 		/// </summary>
@@ -21,17 +15,20 @@ namespace Calitha.goldparser.lalr
 		public GotoAction(SymbolNonterminal symbol, State state)
 		{
 			this.symbol = symbol;
-			this.state = state;
+			this.State = state;
 		}
 
 		/// <summary>
 		/// The symbol that is the criteria for the action to be done.
 		/// </summary>
-		public SymbolNonterminal Symbol {get{return (SymbolNonterminal)symbol;}}
+		public SymbolNonterminal Symbol
+		{
+			get { return (SymbolNonterminal) symbol; }
+		}
 
 		/// <summary>
 		/// The new current state for the LALR parser.
 		/// </summary>
-		public State State {get{return state;}}
+		public State State { get; private set; }
 	}
 }

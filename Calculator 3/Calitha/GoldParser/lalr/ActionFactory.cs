@@ -1,18 +1,13 @@
-using System;
-using Calitha.goldparser.content;
-using Calitha.goldparser.content;
+using System.Collections.Generic;
+using Calitha.GoldParser.content;
 
-namespace Calitha.goldparser.lalr
+namespace Calitha.GoldParser.lalr
 {
 	/// <summary>
 	/// Factory class for creating Action objects..
 	/// </summary>
-	public sealed class ActionFactory
+	public static class ActionFactory
 	{
-		private ActionFactory()
-		{
-		}
-
 		/// <summary>
 		/// Creates a new action by specifying the needed information.
 		/// </summary>
@@ -22,57 +17,59 @@ namespace Calitha.goldparser.lalr
 		/// <param name="rules">The rules.</param>
 		/// <returns>A new action object.</returns>
 		public static Action CreateAction(ActionSubRecord record,
-			                              StateCollection states,
-			                              SymbolCollection symbols,
-			                              RuleCollection rules)
+										  List<State> states,
+		                                  List<Symbol> symbols,
+										  List<Rule> rules)
 		{
-			Action action;
 			switch (record.Action)
 			{
-				case 1: action = CreateShiftAction(record,symbols,states); break;
-				case 2: action = CreateReduceAction(record,symbols,rules); break;
-				case 3: action = CreateGotoAction(record,symbols,states); break;
-				case 4: action = CreateAcceptAction(record,symbols); break;
-				default: return null; //todo: make exception
+				case 1:
+					return CreateShiftAction(record, symbols, states);
+				case 2:
+					return CreateReduceAction(record, symbols, rules);
+				case 3:
+					return CreateGotoAction(record, symbols, states);
+				case 4:
+					return CreateAcceptAction(record, symbols);
+				default:
+					return null; //todo: make exception
 			}
-			return action;
 		}
 
 		private static ShiftAction CreateShiftAction(ActionSubRecord record,
-													 SymbolCollection symbols,
-			                                         StateCollection states
-			                                         )
+		                                             IList<Symbol> symbols,
+													 IList<State> states
+			)
 		{
-			State state = states[record.Target];
-			SymbolTerminal symbol = symbols[record.SymbolIndex] as SymbolTerminal;
+			var state = states[record.Target];
+			var symbol = symbols[record.SymbolIndex] as SymbolTerminal;
 			//todo: exception symbol type
-			return new ShiftAction(symbol,state);
+			return new ShiftAction(symbol, state);
 		}
 
 		private static ReduceAction CreateReduceAction(ActionSubRecord record,
-			                                           SymbolCollection symbols,
-			                                           RuleCollection rules)
+		                                               IList<Symbol> symbols,
+													   IList<Rule> rules)
 		{
-			SymbolTerminal symbol = symbols[record.SymbolIndex] as SymbolTerminal;
-			Rule rule = rules[record.Target];
-			return new ReduceAction(symbol,rule);
+			var symbol = symbols[record.SymbolIndex] as SymbolTerminal;
+			var rule = rules[record.Target];
+			return new ReduceAction(symbol, rule);
 		}
 
 		private static GotoAction CreateGotoAction(ActionSubRecord record,
-			                                       SymbolCollection symbols,
-			                                       StateCollection states)
+		                                           IList<Symbol> symbols,
+												   IList<State> states)
 		{
-			SymbolNonterminal symbol = symbols[record.SymbolIndex] as SymbolNonterminal;
-			State state = states[record.Target];
-			return new GotoAction(symbol,state);
+			var symbol = symbols[record.SymbolIndex] as SymbolNonterminal;
+			var state = states[record.Target];
+			return new GotoAction(symbol, state);
 		}
 
 		private static AcceptAction CreateAcceptAction(ActionSubRecord record,
-			                                           SymbolCollection symbols)
+		                                               IList<Symbol> symbols)
 		{
-			SymbolTerminal symbol = symbols[record.SymbolIndex] as SymbolTerminal;
+			var symbol = symbols[record.SymbolIndex] as SymbolTerminal;
 			return new AcceptAction(symbol);
 		}
-
 	}
 }

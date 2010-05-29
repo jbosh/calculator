@@ -1,96 +1,84 @@
 using System;
 using System.Diagnostics;
-using System.Text;
-using System.Collections;
-using Calitha.Common;
 using Calitha.Common;
 
-namespace Calitha.goldparser
+namespace Calitha.GoldParser
 {
 	/// <summary>
 	/// Abstract symbol implementation.
 	/// </summary>
 	public abstract class Symbol
 	{
-		private int id;
-		private string name;
+		public static SymbolEnd EOF = new SymbolEnd(0);
+		public static SymbolError ERROR = new SymbolError(1);
 
 		protected Symbol(int id, string name)
 		{
-			this.id = id;
-			this.name = name;
+			Id = id;
+			Name = name;
 		}
 
 		public override bool Equals(Object obj)
 		{
-			TripleState result = Util.EqualsNoState(this, obj);
-			if (result == TripleState.TRUE)
+			var result = Util.EqualsNoState(this, obj);
+			if (result == TripleState.True)
 				return true;
-			if (result == TripleState.FALSE)
+			if (result == TripleState.False)
 				return false;
-			else
-			{
-				Symbol other = (Symbol)obj;
-				return (this.id == other.id);
-			}
+			var other = (Symbol) obj;
+			return (Id == other.Id);
 		}
 
 		public override int GetHashCode()
 		{
-			return id;
-		}
-		
-		public override String ToString()
-		{
-			return name;
+			return Id;
 		}
 
-		public int Id {[DebuggerStepThrough]get {return id;}}
-		public string Name {get {return name;}}
+		public override String ToString()
+		{
+			return Name;
+		}
+
+		public int Id { get; private set; }
+
+		public string Name { get; private set; }
 	}
-	
+
 	/// <summary>
 	/// SymbolNonterminal is for symbols that are not directly linked to one token.
 	/// </summary>
 	public class SymbolNonterminal : Symbol
 	{
-		public SymbolNonterminal(int id, string name) : base(id,name)
-		{
-		}
+		public SymbolNonterminal(int id, string name) : base(id, name) {}
 
-		public override String ToString()
+		public override string ToString()
 		{
-			return "<"+base.ToString()+">";
+			return "<" + base.ToString() + ">";
 		}
 	}
-	
+
 	/// <summary>
 	/// SymbolTerminal is a symbol that is linked to a token.
 	/// </summary>
 	public class SymbolTerminal : Symbol
 	{
-		public SymbolTerminal(int id, string name) : base(id,name)
-		{
-		}
+		public SymbolTerminal(int id, string name) : base(id, name) {}
 	}
-	
+
 	/// <summary>
 	/// SymbolWhiteSpace is the symbol of white-space tokens.
 	/// </summary>
 	public class SymbolWhiteSpace : SymbolTerminal
 	{
-		public SymbolWhiteSpace(int id) : base(id,"(Whitespace)")
-		{
-		}
+		public SymbolWhiteSpace(int id) : base(id, "(Whitespace)") {}
 	}
-	
+
 	/// <summary>
 	/// SymbolEnd is the symbol for the end-of-file token.
 	/// </summary>
 	public class SymbolEnd : SymbolTerminal
 	{
-		public SymbolEnd(int id) : base(id,"(EOF)")
-		{}
+		public SymbolEnd(int id) : base(id, "(EOF)") {}
 	}
 
 	/// <summary>
@@ -98,8 +86,7 @@ namespace Calitha.goldparser
 	/// </summary>
 	public class SymbolCommentStart : SymbolTerminal
 	{
-		public SymbolCommentStart(int id) : base(id,"(Comment Start)")
-		{}
+		public SymbolCommentStart(int id) : base(id, "(Comment Start)") {}
 	}
 
 	/// <summary>
@@ -107,8 +94,7 @@ namespace Calitha.goldparser
 	/// </summary>
 	public class SymbolCommentEnd : SymbolTerminal
 	{
-		public SymbolCommentEnd(int id) : base(id,"(Comment End)")
-		{}
+		public SymbolCommentEnd(int id) : base(id, "(Comment End)") {}
 	}
 
 	/// <summary>
@@ -116,8 +102,7 @@ namespace Calitha.goldparser
 	/// </summary>
 	public class SymbolCommentLine : SymbolTerminal
 	{
-		public SymbolCommentLine(int id) : base(id,"(Comment Line)")
-		{}
+		public SymbolCommentLine(int id) : base(id, "(Comment Line)") {}
 	}
 
 	/// <summary>
@@ -125,61 +110,6 @@ namespace Calitha.goldparser
 	/// </summary>
 	public class SymbolError : SymbolTerminal
 	{
-		public SymbolError(int id) : base(id,"(ERROR)")
-		{
-		}
+		public SymbolError(int id) : base(id, "(ERROR)") {}
 	}
-
-	/// <summary>
-	/// Type-safe list for Symbol objects.
-	/// The class contains constant symbol objects for the pre-defined terminal symbols.
-	/// </summary>
-	public class SymbolCollection : IEnumerable
-	{
-		static public SymbolEnd EOF = new SymbolEnd(0);
-		static public SymbolError ERROR = new SymbolError(1);
-
-		protected IList list;
-	
-		public SymbolCollection()
-		{
-			list = new ArrayList();
-		}
-	
-		public IEnumerator GetEnumerator()
-		{
-			return list.GetEnumerator();
-		}
-
-		public void Add(Symbol symbol)
-		{
-			list.Add(symbol);
-		}	
-
-		public Symbol Get(int index)
-		{
-			return list[index] as Symbol;
-		}
-
-		public override string ToString()
-		{
-			StringBuilder str = new StringBuilder();
-			foreach(Symbol symbol in this)
-			{
-				str.Append(symbol.ToString());
-				str.Append(" ");
-			}
-			if (str.Length > 0)
-				str.Remove(str.Length-1,1);
-			return str.ToString();
-		}
-
-
-		public Symbol this[int index]
-		{
-			get {return Get(index);}
-		}
-
-	}
-
 }

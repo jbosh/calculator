@@ -1,46 +1,31 @@
-using System;
-using Calitha.Common;
-using Calitha.Common;
-using Calitha.goldparser.structure;
+using System.IO;
 
-namespace Calitha.goldparser.structure
+namespace Calitha.GoldParser.structure
 {
 	/// <summary>
 	/// The EntryFactory can create the correct Entry object by looking at the
 	/// entry type byte.
 	/// </summary>
-	public sealed class EntryFactory
+	public static class EntryFactory
 	{
-		private EntryFactory()
+		public static Entry CreateEntry(BinaryReader reader)
 		{
-		}
-
-		static public Entry CreateEntry(CalithaBinReader reader)
-		{
-			Entry entry = null;
-			byte entryType = reader.ReadByte();
+			var entryType = reader.ReadByte();
 			switch (entryType)
 			{
 				case 69: // 'E'
-					entry =  new EmptyEntry();
-					break;
+					return new EmptyEntry();
 				case 98: // 'b'
-					entry = new ByteEntry(reader);
-					break;
+					return new ByteEntry(reader);
 				case 66: // 'B'
-					entry = new BooleanEntry(reader);
-					break;
+					return new BooleanEntry(reader);
 				case 73: // 'I'
-					entry =  new IntegerEntry(reader);
-					break;
+					return new IntegerEntry(reader);
 				case 83: // 'S'
-					entry = new StringEntry(reader);
-					break;
+					return new StringEntry(reader);
 				default: //Unknown
 					throw new CGTStructureException("Unknown entry type");
 			}
-			return entry;
 		}
-
 	}
 }

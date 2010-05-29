@@ -1,14 +1,10 @@
-using System;
-using System.Collections;
-
-namespace Calitha.goldparser.lalr
+namespace Calitha.GoldParser.lalr
 {
-
 	/// <summary>
 	/// An AcceptAction is an action in a LALR state which means that the input for the
 	/// LALR parser is tokenized, parsed and accepted .
 	/// </summary>
-	public class AcceptAction  : Action
+	public class AcceptAction : Action
 	{
 		/// <summary>
 		/// Creates a new accept action.
@@ -22,7 +18,9 @@ namespace Calitha.goldparser.lalr
 		/// <summary>
 		/// The symbol that a token must be for it to be accepted.
 		/// </summary>
-		public SymbolTerminal Symbol{get{return (SymbolTerminal)symbol;}}
-
+		public SymbolTerminal Symbol
+		{
+			get { return (SymbolTerminal) symbol; }
+		}
 	}
 }
