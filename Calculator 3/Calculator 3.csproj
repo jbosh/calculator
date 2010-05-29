@@ -6,7 +6,7 @@
     <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{4AECED1F-409F-46C4-B158-7F538154EAA6}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Calculator</RootNamespace>
     <AssemblyName>Calculator</AssemblyName>
@@ -48,19 +48,11 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>TRACE;RUN_TESTS</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Antlr3.Runtime, Version=3.1.3.42154, Culture=neutral, PublicKeyToken=3a9cab8f8d22bfb7, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Antlr\Antlr3.Runtime.dll</HintPath>
-    </Reference>
-    <Reference Include="Antlr3.Utility, Version=0.1.0.42154, Culture=neutral, PublicKeyToken=3a9cab8f8d22bfb7, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Antlr\Antlr3.Utility.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -78,9 +70,61 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Calitha\Common\AbstractSet.cs" />
+    <Compile Include="Calitha\Common\ArraySet.cs" />
+    <Compile Include="Calitha\Common\BinaryReader.cs" />
+    <Compile Include="Calitha\Common\FileUtil.cs" />
+    <Compile Include="Calitha\Common\HashSet.cs" />
+    <Compile Include="Calitha\Common\IntegerList.cs" />
+    <Compile Include="Calitha\Common\ISet.cs" />
+    <Compile Include="Calitha\Common\ResourceUtil.cs" />
+    <Compile Include="Calitha\Common\StringUtil.cs" />
+    <Compile Include="Calitha\Common\Util.cs" />
+    <Compile Include="Calitha\GoldParser\content\ActionSubRecord.cs" />
+    <Compile Include="Calitha\GoldParser\content\CGTContent.cs" />
+    <Compile Include="Calitha\GoldParser\content\CGTContentException.cs" />
+    <Compile Include="Calitha\GoldParser\content\CharacterSetRecord.cs" />
+    <Compile Include="Calitha\GoldParser\content\CharacterSetTable.cs" />
+    <Compile Include="Calitha\GoldParser\content\DFAStateRecord.cs" />
+    <Compile Include="Calitha\GoldParser\content\DFAStateTable.cs" />
+    <Compile Include="Calitha\GoldParser\content\EdgeSubRecord.cs" />
+    <Compile Include="Calitha\GoldParser\content\InitialStatesRecord.cs" />
+    <Compile Include="Calitha\GoldParser\content\LALRStateRecord.cs" />
+    <Compile Include="Calitha\GoldParser\content\LALRStateTable.cs" />
+    <Compile Include="Calitha\GoldParser\content\Parameters.cs" />
+    <Compile Include="Calitha\GoldParser\content\RuleRecord.cs" />
+    <Compile Include="Calitha\GoldParser\content\RuleTable.cs" />
+    <Compile Include="Calitha\GoldParser\content\SymbolRecord.cs" />
+    <Compile Include="Calitha\GoldParser\content\SymbolTable.cs" />
+    <Compile Include="Calitha\GoldParser\content\TableCounts.cs" />
+    <Compile Include="Calitha\GoldParser\dfa\DFA.cs" />
+    <Compile Include="Calitha\GoldParser\dfa\State.cs" />
+    <Compile Include="Calitha\GoldParser\dfa\Transition.cs" />
+    <Compile Include="Calitha\GoldParser\LALRParser.cs" />
+    <Compile Include="Calitha\GoldParser\lalr\AcceptAction.cs" />
+    <Compile Include="Calitha\GoldParser\lalr\Action.cs" />
+    <Compile Include="Calitha\GoldParser\lalr\ActionFactory.cs" />
+    <Compile Include="Calitha\GoldParser\lalr\GotoAction.cs" />
+    <Compile Include="Calitha\GoldParser\lalr\ReduceAction.cs" />
+    <Compile Include="Calitha\GoldParser\lalr\ShiftAction.cs" />
+    <Compile Include="Calitha\GoldParser\lalr\State.cs" />
+    <Compile Include="Calitha\GoldParser\Location.cs" />
+    <Compile Include="Calitha\GoldParser\ParserEvents.cs" />
+    <Compile Include="Calitha\GoldParser\ParserException.cs" />
+    <Compile Include="Calitha\GoldParser\Reader.cs" />
+    <Compile Include="Calitha\GoldParser\Rule.cs" />
+    <Compile Include="Calitha\GoldParser\StateStack.cs" />
+    <Compile Include="Calitha\GoldParser\StringTokenizer.cs" />
+    <Compile Include="Calitha\GoldParser\structure\CGTStructure.cs" />
+    <Compile Include="Calitha\GoldParser\structure\CGTStructureException.cs" />
+    <Compile Include="Calitha\GoldParser\structure\Entry.cs" />
+    <Compile Include="Calitha\GoldParser\structure\EntryFactory.cs" />
+    <Compile Include="Calitha\GoldParser\structure\Record.cs" />
+    <Compile Include="Calitha\GoldParser\Symbol.cs" />
+    <Compile Include="Calitha\GoldParser\SymbolFactory.cs" />
+    <Compile Include="Calitha\GoldParser\Token.cs" />
+    <Compile Include="Calitha\GoldParser\TokenStack.cs" />
     <Compile Include="Grammar\CalcMath.cs" />
-    <Compile Include="Grammar\CalculatorLexer.cs" />
-    <Compile Include="Grammar\CalculatorParser.cs" />
     <Compile Include="Grammar\MemoryManager.cs" />
     <Compile Include="Grammar\Statement.cs" />
     <Compile Include="Grammar\Variable.cs" />
@@ -114,7 +158,6 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <None Include="app.config" />
-    <None Include="Grammar\Calculator.g" />
     <None Include="Properties\app.manifest" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -235,6 +278,7 @@
     <None Include="Help.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <EmbeddedResource Include="Grammer.cgt" />
     <Content Include="Calculator.ico" />
     <Content Include="Calculator.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

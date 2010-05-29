@@ -97,11 +97,13 @@ namespace Calculator
 		[STAThread]
 		private static void Main(string[] args)
 		{
-#if DEBUG
-			var benchStart = Environment.TickCount;
-			Tests.RunTests();
-			var benchEnd = Environment.TickCount;
-			Console.WriteLine("Tests run in {0}ms.", benchEnd - benchStart);
+#if RUN_TESTS
+			var benchWatch = Stopwatch.StartNew();
+			for (int i = 0; i < 100; i++)
+				Tests.RunTests();
+			benchWatch.Stop();
+			Console.WriteLine("Tests run in {0}ms.", benchWatch.ElapsedMilliseconds);
+			return;
 #endif
 			LoadSettings();
 
