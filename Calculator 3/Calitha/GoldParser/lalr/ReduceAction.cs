@@ -12,18 +12,11 @@ namespace Calitha.GoldParser.lalr
 		/// <param name="symbol">The symbol that a token must be for this action
 		/// to be done.</param>
 		/// <param name="rule">The rule to be used to reduce tokens.</param>
-		public ReduceAction(SymbolTerminal symbol, Rule rule)
+		public ReduceAction(Symbol symbol, Rule rule)
 		{
-			this.symbol = symbol;
-			this.Rule = rule;
-		}
-
-		/// <summary>
-		/// the criteria of this action to be done.
-		/// </summary>
-		public SymbolTerminal Symbol
-		{
-			get { return (SymbolTerminal) symbol; }
+			Symbol = symbol;
+			Rule = rule;
+			Type = ActionType.Reduce;
 		}
 
 		/// <summary>

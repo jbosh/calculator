@@ -12,18 +12,11 @@ namespace Calitha.GoldParser.lalr
 		/// <param name="symbol">The symbol that a reduction must be so that
 		/// the goto action will be done.</param>
 		/// <param name="state">The new current state for the LALR parser.</param>
-		public GotoAction(SymbolNonterminal symbol, State state)
+		public GotoAction(Symbol symbol, State state)
 		{
-			this.symbol = symbol;
-			this.State = state;
-		}
-
-		/// <summary>
-		/// The symbol that is the criteria for the action to be done.
-		/// </summary>
-		public SymbolNonterminal Symbol
-		{
-			get { return (SymbolNonterminal) symbol; }
+			Symbol = symbol;
+			State = state;
+			Type = ActionType.Goto;
 		}
 
 		/// <summary>

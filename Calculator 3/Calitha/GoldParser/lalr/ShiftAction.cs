@@ -10,18 +10,11 @@ namespace Calitha.GoldParser.lalr
 		/// </summary>
 		/// <param name="symbol">The symbol that the token must be for this action to be done.</param>
 		/// <param name="state">The new current state for the LALR parser.</param>
-		public ShiftAction(SymbolTerminal symbol, State state)
+		public ShiftAction(Symbol symbol, State state)
 		{
-			this.symbol = symbol;
-			this.State = state;
-		}
-
-		/// <summary>
-		/// The criteria for this action to be done.
-		/// </summary>
-		public SymbolTerminal Symbol
-		{
-			get { return (SymbolTerminal) symbol; }
+			Symbol = symbol;
+			State = state;
+			Type = ActionType.Shift;
 		}
 
 		/// <summary>

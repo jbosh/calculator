@@ -16,7 +16,7 @@ namespace Calitha.GoldParser
 		/// <param name="lhs">Left hand side. The other symbols can be reduced to
 		/// this symbol.</param>
 		/// <param name="rhs">The right hand side. The symbols that can be reduced.</param>
-		public Rule(int id, SymbolNonterminal lhs, Symbol[] rhs)
+		public Rule(int id, Symbol lhs, Symbol[] rhs)
 		{
 			this.Id = id;
 			this.Lhs = lhs;
@@ -46,7 +46,7 @@ namespace Calitha.GoldParser
 		/// Left hand side. The other symbols can be reduced to
 		/// this symbol.
 		/// </summary>
-		public SymbolNonterminal Lhs { get; private set; }
+		public Symbol Lhs { get; private set; }
 
 		/// <summary>
 		/// Right hand side. The symbols that can be reduced.

@@ -42,7 +42,7 @@ namespace Calitha.GoldParser.lalr
 			)
 		{
 			var state = states[record.Target];
-			var symbol = symbols[record.SymbolIndex] as SymbolTerminal;
+			var symbol = symbols[record.SymbolIndex];
 			//todo: exception symbol type
 			return new ShiftAction(symbol, state);
 		}
@@ -51,7 +51,7 @@ namespace Calitha.GoldParser.lalr
 		                                               IList<Symbol> symbols,
 													   IList<Rule> rules)
 		{
-			var symbol = symbols[record.SymbolIndex] as SymbolTerminal;
+			var symbol = symbols[record.SymbolIndex];
 			var rule = rules[record.Target];
 			return new ReduceAction(symbol, rule);
 		}
@@ -60,7 +60,7 @@ namespace Calitha.GoldParser.lalr
 		                                           IList<Symbol> symbols,
 												   IList<State> states)
 		{
-			var symbol = symbols[record.SymbolIndex] as SymbolNonterminal;
+			var symbol = symbols[record.SymbolIndex];
 			var state = states[record.Target];
 			return new GotoAction(symbol, state);
 		}
@@ -68,7 +68,7 @@ namespace Calitha.GoldParser.lalr
 		private static AcceptAction CreateAcceptAction(ActionSubRecord record,
 		                                               IList<Symbol> symbols)
 		{
-			var symbol = symbols[record.SymbolIndex] as SymbolTerminal;
+			var symbol = symbols[record.SymbolIndex];
 			return new AcceptAction(symbol);
 		}
 	}

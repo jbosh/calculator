@@ -32,7 +32,8 @@ namespace Calitha.GoldParser.dfa
 	/// </summary>
 	public class EndState : State
 	{
-		public EndState(int id, SymbolTerminal acceptSymbol) : base(id)
+		public EndState(int id, Symbol acceptSymbol)
+			: base(id)
 		{
 			AcceptSymbol = acceptSymbol;
 		}
@@ -40,6 +41,6 @@ namespace Calitha.GoldParser.dfa
 		/// <summary>
 		/// The accept symbol for the DFA.
 		/// </summary>
-		public SymbolTerminal AcceptSymbol { get; private set; }
+		public Symbol AcceptSymbol { get; private set; }
 	}
 }

@@ -143,7 +143,7 @@ namespace Calitha.GoldParser
 				{
 					var symbol = Symbols[stateRecord.AcceptIndex];
 
-					state = new EndState(stateRecord.Index,(SymbolTerminal)symbol);
+					state = new EndState(stateRecord.Index, symbol);
 					//todo: type checking (exception?)
 				}
 				else
@@ -172,7 +172,7 @@ namespace Calitha.GoldParser
 			var rules = new List<Rule>();
 			foreach (var ruleRecord in content.RuleTable)
 			{
-				var lhs = Symbols[ruleRecord.Nonterminal] as SymbolNonterminal;
+				var lhs = Symbols[ruleRecord.Nonterminal];
 				//todo: exception handling?
 				var rhs = new Symbol[ruleRecord.Symbols.Count];
 				for (var i = 0; i< rhs.Length; i++)
@@ -207,7 +207,7 @@ namespace Calitha.GoldParser
 						                           states,
 						                           Symbols,
 						                           Rules);
-					state.Actions.Add(action.symbol, action);
+					state.Actions.Add(action.Symbol, action);
 				}
 
 			}

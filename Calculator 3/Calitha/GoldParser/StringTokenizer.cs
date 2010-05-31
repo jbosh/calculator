@@ -99,7 +99,7 @@ namespace Calitha.GoldParser
 			{
 				var len = input.Location.Position - startLocation.Position;
 				var text = input.Text.Substring(startLocation.Position, len);
-				return new TerminalToken(new SymbolError(1), text, startLocation);
+				return new TerminalToken(new Symbol(1, SymbolType.Error), text, startLocation);
 			}
 			else
 			{

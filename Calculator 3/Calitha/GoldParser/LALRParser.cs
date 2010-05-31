@@ -93,7 +93,7 @@ namespace Calitha.GoldParser
 			State currentState;
 			// Do not reduce if the rule is single nonterminal and TrimReductions is on
 			var skipReduce = ((TrimReductions) &&
-			                  (reduceLength == 1) && (action.Rule.Rhs[0] is SymbolNonterminal));
+			                  (reduceLength == 1) && (!action.Rule.Rhs[0].IsTerminal));
 			if (skipReduce)
 			{
 				stateStack.Pop();
@@ -124,7 +124,7 @@ namespace Calitha.GoldParser
 			}
 			var gotoAction = currentState.Actions[action.Rule.Lhs];
 
-			if (gotoAction is GotoAction)
+			if (gotoAction.Type == ActionType.Goto)
 			{
 				DoGoto(token, (GotoAction) gotoAction);
 			}
@@ -167,16 +167,21 @@ namespace Calitha.GoldParser
 
 			var action = currentState.Actions[token.Symbol];
 
-			if (action is ShiftAction)
-				DoShift(token, (ShiftAction) action);
-			else if (action is ReduceAction)
-				DoReduce(token, (ReduceAction) action);
-			else if (action is AcceptAction)
-				DoAccept(token, (AcceptAction) action);
-			else
+			switch (action.Type)
 			{
-				continueParsing = false;
-				FireParseError(token);
+				case ActionType.Shift:
+					DoShift(token, (ShiftAction) action);
+					break;
+				case ActionType.Reduce:
+					DoReduce(token, (ReduceAction) action);
+					break;
+				case ActionType.Accept:
+					DoAccept(token, (AcceptAction) action);
+					break;
+				default:
+					continueParsing = false;
+					FireParseError(token);
+					break;				
 			}
 		}
 
@@ -208,11 +213,8 @@ namespace Calitha.GoldParser
 			var state = stateStack.Peek();
 			foreach (var action in state.Actions.Select(p => p.Value))
 			{
-				if ((action is ShiftAction) || (action is ReduceAction)
-				    || (action is AcceptAction))
-				{
-					symbols.Add(action.symbol);
-				}
+				if (action.Type == ActionType.Shift || action.Type == ActionType.Reduce || action.Type == ActionType.Accept)
+					symbols.Add(action.Symbol);
 			}
 			return symbols;
 		}
@@ -234,20 +236,21 @@ namespace Calitha.GoldParser
 			while (commentDepth > 0)
 			{
 				token = tokenizer.RetrieveToken();
-				if (token.Symbol is SymbolCommentEnd)
+				switch (token.Symbol.Type)
 				{
-					commentDepth--;
-				}
-				else if (token.Symbol is SymbolCommentStart)
-				{
-					commentDepth++;
-				}
-				else if (token.Symbol is SymbolEnd)
-				{
-					FireEOFError();
-					break;
+					case SymbolType.CommentEnd:
+						commentDepth--;
+						break;
+					case SymbolType.CommentStart:
+						commentDepth++;
+						break;
+					case SymbolType.End:
+						FireEOFError();
+						goto END_OF_LOOP;
 				}
 			}
+			END_OF_LOOP:
+
 			if (commentDepth == 0)
 				return token;
 			else
@@ -263,29 +266,27 @@ namespace Calitha.GoldParser
 			do
 			{
 				var token = tokenizer.RetrieveToken();
-				if (token.Symbol is SymbolCommentLine)
+				switch (token.Symbol.Type)
 				{
-					if (!ProcessCommentLine(token))
-						continueParsing = false;
-				}
-				else if (token.Symbol is SymbolCommentStart)
-				{
-					if (!ProcessCommentStart(token))
-						continueParsing = false;
-				}
-				else if (token.Symbol is SymbolWhiteSpace)
-				{
-					if (!ProcessWhiteSpace(token))
-						continueParsing = false;
-				}
-				else if (token.Symbol is SymbolError)
-				{
-					if (!ProcessError(token))
-						continueParsing = false;
-				}
-				else
-				{
-					lookahead = token;
+					case SymbolType.CommentLine:
+						if (!ProcessCommentLine(token))
+							continueParsing = false;
+						break;
+					case SymbolType.CommentStart:
+						if (!ProcessCommentStart(token))
+							continueParsing = false;
+						break;
+					case SymbolType.Whitespace:
+						if (!ProcessWhiteSpace(token))
+							continueParsing = false;
+						break;
+					case SymbolType.Error:
+						if (!ProcessError(token))
+							continueParsing = false;
+						break;
+					default:
+						lookahead = token;
+						break;
 				}
 				if (!continueParsing)
 					break;

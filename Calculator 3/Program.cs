@@ -97,7 +97,7 @@ namespace Calculator
 		{
 #if RUN_TESTS
 			var benchWatch = Stopwatch.StartNew();
-			for (int i = 0; i < 100; i++)
+			for (int i = 0; i < 1; i++)
 				Tests.RunTests();
 			benchWatch.Stop();
 			Console.WriteLine("Tests run in {0}ms.", benchWatch.ElapsedMilliseconds);

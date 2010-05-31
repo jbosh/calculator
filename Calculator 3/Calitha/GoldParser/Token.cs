@@ -33,7 +33,7 @@ namespace Calitha.GoldParser
 		/// <param name="text">The text from the input that is the token.</param>
 		/// <param name="location">The location in the input that this token
 		/// has been found.</param>
-		public TerminalToken(SymbolTerminal symbol, string text, Location location)
+		public TerminalToken(Symbol symbol, string text, Location location)
 		{
 			this.Symbol = symbol;
 			this.Text = text;
@@ -52,7 +52,7 @@ namespace Calitha.GoldParser
 		/// <summary>
 		/// The symbol that this token represents.
 		/// </summary>
-		public SymbolTerminal Symbol { get; private set; }
+		public Symbol Symbol { get; private set; }
 
 		/// <summary>
 		/// The text from the input that is this token.
@@ -104,7 +104,7 @@ namespace Calitha.GoldParser
 		/// <summary>
 		/// The symbol that this nonterminal token represents.
 		/// </summary>
-		public SymbolNonterminal Symbol
+		public Symbol Symbol
 		{
 			[DebuggerStepThrough]
 			get { return Rule.Lhs; }

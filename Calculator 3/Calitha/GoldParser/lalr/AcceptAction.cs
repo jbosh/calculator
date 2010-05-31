@@ -10,17 +10,10 @@ namespace Calitha.GoldParser.lalr
 		/// Creates a new accept action.
 		/// </summary>
 		/// <param name="symbol">The symbol that a token must be for it to be accepted.</param>
-		public AcceptAction(SymbolTerminal symbol)
+		public AcceptAction(Symbol symbol)
 		{
-			this.symbol = symbol;
-		}
-
-		/// <summary>
-		/// The symbol that a token must be for it to be accepted.
-		/// </summary>
-		public SymbolTerminal Symbol
-		{
-			get { return (SymbolTerminal) symbol; }
+			Symbol = symbol;
+			Type = ActionType.Accept;
 		}
 	}
 }

@@ -90,7 +90,7 @@ namespace Calitha.GoldParser
 	/// </summary>
 	public class GotoEventArgs : EventArgs
 	{
-		public GotoEventArgs(SymbolNonterminal symbol, State newState)
+		public GotoEventArgs(Symbol symbol, State newState)
 		{
 			this.Symbol = symbol;
 			this.NewState = newState;
@@ -99,7 +99,7 @@ namespace Calitha.GoldParser
 		/// <summary>
 		/// The symbol that causes the goto event.
 		/// </summary>
-		public SymbolNonterminal Symbol { get; private set; }
+		public Symbol Symbol { get; private set; }
 
 		/// <summary>
 		/// The state after the goto event.

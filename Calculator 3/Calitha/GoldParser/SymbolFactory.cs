@@ -19,24 +19,24 @@ namespace Calitha.GoldParser
 			switch (symbolRecord.Kind)
 			{
 				case 0:
-					return new SymbolNonterminal(symbolRecord.Index, symbolRecord.Name);
+					return new Symbol(symbolRecord.Index, symbolRecord.Name, false);
 				case 1:
-					return new SymbolTerminal(symbolRecord.Index, symbolRecord.Name);
+					return new Symbol(symbolRecord.Index, symbolRecord.Name, true);
 				case 2:
-					return new SymbolWhiteSpace(symbolRecord.Index);
+					return new Symbol(symbolRecord.Index, SymbolType.Whitespace);
 				case 3:
 					return Symbol.EOF;
 				case 4:
-					return new SymbolCommentStart(symbolRecord.Index);
+					return new Symbol(symbolRecord.Index, SymbolType.CommentStart);
 				case 5:
-					return new SymbolCommentEnd(symbolRecord.Index);
+					return new Symbol(symbolRecord.Index, SymbolType.CommentEnd);
 				case 6:
-					return new SymbolCommentLine(symbolRecord.Index);
+					return new Symbol(symbolRecord.Index, SymbolType.CommentLine);
 				case 7:
 					return Symbol.ERROR;
 				default:
 					// this sort of symbol should never be here
-					return new SymbolError(-1);
+					return new Symbol(-1, SymbolType.Error);
 			}
 		}
 	}

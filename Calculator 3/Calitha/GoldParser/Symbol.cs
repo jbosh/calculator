@@ -4,18 +4,38 @@ using Calitha.Common;
 
 namespace Calitha.GoldParser
 {
-	/// <summary>
-	/// Abstract symbol implementation.
-	/// </summary>
-	public abstract class Symbol
+	public enum SymbolType
 	{
-		public static SymbolEnd EOF = new SymbolEnd(0);
-		public static SymbolError ERROR = new SymbolError(1);
+		None,
+		Eof,
+		Whitespace,
+		End,
+		CommentStart,
+		CommentEnd,
+		CommentLine,
+		Error
+	}
+	/// <summary>
+	/// Symbol implementation.
+	/// </summary>
+	public class Symbol
+	{
+		public static Symbol EOF = new Symbol(0, SymbolType.Eof);
+		public static Symbol ERROR = new Symbol(1, SymbolType.Error);
 
-		protected Symbol(int id, string name)
+		public Symbol(int id, string name, bool isTerminal)
 		{
 			Id = id;
 			Name = name;
+			Type = SymbolType.None;
+			IsTerminal = isTerminal;
+		}
+		public Symbol(int id, SymbolType type)
+		{
+			Id = id;
+			Name = string.Concat("(", type, ")");
+			Type = type;
+			IsTerminal = true;
 		}
 
 		public override bool Equals(Object obj)
@@ -42,74 +62,11 @@ namespace Calitha.GoldParser
 		public int Id { get; private set; }
 
 		public string Name { get; private set; }
-	}
 
-	/// <summary>
-	/// SymbolNonterminal is for symbols that are not directly linked to one token.
-	/// </summary>
-	public class SymbolNonterminal : Symbol
-	{
-		public SymbolNonterminal(int id, string name) : base(id, name) {}
-
-		public override string ToString()
-		{
-			return "<" + base.ToString() + ">";
-		}
-	}
-
-	/// <summary>
-	/// SymbolTerminal is a symbol that is linked to a token.
-	/// </summary>
-	public class SymbolTerminal : Symbol
-	{
-		public SymbolTerminal(int id, string name) : base(id, name) {}
-	}
-
-	/// <summary>
-	/// SymbolWhiteSpace is the symbol of white-space tokens.
-	/// </summary>
-	public class SymbolWhiteSpace : SymbolTerminal
-	{
-		public SymbolWhiteSpace(int id) : base(id, "(Whitespace)") {}
-	}
-
-	/// <summary>
-	/// SymbolEnd is the symbol for the end-of-file token.
-	/// </summary>
-	public class SymbolEnd : SymbolTerminal
-	{
-		public SymbolEnd(int id) : base(id, "(EOF)") {}
-	}
-
-	/// <summary>
-	/// SymbolCommentStart is the symbol for the comment start token.
-	/// </summary>
-	public class SymbolCommentStart : SymbolTerminal
-	{
-		public SymbolCommentStart(int id) : base(id, "(Comment Start)") {}
-	}
-
-	/// <summary>
-	/// SymbolCommentEnd is the symbol for the comment end token.
-	/// </summary>
-	public class SymbolCommentEnd : SymbolTerminal
-	{
-		public SymbolCommentEnd(int id) : base(id, "(Comment End)") {}
-	}
-
-	/// <summary>
-	/// SymbolCommentLine is the symbol for the comment line token.
-	/// </summary>
-	public class SymbolCommentLine : SymbolTerminal
-	{
-		public SymbolCommentLine(int id) : base(id, "(Comment Line)") {}
-	}
-
-	/// <summary>
-	/// SymbolError is the symbol for the error token.
-	/// </summary>
-	public class SymbolError : SymbolTerminal
-	{
-		public SymbolError(int id) : base(id, "(ERROR)") {}
+		/// <summary>
+		/// True if a symbol is directly linked to a token.
+		/// </summary>
+		public bool IsTerminal { get; private set; }
+		public SymbolType Type { get; private set; }
 	}
 }
