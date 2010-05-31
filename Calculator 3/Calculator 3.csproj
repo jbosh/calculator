@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -19,6 +19,10 @@
     <GenerateManifests>false</GenerateManifests>
     <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
     <ApplicationIcon>Calculator.ico</ApplicationIcon>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation />
     <PublishUrl>C:\Users\Justin\Projects\Calculator 3\publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -154,63 +158,6 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="SharpZip\BZip2\BZip2.cs" />
-    <Compile Include="SharpZip\BZip2\BZip2Constants.cs" />
-    <Compile Include="SharpZip\BZip2\BZip2Exception.cs" />
-    <Compile Include="SharpZip\BZip2\BZip2InputStream.cs" />
-    <Compile Include="SharpZip\BZip2\BZip2OutputStream.cs" />
-    <Compile Include="SharpZip\Checksums\Adler32.cs" />
-    <Compile Include="SharpZip\Checksums\CRC32.cs" />
-    <Compile Include="SharpZip\Checksums\IChecksum.cs" />
-    <Compile Include="SharpZip\Checksums\StrangeCRC.cs" />
-    <Compile Include="SharpZip\Core\FileSystemScanner.cs" />
-    <Compile Include="SharpZip\Core\INameTransform.cs" />
-    <Compile Include="SharpZip\Core\IScanFilter.cs" />
-    <Compile Include="SharpZip\Core\NameFilter.cs" />
-    <Compile Include="SharpZip\Core\PathFilter.cs" />
-    <Compile Include="SharpZip\Core\StreamUtils.cs" />
-    <Compile Include="SharpZip\Core\WindowsPathUtils.cs" />
-    <Compile Include="SharpZip\Encryption\PkzipClassic.cs" />
-    <Compile Include="SharpZip\GZip\GZIPConstants.cs" />
-    <Compile Include="SharpZip\GZip\GZipException.cs" />
-    <Compile Include="SharpZip\GZip\GzipInputStream.cs" />
-    <Compile Include="SharpZip\GZip\GzipOutputStream.cs" />
-    <Compile Include="SharpZip\Main.cs" />
-    <Compile Include="SharpZip\SharpZipBaseException.cs" />
-    <Compile Include="SharpZip\Tar\InvalidHeaderException.cs" />
-    <Compile Include="SharpZip\Tar\TarArchive.cs" />
-    <Compile Include="SharpZip\Tar\TarBuffer.cs" />
-    <Compile Include="SharpZip\Tar\TarEntry.cs" />
-    <Compile Include="SharpZip\Tar\TarException.cs" />
-    <Compile Include="SharpZip\Tar\TarHeader.cs" />
-    <Compile Include="SharpZip\Tar\TarInputStream.cs" />
-    <Compile Include="SharpZip\Tar\TarOutputStream.cs" />
-    <Compile Include="SharpZip\Zip\Compression\Deflater.cs" />
-    <Compile Include="SharpZip\Zip\Compression\DeflaterConstants.cs" />
-    <Compile Include="SharpZip\Zip\Compression\DeflaterEngine.cs" />
-    <Compile Include="SharpZip\Zip\Compression\DeflaterHuffman.cs" />
-    <Compile Include="SharpZip\Zip\Compression\DeflaterPending.cs" />
-    <Compile Include="SharpZip\Zip\Compression\Inflater.cs" />
-    <Compile Include="SharpZip\Zip\Compression\InflaterDynHeader.cs" />
-    <Compile Include="SharpZip\Zip\Compression\InflaterHuffmanTree.cs" />
-    <Compile Include="SharpZip\Zip\Compression\PendingBuffer.cs" />
-    <Compile Include="SharpZip\Zip\Compression\Streams\DeflaterOutputStream.cs" />
-    <Compile Include="SharpZip\Zip\Compression\Streams\InflaterInputStream.cs" />
-    <Compile Include="SharpZip\Zip\Compression\Streams\OutputWindow.cs" />
-    <Compile Include="SharpZip\Zip\Compression\Streams\StreamManipulator.cs" />
-    <Compile Include="SharpZip\Zip\FastZip.cs" />
-    <Compile Include="SharpZip\Zip\IEntryFactory.cs" />
-    <Compile Include="SharpZip\Zip\WindowsNameTransform.cs" />
-    <Compile Include="SharpZip\Zip\ZipConstants.cs" />
-    <Compile Include="SharpZip\Zip\ZipEntry.cs" />
-    <Compile Include="SharpZip\Zip\ZipEntryFactory.cs" />
-    <Compile Include="SharpZip\Zip\ZipException.cs" />
-    <Compile Include="SharpZip\Zip\ZipExtraData.cs" />
-    <Compile Include="SharpZip\Zip\ZipFile.cs" />
-    <Compile Include="SharpZip\Zip\ZipHelperStream.cs" />
-    <Compile Include="SharpZip\Zip\ZipInputStream.cs" />
-    <Compile Include="SharpZip\Zip\ZipNameTransform.cs" />
-    <Compile Include="SharpZip\Zip\ZipOutputStream.cs" />
     <Compile Include="Tests.cs" />
     <Compile Include="Windows\Calc.cs">
       <SubType>Form</SubType>
@@ -239,6 +186,11 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
     <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
       <Visible>False</Visible>
       <ProductName>.NET Framework 2.0 %28x86%29</ProductName>
@@ -253,6 +205,11 @@
       <Visible>False</Visible>
       <ProductName>.NET Framework 3.5</ProductName>
       <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
     </BootstrapperPackage>
     <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
       <Visible>False</Visible>
@@ -279,6 +236,7 @@
       <TargetPath>
       </TargetPath>
       <PublishState>Exclude</PublishState>
+      <IncludeHash>True</IncludeHash>
       <FileType>Assembly</FileType>
     </PublishFile>
     <PublishFile Include="StringTemplate">
@@ -288,6 +246,7 @@
       <TargetPath>
       </TargetPath>
       <PublishState>Exclude</PublishState>
+      <IncludeHash>True</IncludeHash>
       <FileType>Assembly</FileType>
     </PublishFile>
     <PublishFile Include="Tasks.txt">
@@ -297,6 +256,7 @@
       <TargetPath>
       </TargetPath>
       <PublishState>Exclude</PublishState>
+      <IncludeHash>True</IncludeHash>
       <FileType>File</FileType>
     </PublishFile>
   </ItemGroup>

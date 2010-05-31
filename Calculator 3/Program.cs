@@ -10,7 +10,6 @@ using System.Windows.Forms;
 using System.Xml;
 using Calculator.Grammar;
 using Calculator.Windows;
-using ICSharpCode.SharpZipLib.Zip;
 using Help=Calculator.Windows.Help;
 
 namespace Calculator
@@ -98,11 +97,12 @@ namespace Calculator
 		{
 #if RUN_TESTS
 			var benchWatch = Stopwatch.StartNew();
-			//for (int i = 0; i < 250; i++)
+			for (int i = 0; i < 100; i++)
 				Tests.RunTests();
 			benchWatch.Stop();
 			Console.WriteLine("Tests run in {0}ms.", benchWatch.ElapsedMilliseconds);
 #endif
+			Version = new Version(3, 0, 0, 0);
 			LoadSettings();
 
 			for (var i = 0; i < args.Length; i++)
@@ -127,15 +127,6 @@ namespace Calculator
 					}
 				}
 			}
-			{
-				var newVersionPath = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "NewVersion.txt");
-				if (File.Exists(newVersionPath))
-				{
-					Version = new Version(File.ReadAllText(newVersionPath));
-					File.Delete(newVersionPath);
-				}
-			}
-			//ThreadPool.QueueUserWorkItem(o => CheckForUpdates());
 			Window = new List<ICalculator>();
 			NewWindow(new Calc());
 
@@ -147,13 +138,14 @@ namespace Calculator
 				Thread.Sleep(60);
 			}
 			SaveSettings();
-			if (!string.IsNullOrEmpty(UpdateFolder))
-				Update();
 		}
+		private static string SettingsFolder { get { return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Calculator"); } }
+		private static string SettingsFile { get { return Path.Combine(SettingsFolder, "Calculator.xml"); } }
 		private static void LoadSettings()
 		{
-			var path = Path.ChangeExtension(Application.ExecutablePath, ".xml");
-			using (var reader = XmlReader.Create(path))
+			if (!File.Exists(SettingsFile))
+				return;
+			using (var reader = XmlReader.Create(SettingsFile))
 				while (reader.Read())
 				{
 					if (reader.NodeType != XmlNodeType.Element)
@@ -203,8 +195,9 @@ namespace Calculator
 		}
 		private static void SaveSettings()
 		{
-			var path = Path.ChangeExtension(Application.ExecutablePath, ".xml");
-			using (var writer = XmlWriter.Create(path))
+			if (!Directory.Exists(SettingsFolder))
+				Directory.CreateDirectory(SettingsFolder);
+			using (var writer = XmlWriter.Create(SettingsFile))
 			{
 				writer.WriteStartElement("calculator");
 				writer.WriteAttributeString("version", Version.ToString(4));
@@ -220,58 +213,6 @@ namespace Calculator
 				writer.WriteElementString("workingDir", WorkingDirectory);
 				writer.WriteEndElement();
 			}
-		}
-		private static void CheckForUpdates()
-		{
-			var request = WebRequest.Create("http://jbosh.net/calculator.ashx");
-			request.Method = "POST";
-			request.ContentType = "text";
-			try
-			{
-				using (var writer = new StreamWriter(request.GetRequestStream()))
-					writer.WriteLine(Version.ToString(4));
-				var response = request.GetResponse();
-				byte[] bytes = null;
-				using (var reader = new BinaryReader(response.GetResponseStream()))
-					bytes = reader.ReadBytes((int) response.ContentLength);
-				var zStream = new ZipInputStream(new MemoryStream(bytes));
-
-				var dir = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
-				Directory.CreateDirectory(dir);
-
-				var entry = zStream.GetNextEntry();
-				while (entry != null)
-				{
-					var dirPath = Path.GetDirectoryName(entry.Name);
-					var filePath = Path.GetFileName(entry.Name);
-					if (dirPath.Length > 0)
-						Directory.CreateDirectory(Path.Combine(dir, dirPath));
-					if (!string.IsNullOrEmpty(filePath))
-					{
-						using (var fs = File.Create(Path.Combine(dir, entry.Name)))
-						{
-							var buffer = new byte[2048];
-							while (true)
-							{
-								var i = zStream.Read(buffer, 0, 2048);
-								if (i > 0)
-									fs.Write(buffer, 0, i);
-								else
-									break;
-							}
-						}
-					}
-					entry = zStream.GetNextEntry();
-				}
-				UpdateFolder = dir;
-			}
-			catch (Exception ex) {}
-		}
-		private static void Update()
-		{
-			var dir = Path.GetDirectoryName(Application.ExecutablePath);
-			Process.Start(Path.Combine(dir, "Updater.exe"),
-			              string.Format("\"{0}\" \"{1}\"", dir, UpdateFolder));
 		}
 		public static Form NewWindow(Form form)
 		{

@@ -65,9 +65,9 @@ namespace Calculator
 			TestFunction("[58sin 45]^2", 1682.00);
 			TestFunction("-2160 - abs(2160) % 512", -2272.0);
 
-			//TestFunction("-", double.NaN);
-			//TestFunction("alpha", double.NaN);
-			//TestFunction("*-2", double.NaN);
+			TestFunction("-", double.NaN);
+			TestFunction("alpha", double.NaN);
+			TestFunction("*-2", double.NaN);
 
 			Memory.Push();
 			Memory["a"] = new Variable("a", 2);

@@ -38,30 +38,5 @@ namespace Calitha.Common
 			}
 			return builder.ToString();
 		}
-		/// <summary>
-		/// Gets the range of elements in a collection.
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="collection"></param>
-		/// <param name="start">The start, inclusive.</param>
-		/// <param name="count">Start + count, exclusive.</param>
-		/// <returns></returns>
-		public static IEnumerable<T> Range<T>(this IEnumerable<T> collection, int start, int count)
-		{
-			var i = 0;
-			var max = start + count;
-			foreach(var t in collection)
-			{
-				if(i < start)
-				{
-					i++;
-					continue;
-				}
-				if(i >= max)
-					yield break;
-				yield return t;
-				i++;
-			}
-		}
 	}
 }

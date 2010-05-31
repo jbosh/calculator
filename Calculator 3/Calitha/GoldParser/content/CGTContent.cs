@@ -28,17 +28,32 @@ namespace Calitha.GoldParser.content
 			if (structure.Records.Count != specifiedRecordCount)
 				throw new CGTContentException("Invalid number of records");
 			
-			CharacterSetTable = new List<CharacterSetRecord>(structure.Records.Range(characterSetStart, TableCounts.CharacterSetTable).Select(r => new CharacterSetRecord(r)));
-			SymbolTable = new List<SymbolRecord>(structure.Records.Range(
-		                                     	symbolStart,
-		                                     	TableCounts.SymbolTable).Select(r => new SymbolRecord(r)));
+			CharacterSetTable = structure.Records
+				.Skip(characterSetStart)
+				.Take(TableCounts.CharacterSetTable)
+				.Select(r => new CharacterSetRecord(r))
+				.ToList();
+			SymbolTable = structure.Records
+				.Skip(symbolStart)
+				.Take(TableCounts.SymbolTable)
+				.Select(r => new SymbolRecord(r))
+				.ToList();
 
-			RuleTable = new List<RuleRecord>(structure.Records.Range(
-												ruleStart,
-												TableCounts.RuleTable).Select(r => new RuleRecord(r)));
+			RuleTable = structure.Records
+				.Skip(ruleStart)
+				.Take(TableCounts.RuleTable)
+				.Select(r => new RuleRecord(r))
+				.ToList();
 			InitialStates = new InitialStatesRecord(structure.Records[initialStatesStart]);
-			DFAStateTable = new List<DFAStateRecord>(structure.Records.Range(dfaStart, TableCounts.DFATable).Select(r => new DFAStateRecord(r)));
-			LALRStateTable = new List<LALRStateRecord>(structure.Records.Range(lalrStart, TableCounts.LALRTable).Select(r => new LALRStateRecord(r)));
+			DFAStateTable = structure.Records.Skip(dfaStart)
+				.Take(TableCounts.DFATable)
+				.Select(r => new DFAStateRecord(r))
+				.ToList();
+			LALRStateTable = structure.Records
+				.Skip(lalrStart)
+				.Take(TableCounts.LALRTable)
+				.Select(r => new LALRStateRecord(r))
+				.ToList();
 		}
 
 
