@@ -1,4 +1,6 @@
 using Calitha.GoldParser.structure;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace Calitha.GoldParser.content
 {
@@ -16,11 +18,13 @@ namespace Calitha.GoldParser.content
 				throw new CGTContentException("Invalid LALR state header");
 			Index = record.Entries[1].ToIntValue();
 			//skip empty reserved entry
-			ActionSubRecords = new ActionSubRecordCollection(record, 3);
+			ActionSubRecords = new ActionSubRecord[(record.Entries.Count - 3) / 4];
+			for (var i = 3; i < record.Entries.Count; i = i + 4)
+				ActionSubRecords[(i - 3) / 4] = new ActionSubRecord(record.Entries, i);
 		}
 
 		public int Index { get; private set; }
 
-		public ActionSubRecordCollection ActionSubRecords { get; private set; }
+		public ActionSubRecord[] ActionSubRecords { get; private set; }
 	}
 }

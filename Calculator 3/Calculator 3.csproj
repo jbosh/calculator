@@ -84,7 +84,6 @@
     <Compile Include="Calitha\GoldParser\content\EdgeSubRecord.cs" />
     <Compile Include="Calitha\GoldParser\content\InitialStatesRecord.cs" />
     <Compile Include="Calitha\GoldParser\content\LALRStateRecord.cs" />
-    <Compile Include="Calitha\GoldParser\content\LALRStateTable.cs" />
     <Compile Include="Calitha\GoldParser\content\Parameters.cs" />
     <Compile Include="Calitha\GoldParser\content\RuleRecord.cs" />
     <Compile Include="Calitha\GoldParser\content\SymbolRecord.cs" />
@@ -227,32 +226,32 @@
   <ItemGroup>
     <PublishFile Include="antlr.runtime">
       <Visible>False</Visible>
-      <PublishState>Exclude</PublishState>
-      <IncludeHash>True</IncludeHash>
       <Group>
       </Group>
       <TargetPath>
       </TargetPath>
+      <PublishState>Exclude</PublishState>
+      <IncludeHash>True</IncludeHash>
       <FileType>Assembly</FileType>
     </PublishFile>
     <PublishFile Include="StringTemplate">
       <Visible>False</Visible>
-      <PublishState>Exclude</PublishState>
-      <IncludeHash>True</IncludeHash>
       <Group>
       </Group>
       <TargetPath>
       </TargetPath>
+      <PublishState>Exclude</PublishState>
+      <IncludeHash>True</IncludeHash>
       <FileType>Assembly</FileType>
     </PublishFile>
     <PublishFile Include="Tasks.txt">
       <Visible>False</Visible>
-      <PublishState>Exclude</PublishState>
-      <IncludeHash>True</IncludeHash>
       <Group>
       </Group>
       <TargetPath>
       </TargetPath>
+      <PublishState>Exclude</PublishState>
+      <IncludeHash>True</IncludeHash>
       <FileType>File</FileType>
     </PublishFile>
   </ItemGroup>

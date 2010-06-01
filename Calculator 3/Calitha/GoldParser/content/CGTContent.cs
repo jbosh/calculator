@@ -32,38 +32,38 @@ namespace Calitha.GoldParser.content
 				.Skip(characterSetStart)
 				.Take(TableCounts.CharacterSetTable)
 				.Select(r => new CharacterSetRecord(r))
-				.ToList();
+				.ToArray();
 			SymbolTable = structure.Records
 				.Skip(symbolStart)
 				.Take(TableCounts.SymbolTable)
 				.Select(r => new SymbolRecord(r))
-				.ToList();
+				.ToArray();
 
 			RuleTable = structure.Records
 				.Skip(ruleStart)
 				.Take(TableCounts.RuleTable)
 				.Select(r => new RuleRecord(r))
-				.ToList();
+				.ToArray();
 			InitialStates = new InitialStatesRecord(structure.Records[initialStatesStart]);
 			DFAStateTable = structure.Records.Skip(dfaStart)
 				.Take(TableCounts.DFATable)
 				.Select(r => new DFAStateRecord(r))
-				.ToList();
+				.ToArray();
 			LALRStateTable = structure.Records
 				.Skip(lalrStart)
 				.Take(TableCounts.LALRTable)
 				.Select(r => new LALRStateRecord(r))
-				.ToList();
+				.ToArray();
 		}
 
 
 		public Parameters Parameters { get; private set; }
 		public TableCounts TableCounts { get; private set; }
-		public List<SymbolRecord> SymbolTable { get; private set; }
-		public List<CharacterSetRecord> CharacterSetTable { get; private set; }
-		public List<RuleRecord> RuleTable { get; private set; }
+		public SymbolRecord[] SymbolTable { get; private set; }
+		public CharacterSetRecord[] CharacterSetTable { get; private set; }
+		public RuleRecord[] RuleTable { get; private set; }
 		public InitialStatesRecord InitialStates { get; private set; }
-		public List<DFAStateRecord> DFAStateTable { get; private set; }
-		public List<LALRStateRecord> LALRStateTable { get; private set; }
+		public DFAStateRecord[] DFAStateTable { get; private set; }
+		public LALRStateRecord[] LALRStateTable { get; private set; }
 	}
 }

@@ -174,7 +174,7 @@ namespace Calitha.GoldParser
 			{
 				var lhs = Symbols[ruleRecord.Nonterminal];
 				//todo: exception handling?
-				var rhs = new Symbol[ruleRecord.Symbols.Count];
+				var rhs = new Symbol[ruleRecord.Symbols.Length];
 				for (var i = 0; i< rhs.Length; i++)
 				{
 					rhs[i] = Symbols[ruleRecord.Symbols[i]];

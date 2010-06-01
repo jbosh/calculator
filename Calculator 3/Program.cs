@@ -97,10 +97,12 @@ namespace Calculator
 		{
 #if RUN_TESTS
 			var benchWatch = Stopwatch.StartNew();
-			for (int i = 0; i < 1; i++)
+			for (int i = 0; i < 50; i++)
 				Tests.RunTests();
 			benchWatch.Stop();
 			Console.WriteLine("Tests run in {0}ms.", benchWatch.ElapsedMilliseconds);
+			MessageBox.Show(string.Format("Tests run in {0}ms.", benchWatch.ElapsedMilliseconds));
+			return;
 #endif
 			Version = new Version(3, 0, 0, 0);
 			LoadSettings();

@@ -18,7 +18,9 @@ namespace Calitha.GoldParser.content
 			AcceptState = record.Entries[2].ToBoolValue();
 			AcceptIndex = record.Entries[3].ToIntValue();
 			//skip empty reserved entry
-			EdgeSubRecords = new EdgeSubRecordCollection(record, 5);
+			EdgeSubRecords = new EdgeSubRecord[(record.Entries.Count - 5) / 3];
+			for (var i = 5; i < record.Entries.Count; i = i + 3)
+				EdgeSubRecords[(i - 5) / 3] = new EdgeSubRecord(record.Entries[i], record.Entries[i + 1]);
 		}
 
 		public int Index { get; private set; }
@@ -27,6 +29,6 @@ namespace Calitha.GoldParser.content
 
 		public int AcceptIndex { get; private set; }
 
-		public EdgeSubRecordCollection EdgeSubRecords { get; private set; }
+		public EdgeSubRecord[] EdgeSubRecords { get; private set; }
 	}
 }

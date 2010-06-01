@@ -18,16 +18,13 @@ namespace Calitha.GoldParser.content
 			Index = record.Entries[1].ToIntValue();
 			Nonterminal = record.Entries[2].ToIntValue();
 			//skip reserved empty entry
-			Symbols = new List<int>();
+			Symbols = new int[record.Entries.Count - 4];
 			for (var i = 4; i < record.Entries.Count; i++)
-			{
-				var symbol = record.Entries[i].ToIntValue();
-				Symbols.Add(symbol);
-			}
+				Symbols[i - 4] = record.Entries[i].ToIntValue();
 		}
 
 		public int Index { get; private set; }
 		public int Nonterminal { get; private set; }
-		public List<int> Symbols { get; private set; }
+		public int[] Symbols { get; private set; }
 	}
 }
