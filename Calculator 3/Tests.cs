@@ -27,6 +27,10 @@ namespace Calculator
 			TestFunction("203,20,2", 203202);
 			TestFunction("2E.2", 3.17);
 			TestFunction("e", 2.72);
+			TestFunction("0xF0", 240);
+			TestFunction("0xffabcde12348", 281113358574408);
+			TestFunction("-0xff", -255);
+			TestFunction("1 << 3", 8);
 
 			TestFunction("-2 1 3 4 g", -235.2);
 			TestFunction("2^2", 4);

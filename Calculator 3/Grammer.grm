@@ -24,11 +24,15 @@ Double = {Digit}+ '.' {Digit}*
     | {Digit}+ '.' {Digit}* 'E' {Digit}+
     | {Digit}+ '.' {Digit}* 'E' '.' {Digit}+
     | {Digit}+ '.' {Digit}* 'E' {Digit}+ '.' {Digit}*
+Hex = '0x'[ABCDEFabcdef0123456789]+
 
 ! ------------------------------------------------- Rules
-<Statement> ::= <Expression>
-              | Id '=' <Expression>
+<Statement> ::= <Shift Expression>
+              | Id '=' <Shift SExpression>
 
+<Shift Expression> ::= <Shift Expression> '<<' <Expression> 
+                     | <Shift Expression> '>>' <Expression>
+                     | <Expression>
 <Expression> ::= <Expression> '+' <Op Exp> 
                | <Expression> '-' <Op Exp> 
                | <Op Exp> 
@@ -64,3 +68,4 @@ Double = {Digit}+ '.' {Digit}*
 <Value>       ::= Double
                 | ID
                 | '(' <Expression> ')'
+                | Hex

@@ -13,6 +13,8 @@ namespace Calitha.GoldParser
 			UserObject = null;
 		}
 
+		public abstract Symbol Symbol { get; }
+
 		/// <summary>
 		/// This can be user for storing an object during the reduce
 		/// event. This makes it possible to create a tree when the
@@ -35,7 +37,7 @@ namespace Calitha.GoldParser
 		/// has been found.</param>
 		public TerminalToken(Symbol symbol, string text, Location location)
 		{
-			this.Symbol = symbol;
+			this.symbol = symbol;
 			this.Text = text;
 			this.Location = location;
 		}
@@ -49,10 +51,12 @@ namespace Calitha.GoldParser
 			return Text;
 		}
 
+
 		/// <summary>
 		/// The symbol that this token represents.
 		/// </summary>
-		public Symbol Symbol { get; private set; }
+		public override Symbol Symbol { get { return symbol; } }
+		private Symbol symbol;
 
 		/// <summary>
 		/// The text from the input that is this token.
@@ -104,7 +108,7 @@ namespace Calitha.GoldParser
 		/// <summary>
 		/// The symbol that this nonterminal token represents.
 		/// </summary>
-		public Symbol Symbol
+		public override Symbol Symbol
 		{
 			[DebuggerStepThrough]
 			get { return Rule.Lhs; }

@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection.Emit;
@@ -17,33 +18,42 @@ namespace Calculator.Grammar
 		private enum TokenType : int
 		{
 			Minus = 3,
-			Mod = 5,
-			Mult = 8,
-			Divide = 9,
-			Plus = 12,
-			Abs = 14,
-			Acos = 15,
-			Asin = 16,
-			Atan = 17,
-			Cos = 18,
-			Deg = 19,
-            Double = 20,
-			Id = 21,
-			Ln = 22,
-			Log = 23,
-			Rad = 24,
-			Sin = 25,
-			Sqrt = 26,
-			Tan = 27,
-			Expression = 28,
-			Factorial = 29,
-			Function = 30,
-			Negation = 31,
-			OpExpression = 32,
-			Pow = 33,
-			Value = 35,
+			FactorialChar,
+			Mod,//5
+			ParenL,
+			ParenR,
+			Mult,
+			Divide,
+			Exponent,//10
+			Tilde,
+			Plus,
+			ShiftLeft,
+			ShiftRight,
+			Abs,//15
+			Acos,
+			Asin,
+			Atan,
+			Cos,
+			Deg,//20
+            Double,
+			Hex,
+			Id,
+			Ln,
+			Log,
+			Rad,
+			Sin,
+			Sqrt,
+			Tan,
+			Expression,
+			Factorial,
+			Function,
+			Negation,
+			OpExpression,
+			Pow,
+			ShiftExpression,
+			Statement,
+			Value,
 			Vector,
-			Equals,
 		}
 		private static readonly Regex RegNegate 
 			= new Regex(@"[~|+|\-|*|=|%|^|/] *(-+)", RegexOptions.Compiled);
@@ -51,6 +61,8 @@ namespace Calculator.Grammar
 			= new Regex(@"[^a-zA-Z\d\.][\d\.]+([_a-zA-Z]+)", RegexOptions.Compiled);
 		private static readonly Regex RegMulti
 			= new Regex(@"([\d\w\)]+)( +)([\d\w\(]+)", RegexOptions.Compiled);
+		private static readonly Regex RegHex
+			= new Regex(@"0x[\d\.a..fA..F]+", RegexOptions.Compiled);
 		private static readonly Regex RegFloat
 			= new Regex(@"[\d\.]+E[\d\.]", RegexOptions.Compiled);
 		public string VariableName { get; private set; }
@@ -72,10 +84,12 @@ namespace Calculator.Grammar
 			Memory = memory;
 			Dispatch = new Dictionary<TokenType, Func<Token, VariableType>>
 			{
+				{TokenType.Hex, VisitHex},
 				{TokenType.Double, VisitDouble},
 				{TokenType.Value, VisitValue},
 				{TokenType.Negation, VisitNegation},
 				{TokenType.Id, VisitID},
+				{TokenType.ShiftExpression, VisitShift},
 				{TokenType.OpExpression, VisitOp},
 				{TokenType.Expression, VisitOp},
 				{TokenType.Pow, VisitPow},
@@ -125,13 +139,13 @@ namespace Calculator.Grammar
 			try
 			{
 				var root = parser.Parse(preprocess);
-				method = new DynamicMethod("Y1", typeof(double), new[] { typeof(MemoryManager) });
+				method = new DynamicMethod("Y1", typeof (double), new[] {typeof (MemoryManager)});
 				il = method.GetILGenerator();
+
 
 				VariableType = Visit(root);
 				il.Emit(OpCodes.Ret);
-				dFunc = (Func<MemoryManager, double>)method.CreateDelegate(typeof(Func<MemoryManager, double>));
-				
+				dFunc = (Func<MemoryManager, double>) method.CreateDelegate(typeof (Func<MemoryManager, double>));
 			}
 			catch
 			{
@@ -157,7 +171,7 @@ namespace Calculator.Grammar
 					match = RegSpaces.Match(source, i);
 					if(!match.Success)
 						break;
-					if (RegFloat.IsMatch(source, match.Index + 1))
+					if (RegFloat.IsMatch(source, match.Index + 1) || RegHex.IsMatch(source, match.Index + 1))
 						i = match.Index + match.Length;
 					else
 					{
@@ -194,11 +208,11 @@ namespace Calculator.Grammar
 			#endregion
 			#region Process Extra Parenthessis
 			var parenDepth = 0;
-			for (var i = 0; i < source.Length; i++)
+			foreach (var c in source)
 			{
-				if (source[i] == '(')
+				if (c == '(')
 					parenDepth++;
-				else if (source[i] == ')')
+				else if (c == ')')
 					parenDepth--;
 			}
 			if (parenDepth > 0)
@@ -296,20 +310,7 @@ namespace Calculator.Grammar
 			return output;
 		}
 
-		private VariableType Visit(Token token)
-		{
-			var nonTerminal = token as NonterminalToken;
-			if (nonTerminal != null)
-				return Visit(nonTerminal);
-			return Visit((TerminalToken) token);
-		}
-		private VariableType Visit(NonterminalToken node)
-		{
-			if (Dispatch.ContainsKey((TokenType)node.Symbol.Id))
-				return Dispatch[(TokenType)node.Symbol.Id](node);
-			return VariableType.Error;
-		}
-		private VariableType Visit(TerminalToken node)
+		private VariableType Visit(Token node)
 		{
 			if (Dispatch.ContainsKey((TokenType)node.Symbol.Id))
 				return Dispatch[(TokenType)node.Symbol.Id](node);
@@ -332,8 +333,8 @@ namespace Calculator.Grammar
 		}
 		private VariableType VisitDouble(Token token)
 		{
-			var node = (TerminalToken) token;
-			if(il != null)
+			var node = (TerminalToken)token;
+			if (il != null)
 			{
 				if (node.Text.Contains("E"))
 				{
@@ -348,6 +349,16 @@ namespace Calculator.Grammar
 					var d = double.Parse(node.Text);
 					il.Emit(OpCodes.Ldc_R8, d);
 				}
+			}
+			return VariableType.Double;
+		}
+		private VariableType VisitHex(Token token)
+		{
+			var node = (TerminalToken) token;
+			if(il != null)
+			{
+				var i = long.Parse(node.Text.Substring(2), NumberStyles.HexNumber);
+				il.Emit(OpCodes.Ldc_R8, (double)i);
 			}
 			return VariableType.Double;
 		}
@@ -387,7 +398,7 @@ namespace Calculator.Grammar
 			if (il != null)
 			{
 				OpCode op;
-				switch ((TokenType)((TerminalToken)node.Tokens[1]).Symbol.Id)
+				switch ((TokenType)node.Tokens[1].Symbol.Id)
 				{
 					case TokenType.Mult:
 						op = OpCodes.Mul;
@@ -408,6 +419,43 @@ namespace Calculator.Grammar
 						throw new ArgumentOutOfRangeException();
 				}
 				il.Emit(op);
+			}
+			return Coerce(left, right);
+		}
+		private int ILShiftLeft(int d1, int d2)
+		{
+			return d1 << d2;
+		}
+		private VariableType VisitShift(Token token)
+		{
+			var node = (NonterminalToken)token;
+
+			var left = Visit(node.Tokens[0]);
+			if(il != null)
+				il.Emit(OpCodes.Conv_I4);
+			
+			var right = Visit(node.Tokens[2]);
+			if (il != null)
+				il.Emit(OpCodes.Conv_I4);
+
+			if (il != null)
+			{
+				OpCode op;
+				switch ((TokenType)node.Tokens[1].Symbol.Id)
+				{
+					case TokenType.ShiftLeft:
+						op = OpCodes.Shl;
+						break;
+					case TokenType.ShiftRight:
+						op = OpCodes.Shr;
+						break;
+					default:
+						throw new ArgumentOutOfRangeException();
+				}
+				//il.Emit(OpCodes.Ldc_I4_S, (short)31);
+				//il.Emit(OpCodes.And);
+				il.Emit(op);
+				il.Emit(OpCodes.Conv_R8);
 			}
 			return Coerce(left, right);
 		}
@@ -432,7 +480,7 @@ namespace Calculator.Grammar
 			if (il != null)
 			{
 				MethodInfo info;
-				switch ((TokenType)((TerminalToken)node.Tokens[0]).Symbol.Id)
+				switch ((TokenType)node.Tokens[0].Symbol.Id)
 				{
 					case TokenType.Abs:
 						info = typeof(Math).GetMethod("Abs", new[] {typeof(double)});
@@ -464,7 +512,7 @@ namespace Calculator.Grammar
 			MethodInfo info;
 			if (il == null)
 				return VariableType.Double;
-			switch ((TokenType)((TerminalToken)node.Tokens[0]).Symbol.Id)
+			switch ((TokenType)node.Tokens[0].Symbol.Id)
 			{
 				case TokenType.Sin:
 					info = typeof(Math).GetMethod("Sin");
@@ -516,7 +564,7 @@ namespace Calculator.Grammar
 				throw new ArgumentException();
 			if (il != null)
 			{
-				switch ((TokenType)((TerminalToken)node.Tokens[0]).Symbol.Id)
+				switch ((TokenType)node.Tokens[0].Symbol.Id)
 				{
 					case TokenType.Rad:
 						il.Emit(OpCodes.Ldc_R8, (double)0.0174532925199433);

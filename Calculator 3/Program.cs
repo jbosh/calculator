@@ -1,16 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Threading;
 using System.Windows.Forms;
 using System.Xml;
 using Calculator.Grammar;
 using Calculator.Windows;
 using Help=Calculator.Windows.Help;
+using System.Diagnostics;
 
 namespace Calculator
 {
@@ -29,7 +28,6 @@ namespace Calculator
 		private static bool radians;
 		private static int rounding;
 		private static bool thousandsSeperator;
-		private static string UpdateFolder;
 		private static List<ICalculator> Window = new List<ICalculator>();
 		public static bool Radians
 		{
