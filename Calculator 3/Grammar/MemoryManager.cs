@@ -22,6 +22,10 @@ namespace Calculator.Grammar
 		{
 			SetVariable(name, new Variable(name, value));
 		}
+		public void SetVariable(string name, Vector value)
+		{
+			SetVariable(name, new Variable(name, value));
+		}
 		public void SetVariable(string name, Variable value)
 		{
 			if (!Memory[Memory.Count - 1].ContainsKey(name))

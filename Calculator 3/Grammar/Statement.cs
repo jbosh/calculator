@@ -20,21 +20,27 @@ namespace Calculator.Grammar
 			Minus = 3,
 			FactorialChar,
 			Mod,//5
+			LogicalAnd,
 			ParenL,
 			ParenR,
 			Mult,
-			Divide,
-			Exponent,//10
+			Divide,//10
+			Semicolon,
+			Exponent,
+			BraceLeft,
+			LogicalOr,
+			BraceRight,//15
 			Tilde,
 			Plus,
 			ShiftLeft,
-			ShiftRight,
-			Abs,//15
+			Equals,
+			ShiftRight,//20
+			Abs,
 			Acos,
 			Asin,
 			Atan,
 			Cos,
-			Deg,//20
+			Deg,
             Double,
 			Hex,
 			Id,
@@ -45,8 +51,10 @@ namespace Calculator.Grammar
 			Sqrt,
 			Tan,
 			Expression,
+			ExpressionList,
 			Factorial,
 			Function,
+			LogicalExpression,
 			Negation,
 			OpExpression,
 			Pow,
@@ -55,8 +63,8 @@ namespace Calculator.Grammar
 			Value,
 			Vector,
 		}
-		private static readonly Regex RegNegate 
-			= new Regex(@"[~|+|\-|*|=|%|^|/] *(-+)", RegexOptions.Compiled);
+		//private static readonly Regex RegNegate 
+		//	= new Regex(@"[~|+|\-|*|=|%|^|/] *(-+)", RegexOptions.Compiled);
 		private static readonly Regex RegSpaces
 			= new Regex(@"[^a-zA-Z\d\.][\d\.]+([_a-zA-Z]+)", RegexOptions.Compiled);
 		private static readonly Regex RegMulti
@@ -78,6 +86,7 @@ namespace Calculator.Grammar
 		private ILGenerator il;
 		private MemoryManager Memory;
 		private Func<MemoryManager, double> dFunc;
+		private Func<MemoryManager, Vector> dFuncVec;
 		private static LALRParser parser;
 		public Statement(MemoryManager memory)
 		{
@@ -89,13 +98,14 @@ namespace Calculator.Grammar
 				{TokenType.Value, VisitValue},
 				{TokenType.Negation, VisitNegation},
 				{TokenType.Id, VisitID},
-				{TokenType.ShiftExpression, VisitShift},
+				{TokenType.ShiftExpression, VisitInteger},
+				{TokenType.LogicalExpression, VisitInteger},
 				{TokenType.OpExpression, VisitOp},
 				{TokenType.Expression, VisitOp},
 				{TokenType.Pow, VisitPow},
 				{TokenType.Factorial, VisitFactorial},
-				/*{TokenType.Vector, VisitVector},
-				{TokenType.Equals, VisitEquals},*/
+				{TokenType.Vector, VisitVector},
+				/*{TokenType.Equals, VisitEquals},*/
 				
 				{TokenType.Function, VisitFunc},
 				{TokenType.Sin, VisitTrig},
@@ -133,7 +143,7 @@ namespace Calculator.Grammar
 			var split = preprocess.Split('=');
 			if(split.Length == 2)
 			{
-				VariableName = split[0];
+				VariableName = split[0].Trim();
 				preprocess = split[1];
 			}
 			try
@@ -141,7 +151,6 @@ namespace Calculator.Grammar
 				var root = parser.Parse(preprocess);
 				method = new DynamicMethod("Y1", typeof (double), new[] {typeof (MemoryManager)});
 				il = method.GetILGenerator();
-
 
 				VariableType = Visit(root);
 				il.Emit(OpCodes.Ret);
@@ -185,7 +194,7 @@ namespace Calculator.Grammar
 			source = source.Trim();
 			#endregion
 			#region Process Negation
-			while (true)
+			/*while (false)
 			{
 				matches = RegNegate.Matches(source);
 				var chars = source.ToCharArray();
@@ -204,7 +213,7 @@ namespace Calculator.Grammar
 						chars[j + match.Groups[1].Index] = '~';
 				}
 				source = new string(chars);
-			}
+			}*/
 			#endregion
 			#region Process Extra Parenthessis
 			var parenDepth = 0;
@@ -300,14 +309,24 @@ namespace Calculator.Grammar
 					return false;
 			}
 		}
-		public double Execute()
+		public object Execute()
 		{
 			if (VariableType == VariableType.Error)
-				return double.NaN;
-			var output = dFunc(Memory);
-			if(!string.IsNullOrEmpty(VariableName))
-				Memory.SetVariable(VariableName, output);
-			return output;
+				return null;
+			if (dFunc != null)
+			{
+				var output = dFunc(Memory);
+				if (!string.IsNullOrEmpty(VariableName))
+					Memory.SetVariable(VariableName, output);
+				return output;
+			}
+			else
+			{
+				var output = dFuncVec(Memory);
+				if (!string.IsNullOrEmpty(VariableName))
+					Memory.SetVariable(VariableName, output);
+				return output;
+			}
 		}
 
 		private VariableType Visit(Token node)
@@ -330,6 +349,15 @@ namespace Calculator.Grammar
 			if (Dispatch.ContainsKey((TokenType)type.Symbol.Id))
 				return Dispatch[(TokenType)type.Symbol.Id](node);
 			return VariableType.Error;
+		}
+		private Vector ILEmitter(Vector a, Vector b)
+		{
+			return a + b;
+		}
+		private VariableType VisitVector(Token token)
+		{
+			var node = (NonterminalToken) token;
+			return VariableType.Vector;
 		}
 		private VariableType VisitDouble(Token token)
 		{
@@ -365,14 +393,32 @@ namespace Calculator.Grammar
 		private VariableType VisitNegation(Token token)
 		{
 			var node = (NonterminalToken) token;
+			
+			if ((TokenType)node.Tokens[0].Symbol.Id != TokenType.Minus)
+				return VisitLogicalNegation(token);
+			
 			var left = Visit(node.Tokens[1]);
-			//var emit = (node.ChildCount - 1) % 2 == 1;
-			if (il != null)// && emit)
+			if (il != null)
 			{
 				il.Emit(OpCodes.Ldc_R8, (double)-1);
 				il.Emit(OpCodes.Mul);
 			}
 			return left;
+		}
+		private VariableType VisitLogicalNegation(Token token)
+		{
+			var node = (NonterminalToken)token;
+
+			var right = Visit(node.Tokens[1]);
+			if (il != null)
+				il.Emit(OpCodes.Conv_I4);
+
+			if (il != null)
+			{
+				il.Emit(OpCodes.Not);
+				il.Emit(OpCodes.Conv_R8);
+			}
+			return VariableType.Double;
 		}
 		private VariableType VisitID(Token token)
 		{
@@ -422,11 +468,7 @@ namespace Calculator.Grammar
 			}
 			return Coerce(left, right);
 		}
-		private int ILShiftLeft(int d1, int d2)
-		{
-			return d1 << d2;
-		}
-		private VariableType VisitShift(Token token)
+		private VariableType VisitInteger(Token token)
 		{
 			var node = (NonterminalToken)token;
 
@@ -449,15 +491,19 @@ namespace Calculator.Grammar
 					case TokenType.ShiftRight:
 						op = OpCodes.Shr;
 						break;
+					case TokenType.LogicalOr:
+						op = OpCodes.Or;
+						break;
+					case TokenType.LogicalAnd:
+						op = OpCodes.And;
+						break;
 					default:
-						throw new ArgumentOutOfRangeException();
+						return VariableType.Error;
 				}
-				//il.Emit(OpCodes.Ldc_I4_S, (short)31);
-				//il.Emit(OpCodes.And);
 				il.Emit(op);
 				il.Emit(OpCodes.Conv_R8);
 			}
-			return Coerce(left, right);
+			return VariableType.Double;
 		}
 		private VariableType VisitPow(Token token)
 		{
@@ -465,7 +511,7 @@ namespace Calculator.Grammar
 			var left = Visit(node.Tokens[0]);
 			var right = Visit(node.Tokens[2]);
 			if (left != VariableType.Double || right != VariableType.Double)
-				throw new ArgumentException();
+				return VariableType.Error;
 			if (il != null)
 			{
 				il.EmitCall(OpCodes.Call, typeof(Math).GetMethod("Pow"), null);

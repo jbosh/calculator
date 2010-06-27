@@ -94,13 +94,7 @@ namespace Calculator
 		private static void Main(string[] args)
 		{
 #if RUN_TESTS
-			var benchWatch = Stopwatch.StartNew();
-			for (int i = 0; i < 50; i++)
-				Tests.RunTests();
-			benchWatch.Stop();
-			Console.WriteLine("Tests run in {0}ms.", benchWatch.ElapsedMilliseconds);
-			MessageBox.Show(string.Format("Tests run in {0}ms.", benchWatch.ElapsedMilliseconds));
-			return;
+			Tests.RunTests();
 #endif
 			Version = new Version(3, 0, 0, 0);
 			LoadSettings();
@@ -267,6 +261,12 @@ namespace Calculator
 					e.Handled = true;
 					break;
 			}
+		}
+		public static string FormatOutput(object value)
+		{
+			if (value is double)
+				return FormatOutput((double) value);
+			return "";
 		}
 		public static string FormatOutput(double value)
 		{

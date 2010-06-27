@@ -27,10 +27,16 @@ namespace Calculator
 			TestFunction("203,20,2", 203202);
 			TestFunction("2E.2", 3.17);
 			TestFunction("e", 2.72);
+
 			TestFunction("0xF0", 240);
 			TestFunction("0xffabcde12348", 281113358574408);
 			TestFunction("-0xff", -255);
 			TestFunction("1 << 3", 8);
+			TestFunction("1 << 3 + 2", 32);
+			TestFunction("(1 << 3) + 2", 10);
+			TestFunction("9 & 1", 1);
+			TestFunction("32412 | 2", 32414);
+			TestFunction("~12", -13);
 
 			TestFunction("-2 1 3 4 g", -235.2);
 			TestFunction("2^2", 4);
@@ -69,6 +75,8 @@ namespace Calculator
 			TestFunction("[58sin 45]^2", 1682.00);
 			TestFunction("-2160 - abs(2160) % 512", -2272.0);
 
+			TestFunction("{2;4}+{1;1}", new Vector(3, 5));
+
 			TestFunction("-", double.NaN);
 			TestFunction("alpha", double.NaN);
 			TestFunction("*-2", double.NaN);
@@ -86,13 +94,20 @@ namespace Calculator
 		{
 			var stat = new Statement(Memory);
 			stat.ProcessString(function);
-			var output = stat.Execute();
+			var output = (double) (stat.Execute() ?? double.NaN);
 			if (double.IsNaN(output) && double.IsNaN(correct))
 			{
 			}
 			else if (Math.Round(output, 2) != Math.Round(correct, 2))
 				throw new ApplicationException(string.Format("Failed on \"{0}\". Answer: {1}.", function, output));
-			//Console.WriteLine("Success \"{0}\".", function);
+		}
+		private static void TestFunction(string function, Vector correct)
+		{
+			var stat = new Statement(Memory);
+			stat.ProcessString(function);
+			var output = (Vector)stat.Execute();
+			if(output != correct)
+				throw new ApplicationException(string.Format("Failed on \"{0}\". Answer: {1}.", function, output));
 		}
 	}
 }

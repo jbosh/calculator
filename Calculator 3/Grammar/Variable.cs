@@ -28,6 +28,12 @@ namespace Calculator.Grammar
 			Name = name;
 			Type = type;
 		}
+		public Variable(string name, Vector value)
+		{
+			Type = VariableType.Vector;
+			ValueV = value;
+			Name = name;
+		}
 		public Variable(string name, double value)
 		{
 			Type = VariableType.Double;

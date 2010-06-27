@@ -27,12 +27,17 @@ Double = {Digit}+ '.' {Digit}*
 Hex = '0x'[ABCDEFabcdef0123456789]+
 
 ! ------------------------------------------------- Rules
-<Statement> ::= <Shift Expression>
-              | Id '=' <Shift SExpression>
+<Statement> ::= <Logical Expression>
+              | Id '=' <Logical Expression>
+
+<Logical Expression> ::= <Logical Expression> '&' <Shift Expression>
+                       | <Logical Expression> '|' <Shift Expression>
+                       | <Shift Expression>
 
 <Shift Expression> ::= <Shift Expression> '<<' <Expression> 
                      | <Shift Expression> '>>' <Expression>
                      | <Expression>
+
 <Expression> ::= <Expression> '+' <Op Exp> 
                | <Expression> '-' <Op Exp> 
                | <Op Exp> 
@@ -45,7 +50,8 @@ Hex = '0x'[ABCDEFabcdef0123456789]+
 <Pow Exp> ::= <Pow Exp> '^' <Negate Exp>
             | <Negate Exp>
 
-<Negate Exp>  ::= '~' <Negate Exp> 
+<Negate Exp>  ::= '~' <Negate Exp>
+                | '-' <Negate Exp> 
                 | <Factorial>
 
 <Factorial> ::= <Factorial> '!'
@@ -65,7 +71,16 @@ Hex = '0x'[ABCDEFabcdef0123456789]+
              | 'sqrt' <Function>
              | <Value>
 
-<Value>       ::= Double
-                | ID
-                | '(' <Expression> ')'
-                | Hex
+<Value> ::= Double
+          | ID
+          | '(' <Logical Expression> ')'
+          | Hex
+          | <Vector Expression>
+
+
+<Vector Expression> ::= '{' <Expression List> '}'
+
+<Expression List> ::= <Expression List> ';' <Logical Expression>
+                    | <Logical Expression>
+
+
