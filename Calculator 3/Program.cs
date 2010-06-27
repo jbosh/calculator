@@ -30,6 +30,7 @@ namespace Calculator
 		private static int rounding;
 		private static bool thousandsSeperator;
 		private static List<ICalculator> Window = new List<ICalculator>();
+		private static int SleepMilliseconds{ get; set; }
 		public static bool Radians
 		{
 			get { return radians; }
@@ -97,6 +98,7 @@ namespace Calculator
 #if RUN_TESTS
 			Tests.RunTests();
 #endif
+			SleepMilliseconds = 60;
 			Version = new Version(3, 0, 0, 0);
 			LoadSettings();
 
@@ -117,8 +119,7 @@ namespace Calculator
 						Memory.SetVariable("x", 0);
 						Memory.Push();
 						var stat = new Statement(Memory);
-						stat.ProcessString(formula);
-						Console.WriteLine(stat.Execute());
+						Console.WriteLine(stat.ProcessString(formula));
 						return;
 					}
 				}
@@ -131,7 +132,7 @@ namespace Calculator
 			while (Window.Count > 0)
 			{
 				Application.DoEvents();
-				Thread.Sleep(60);
+				Thread.Sleep(SleepMilliseconds);
 			}
 			SaveSettings();
 		}
@@ -180,6 +181,9 @@ namespace Calculator
 									break;
 							}
 							break;
+						case "sleepMilliseconds":
+							SleepMilliseconds = reader.ReadElementContentAsInt();
+							break;
 						case "antiAlias":
 							Antialiasing = reader.ReadElementContentAsBoolean();
 							break;
@@ -207,6 +211,7 @@ namespace Calculator
 				writer.WriteComment("outputFormat can be hex, scientific, or standard.");
 				writer.WriteElementString("outputFormat", Format.ToString());
 				writer.WriteElementString("workingDir", WorkingDirectory);
+				writer.WriteElementString("sleepMilliseconds", SleepMilliseconds.ToString());
 				writer.WriteEndElement();
 			}
 		}
@@ -283,10 +288,10 @@ namespace Calculator
 		{
 			var builder = new StringBuilder();
 			builder.Append('{');
-			for (int i = 0; i < value.Length; i++)
+			for (int i = 0; i < value.Count; i++)
 			{
 				builder.Append(FormatOutput(value[i]));
-				if (i != value.Length - 1)
+				if (i != value.Count - 1)
 					builder.Append("; ");
 			}
 			builder.Append('}');

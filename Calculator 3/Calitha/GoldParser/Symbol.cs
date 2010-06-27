@@ -41,11 +41,9 @@ namespace Calitha.GoldParser
 		public override bool Equals(Object obj)
 		{
 			var result = Util.EqualsNoState(this, obj);
-			if (result == TripleState.True)
-				return true;
-			if (result == TripleState.False)
-				return false;
-			var other = (Symbol) obj;
+			if (result.HasValue)
+				return result.Value;
+			var other = (Symbol)obj;
 			return (Id == other.Id);
 		}
 

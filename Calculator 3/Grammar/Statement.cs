@@ -46,8 +46,10 @@ namespace Calculator.Grammar
             Double,
 			Hex,
 			Id,
+			Length,
 			Ln,
 			Log,
+			Normalize,
 			Rad,
 			Sin,
 			Sqrt,
@@ -105,7 +107,6 @@ namespace Calculator.Grammar
 				{TokenType.Pow, VisitPow},
 				{TokenType.Factorial, VisitFactorial},
 				
-				
 				{TokenType.Function, VisitFunc},
 				{TokenType.Sin, VisitTrig},
 				{TokenType.Cos, VisitTrig},
@@ -116,6 +117,8 @@ namespace Calculator.Grammar
 				{TokenType.Abs, VisitMiscFunc},
 				{TokenType.Dot, VisitMiscFunc},
 				{TokenType.Cross, VisitMiscFunc},
+				{TokenType.Length, VisitMiscFunc},
+				{TokenType.Normalize, VisitMiscFunc},
 
 				{TokenType.Sqrt, VisitMiscFunc},
 				{TokenType.Ln, VisitMiscFunc},
@@ -131,8 +134,22 @@ namespace Calculator.Grammar
 				parser = reader.CreateNewParser();
 			}
 		}
+		public void Reset()
+		{
+			root = null;
+			Text = null;
+		}
+		/// <summary>
+		/// Processes a given string, either executing
+		/// the existing tree or updating it if source
+		/// is newer.
+		/// </summary>
+		/// <param name="source"></param>
+		/// <returns></returns>
 		public Variable ProcessString(string source)
 		{
+			if (Text == source && VariableType != VariableType.Error)
+				return Execute();
 			VariableName = null;
 			VariableType = VariableType.Error;
 			if (string.IsNullOrWhiteSpace(source))
@@ -166,6 +183,15 @@ namespace Calculator.Grammar
 			catch{}
 #endif
 			return Variable.Error;
+		}
+		public Variable Execute()
+		{
+			if (VariableType == VariableType.Error)
+				return Variable.Error;
+			var output = Visit(root);
+			if (!string.IsNullOrEmpty(VariableName))
+				Memory.SetVariable(VariableName, output);
+			return output;
 		}
 		private static string Preprocess(string source)
 		{
@@ -270,6 +296,8 @@ namespace Calculator.Grammar
 				case "atan":
 				case "dot":
 				case "cross":
+				case "norm":
+				case "len":
 					return true;
 				default:
 					return false;
@@ -296,16 +324,6 @@ namespace Calculator.Grammar
 					return false;
 			}
 		}
-		public Variable Execute()
-		{
-			if (VariableType == VariableType.Error)
-				return Variable.Error;
-			var output = Visit(root);
-			if (!string.IsNullOrEmpty(VariableName))
-				Memory.SetVariable(VariableName, output);
-			return output;
-		}
-
 		private Variable Visit(Token node)
 		{
 			if (Dispatch.ContainsKey((TokenType)node.Symbol.Id))
@@ -479,6 +497,8 @@ namespace Calculator.Grammar
 		{
 			var node = (NonterminalToken)token;
 			var left = Visit(node.Tokens[1]);
+			if (left.Value == null)
+				return new Variable();
 			switch ((TokenType)node.Tokens[0].Symbol.Id)
 			{
 				case TokenType.Abs:
@@ -493,6 +513,10 @@ namespace Calculator.Grammar
 					return ((Vector)left.Value).Dot();
 				case TokenType.Cross:
 					return ((Vector)left.Value).Cross();
+				case TokenType.Normalize:
+					return ((Vector)left.Value).Normalize();
+				case TokenType.Length:
+					return ((Vector)left.Value).Length();
 				default:
 					throw new ArgumentOutOfRangeException();
 			}

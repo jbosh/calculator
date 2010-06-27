@@ -94,6 +94,8 @@ namespace Calculator
 			TestFunction("cross{{0; 20}; {15; 0}}", -300);
 			TestFunction("cross{{15; 0}; {0; 20}}", 300);
 			TestFunction("cross{{3; -3; 1}; {4; 9; 2}}", new Vector(-15, -2, 39));
+			TestFunction("len{3;2;1}", 3.74);
+			TestFunction("norm{3;2;1}", new Vector(.8, .53, .27));
 
 			TestFunction("-", null);
 			TestFunction("alpha", null);
@@ -106,11 +108,13 @@ namespace Calculator
 			Memory["a"] = new Variable(2, "a");
 			Memory["g"] = new Variable(20, "g");
 			Memory["e2"] = new Variable(15, "e2");
+			Memory["v"] = new Variable(new Vector(3, 2, 1));
 			TestFunction("a", 2);
 			TestFunction("g * a", 40);
 			TestFunction("a(33)", 66);
 			TestFunction("33a", 66);
 			TestFunction("e2", 15);
+			TestFunction("v/len(v)", new Vector(.8, .53, .27));
 			Memory.Pop();
 		}
 		private static void TestFunction(string function, dynamic correct)

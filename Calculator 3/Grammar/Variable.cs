@@ -76,6 +76,9 @@ namespace Calculator.Grammar
 		}
 		public static Variable operator /(Variable a, Variable b)
 		{
+			if(b.Value == null)
+				return new Variable();
+			// Because integer division doesn't work, must cast to double.
 			return new Variable(a.Value / (double)b.Value);
 		}
 		public static Variable operator /(Variable a, double b)

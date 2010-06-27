@@ -71,6 +71,8 @@ Hex = '0x'[ABCDEFabcdef0123456789]+
              | 'sqrt' <Function>
              | 'cross' <Vector Expression>
              | 'dot' <Vector Expression>
+             | 'norm' <Function>
+             | 'len' <Function>
              | <Value>
 
 <Value> ::= Double

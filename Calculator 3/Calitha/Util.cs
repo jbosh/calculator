@@ -5,23 +5,16 @@ using System.Text;
 
 namespace Calitha.Common
 {
-	public enum TripleState
-	{
-		False,
-		True,
-		Unknown
-	} ;
-
 	public static class Util
 	{
-		public static TripleState EqualsNoState(Object first, Object second)
+		public static bool? EqualsNoState(object first, object second)
 		{
-			if (first == second) return TripleState.True;
-			if (first == null) return TripleState.False;
-			if (second == null) return TripleState.False;
+			if (first == second) return true;
+			if (first == null) return false;
+			if (second == null) return false;
 			if (first.GetType().Equals(second.GetType()))
-				return TripleState.Unknown;
-			return TripleState.False;
+				return null;
+			return false;
 		}
 		/// <summary>
 		/// Reads a unicode (utf-16) string.

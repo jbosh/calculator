@@ -36,7 +36,7 @@ namespace Calculator.Windows
 
 			fields = new List<CalculatorField>();
 			var field = new CalculatorField(Memory);
-			field.txtQuestion.TextChanged += (o, e) => Recalculate(true);
+			field.txtQuestion.TextChanged += (o, e) => Recalculate(false);
 			fields.Add(field);
 			Controls.Add(field.lblEquals);
 			Controls.Add(field.lblAnswer);
@@ -50,12 +50,11 @@ namespace Calculator.Windows
 		{
 			if (TopMost != Program.AlwaysOnTop)
 				TopMost = Program.AlwaysOnTop;
-			Memory.Push();
 			foreach (CalculatorField field in fields)
 				field.Calculate(global);
 			if(graph != null)
 				graph.Recalculate(global);
-			Memory.Pop();
+			Memory.ResetTop();
 		}
 		#endregion
 		private void Calc_KeyDown(object sender, KeyEventArgs e)
@@ -239,7 +238,7 @@ namespace Calculator.Windows
 			if (fields.Count >= 24)
 				return;
 			var field = new CalculatorField(Memory, fields[fields.Count - 1]);
-			field.txtQuestion.TextChanged += (o, e) => Recalculate(true);
+			field.txtQuestion.TextChanged += (o, e) => Recalculate(false);
 			fields.Add(field);
 			Controls.Add(field.lblEquals);
 			Controls.Add(field.lblAnswer);
@@ -333,9 +332,9 @@ namespace Calculator.Windows
 			#endregion
 			public void Calculate(bool global)
 			{
-				if(global)
-					statement.ProcessString(txtQuestion.Text);
-				var parse = statement.Execute();
+				if (global)
+					statement.Reset();
+				var parse = statement.ProcessString(txtQuestion.Text);
 				lblAnswer.Text = Program.FormatOutput(parse);
 			}
 			public void txtQuestion_TextChanged()

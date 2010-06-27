@@ -39,6 +39,14 @@ namespace Calculator.Grammar
 					return Memory[i][name];
 			return Variable.Error;
 		}
+		/// <summary>
+		/// Resets only the topmost item on the stack.
+		/// </summary>
+		public void ResetTop()
+		{
+			Pop();
+			Push();
+		}
 		public void Push()
 		{
 			Memory.Insert(Memory.Count, new Dictionary<string, Variable>());

@@ -5,10 +5,10 @@ using System.Text;
 
 namespace Calculator.Grammar
 {
-	public class Vector
+	public struct Vector
 	{
 		public Variable [] Values;
-		public int Length { get { return Values.Length; } }
+		public int Count { get { return Values.Length; } }
 		public Variable this[int index]
 		{
 			get { return Values[index]; }
@@ -32,39 +32,39 @@ namespace Calculator.Grammar
 		}
 		public Vector(params Variable[] args)
 		{
-			Values = args;
+			Values = args.ToArray();
 		}
 		public static Vector operator +(Vector a, Vector b)
 		{
-			if (a.Length != b.Length)
-				return null;
+			if (a.Count != b.Count)
+				return new Vector();
 			var output = new Vector(a.Values);
-			for (var i = 0; i < output.Length; i++)
+			for (var i = 0; i < output.Count; i++)
 				output[i] += b[i];
 			return output;
 		}
 		public static Vector operator -(Vector a, Vector b)
 		{
-			if (a.Length != b.Length)
-				return null;
+			if (a.Count != b.Count)
+				return new Vector();
 			var output = new Vector(a.Values);
-			for (var i = 0; i < output.Length; i++)
+			for (var i = 0; i < output.Count; i++)
 				output[i] -= b[i];
 			return output;
 		}
 		public static Vector operator *(Vector a, Vector b)
 		{
-			if (a.Length != b.Length)
-				return null;
+			if (a.Count != b.Count)
+				return new Vector();
 			var output = new Vector(a.Values);
-			for (var i = 0; i < output.Length; i++)
+			for (var i = 0; i < output.Count; i++)
 				output[i] *= b[i];
 			return output;
 		}
 		public static Vector operator *(Vector a, double b)
 		{
 			var output = new Vector(a.Values);
-			for (var i = 0; i < output.Length; i++)
+			for (var i = 0; i < output.Count; i++)
 				output[i] *= b;
 			return output;
 		}
@@ -75,7 +75,7 @@ namespace Calculator.Grammar
 		public static Vector operator /(Vector a, double b)
 		{
 			var output = new Vector(a.Values);
-			for (var i = 0; i < output.Length; i++)
+			for (var i = 0; i < output.Count; i++)
 				output[i] /= b;
 			return output;
 		}
@@ -89,10 +89,10 @@ namespace Calculator.Grammar
 				return Variable.Error;
 			var a = (Vector)Values[0].Value;
 			var b = (Vector)Values[1].Value;
-			if (a.Length != b.Length)
+			if (a.Count != b.Count)
 				return Variable.Error;
-			var d = 0;
-			for (int i = 0; i < a.Length; i++)
+			var d = 0.0;
+			for (int i = 0; i < a.Count; i++)
 				d += a[i].Value * b[i].Value;
 			return new Variable(d);
 		}
@@ -103,21 +103,34 @@ namespace Calculator.Grammar
 				return Variable.Error;
 			var a = (Vector)Values[0].Value;
 			var b = (Vector)Values[1].Value;
-			if (a.Length != b.Length)
+			if (a.Count != b.Count)
 				return Variable.Error;
-			if (a.Length == 3)
+			if (a.Count == 3)
 			{
 				var x = a[1] * b[2] - a[2] * b[1];
 				var y = a[2] * b[0] - a[0] * b[2];
 				var z = a[0] * b[1] - a[1] * b[0];
 				return new Variable(new Vector(x, y, z));
 			}
-			if(a.Length == 2)
+			if (a.Count == 2)
 			{
 				var z = a[0] * b[1] - a[1] * b[0];
 				return z;
 			}
 			return Variable.Error;
+		}
+
+
+		public Variable Length()
+		{
+			var d = 0;
+			for (int i = 0; i < Count; i++)
+				d += Values[i].Value * Values[i].Value;
+			return new Variable(Math.Sqrt(d));
+		}
+		public Variable Normalize()
+		{
+			return new Variable(this / Length().Value);
 		}
 
 
@@ -131,12 +144,19 @@ namespace Calculator.Grammar
 				if (aNull || bNull)
 					return false;
 			}
-			if (a.Length != b.Length)
+			if (a.Count != b.Count)
 				return false;
 
-			for (int i = 0; i < a.Length; i++)
-				if (a[i] != b[i])
+			for (int i = 0; i < a.Count; i++)
+			{
+				if(a[i].Value is double)
+				{
+					if (Math.Round(a[i].Value, 2) != Math.Round(b[i].Value, 2))
+						return false;
+				}
+				else if (a[i] != b[i])
 					return false;
+			}
 			return true;
 		}
 		public static bool operator !=(Vector a, Vector b)
