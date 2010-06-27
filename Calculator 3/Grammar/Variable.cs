@@ -12,33 +12,124 @@ namespace Calculator.Grammar
 		Double,
 		Bool,
 	}
-	public class Variable
+	public struct Variable
 	{
 		public string Name;
-		public Vector ValueV;
-		public double ValueD;
-		public VariableType Type;
-		public Variable (string name)
+		public dynamic Value;
+		public Variable(dynamic value = null, string name = null)
 		{
-			Name = name;
-			Type = VariableType.Error;
-		}
-		public Variable(string name, VariableType type)
-		{
-			Name = name;
-			Type = type;
-		}
-		public Variable(string name, Vector value)
-		{
-			Type = VariableType.Vector;
-			ValueV = value;
+			Value = value;
 			Name = name;
 		}
-		public Variable(string name, double value)
+		public static Variable Error
 		{
-			Type = VariableType.Double;
-			ValueD = value;
-			Name = name;
+			get{ return new Variable(); }
 		}
+
+		#region Logical Operations
+		public static Variable operator &(Variable a, Variable b)
+		{
+			if (a.Value is double)
+				a.Value = (long) a.Value;
+			if (b.Value is double)
+				b.Value = (long) b.Value;
+			return new Variable(a.Value & b.Value);
+		}
+		public static Variable operator |(Variable a, Variable b)
+		{
+			if (a.Value is double)
+				a.Value = (long)a.Value;
+			if (b.Value is double)
+				b.Value = (long)b.Value;
+			return new Variable(a.Value | b.Value);
+		}
+		public static Variable operator <<(Variable a, int count)
+		{
+			if (a.Value is double)
+				a.Value = (long)a.Value;
+			return new Variable(a.Value << count);
+		}
+		public static Variable operator >>(Variable a, int count)
+		{
+			if (a.Value is double)
+				a.Value = (long)a.Value;
+			return new Variable(a.Value >> count);
+		}
+		#endregion
+
+		#region Operators
+		public static Variable operator +(Variable a, Variable b)
+		{
+			return new Variable(a.Value + b.Value);
+		}
+		public static Variable operator -(Variable a, Variable b)
+		{
+			return new Variable(a.Value - b.Value);
+		}
+		public static Variable operator *(Variable a, Variable b)
+		{
+			return new Variable(a.Value * b.Value);
+		}
+		public static Variable operator *(Variable a, double b)
+		{
+			return new Variable(a.Value * b);
+		}
+		public static Variable operator /(Variable a, Variable b)
+		{
+			return new Variable(a.Value / (double)b.Value);
+		}
+		public static Variable operator /(Variable a, double b)
+		{
+			return new Variable(a.Value / b);
+		}
+		public static Variable operator %(Variable a, Variable b)
+		{
+			return new Variable(a.Value % b.Value);
+		}
+		#endregion
+		
+		#region Miscellaneous Functions
+		public Variable Abs()
+		{
+			if (Value is Vector)
+				return new Variable(new Vector(((Vector) Value).Values.Select(d => d.Abs())));
+			return new Variable(Math.Abs(Value));
+		}
+		public Variable Sqrt()
+		{
+			return new Variable(Math.Sqrt(Value));
+		}
+		public Variable Ln()
+		{
+			return new Variable(Math.Log(Value));
+		}
+		public Variable Log()
+		{
+			return new Variable(Math.Log10(Value));
+		}
+		#endregion
+
+		#region Equality
+		public static bool operator ==(Variable a, Variable b)
+		{
+			return a.Value == b.Value;
+		}
+		public static bool operator !=(Variable a, Variable b)
+		{
+			return !(a == b);
+		}
+		#endregion
+
+		public override string ToString()
+		{
+			if(Name != null && Value != null)
+				return string.Concat(Name, '=', Value.ToString());
+			if (Name != null)
+				return Name;
+			if (Value != null)
+				return Value.ToString();
+			return "null";
+		}
+		
 	}
 }

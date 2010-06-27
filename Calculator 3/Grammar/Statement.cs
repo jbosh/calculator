@@ -40,7 +40,9 @@ namespace Calculator.Grammar
 			Asin,
 			Atan,
 			Cos,
+			Cross,
 			Deg,
+			Dot,
             Double,
 			Hex,
 			Id,
@@ -63,12 +65,10 @@ namespace Calculator.Grammar
 			Value,
 			Vector,
 		}
-		//private static readonly Regex RegNegate 
-		//	= new Regex(@"[~|+|\-|*|=|%|^|/] *(-+)", RegexOptions.Compiled);
 		private static readonly Regex RegSpaces
 			= new Regex(@"[^a-zA-Z\d\.][\d\.]+([_a-zA-Z]+)", RegexOptions.Compiled);
 		private static readonly Regex RegMulti
-			= new Regex(@"([\d\w\)]+)( +)([\d\w\(]+)", RegexOptions.Compiled);
+			= new Regex(@"([\d\w\)]+)( +)([\d\w\(\{]+)", RegexOptions.Compiled);
 		private static readonly Regex RegHex
 			= new Regex(@"0x[\d\.a..fA..F]+", RegexOptions.Compiled);
 		private static readonly Regex RegFloat
@@ -81,31 +81,30 @@ namespace Calculator.Grammar
 			get; private set;
 		}
 
-		private Dictionary<TokenType, Func<Token, VariableType>> Dispatch;
-		private DynamicMethod method;
-		private ILGenerator il;
+		private Dictionary<TokenType, Func<Token, Variable>> Dispatch;
 		private MemoryManager Memory;
-		private Func<MemoryManager, double> dFunc;
-		private Func<MemoryManager, Vector> dFuncVec;
 		private static LALRParser parser;
+		private NonterminalToken root;
 		public Statement(MemoryManager memory)
 		{
 			Memory = memory;
-			Dispatch = new Dictionary<TokenType, Func<Token, VariableType>>
+			Dispatch = new Dictionary<TokenType, Func<Token, Variable>>
 			{
 				{TokenType.Hex, VisitHex},
 				{TokenType.Double, VisitDouble},
 				{TokenType.Value, VisitValue},
-				{TokenType.Negation, VisitNegation},
+				{TokenType.Vector, VisitVector},
 				{TokenType.Id, VisitID},
+				
+				{TokenType.Negation, VisitNegation},
+				
 				{TokenType.ShiftExpression, VisitInteger},
 				{TokenType.LogicalExpression, VisitInteger},
 				{TokenType.OpExpression, VisitOp},
 				{TokenType.Expression, VisitOp},
 				{TokenType.Pow, VisitPow},
 				{TokenType.Factorial, VisitFactorial},
-				{TokenType.Vector, VisitVector},
-				/*{TokenType.Equals, VisitEquals},*/
+				
 				
 				{TokenType.Function, VisitFunc},
 				{TokenType.Sin, VisitTrig},
@@ -115,7 +114,9 @@ namespace Calculator.Grammar
 				{TokenType.Acos, VisitTrig},
 				{TokenType.Atan, VisitTrig},
 				{TokenType.Abs, VisitMiscFunc},
-				
+				{TokenType.Dot, VisitMiscFunc},
+				{TokenType.Cross, VisitMiscFunc},
+
 				{TokenType.Sqrt, VisitMiscFunc},
 				{TokenType.Ln, VisitMiscFunc},
 				{TokenType.Log, VisitMiscFunc},
@@ -130,37 +131,41 @@ namespace Calculator.Grammar
 				parser = reader.CreateNewParser();
 			}
 		}
-		public void ProcessString(string source)
+		public Variable ProcessString(string source)
 		{
-			if (source.Length == 0)
-			{
-				VariableType = VariableType.Error;
-				VariableName = "";
-				return;
-			}
+			VariableName = null;
+			VariableType = VariableType.Error;
+			if (string.IsNullOrWhiteSpace(source))
+				return Variable.Error;
+
 			Text = source;
 			var preprocess = Preprocess(source);
 			var split = preprocess.Split('=');
-			if(split.Length == 2)
+			if (split.Length == 2)
 			{
 				VariableName = split[0].Trim();
 				preprocess = split[1];
 			}
 			try
 			{
-				var root = parser.Parse(preprocess);
-				method = new DynamicMethod("Y1", typeof (double), new[] {typeof (MemoryManager)});
-				il = method.GetILGenerator();
-
-				VariableType = Visit(root);
-				il.Emit(OpCodes.Ret);
-				dFunc = (Func<MemoryManager, double>) method.CreateDelegate(typeof (Func<MemoryManager, double>));
+				root = parser.Parse(preprocess);
+				var variable = Visit(root);
+				if (variable.Value != null)
+				{
+					VariableType = VariableType.Double;
+					return variable;
+				}
+					
 			}
-			catch
+#if DEBUG
+			catch (Exception ex)
 			{
-				VariableType = VariableType.Error;
-				VariableName = "";
-			}	
+				Console.WriteLine(ex);
+			}
+#else
+			catch{}
+#endif
+			return Variable.Error;
 		}
 		private static string Preprocess(string source)
 		{
@@ -169,6 +174,8 @@ namespace Calculator.Grammar
 				.Replace(']', ')')
 				.Replace("(", " ( ")
 				.Replace(")", " ) ")
+				.Replace("}", " } ")
+				.Replace("{", " { ")
 				.Replace(",", "");
 			MatchCollection matches;
 			#region Process Extra Spaces
@@ -192,28 +199,6 @@ namespace Calculator.Grammar
 				}
 			}
 			source = source.Trim();
-			#endregion
-			#region Process Negation
-			/*while (false)
-			{
-				matches = RegNegate.Matches(source);
-				var chars = source.ToCharArray();
-				if (matches.Count == 0)
-				{
-					if (source[0] == '-')
-						source = "~" + source.Substring(1);
-					break;
-				}
-				if (chars[0] == '-')
-					chars[0] = '~';
-				for (var i = 0; i < matches.Count; i++)
-				{
-					var match = matches[i];
-					for (var j = 0; j < match.Groups[1].Length; j++)
-						chars[j + match.Groups[1].Index] = '~';
-				}
-				source = new string(chars);
-			}*/
 			#endregion
 			#region Process Extra Parenthessis
 			var parenDepth = 0;
@@ -283,6 +268,8 @@ namespace Calculator.Grammar
 				case "tan":
 				case "asin":
 				case "atan":
+				case "dot":
+				case "cross":
 					return true;
 				default:
 					return false;
@@ -309,88 +296,99 @@ namespace Calculator.Grammar
 					return false;
 			}
 		}
-		public object Execute()
+		public Variable Execute()
 		{
 			if (VariableType == VariableType.Error)
-				return null;
-			if (dFunc != null)
-			{
-				var output = dFunc(Memory);
-				if (!string.IsNullOrEmpty(VariableName))
-					Memory.SetVariable(VariableName, output);
-				return output;
-			}
-			else
-			{
-				var output = dFuncVec(Memory);
-				if (!string.IsNullOrEmpty(VariableName))
-					Memory.SetVariable(VariableName, output);
-				return output;
-			}
+				return Variable.Error;
+			var output = Visit(root);
+			if (!string.IsNullOrEmpty(VariableName))
+				Memory.SetVariable(VariableName, output);
+			return output;
 		}
 
-		private VariableType Visit(Token node)
+		private Variable Visit(Token node)
 		{
 			if (Dispatch.ContainsKey((TokenType)node.Symbol.Id))
 				return Dispatch[(TokenType)node.Symbol.Id](node);
-			return VariableType.Error;
+			return Variable.Error;
 		}
-		private VariableType VisitValue(Token token)
+		/// <summary>
+		/// Default for visiting an unknown token.
+		/// </summary>
+		/// <param name="token"></param>
+		/// <returns></returns>
+		private Variable VisitValue(Token token)
 		{
 			var node = (NonterminalToken) token;
 			if (node.Tokens.Length == 3)
 				return Visit(node.Tokens[1]);
             return Visit(node.Tokens[0]);
 		}
-		private VariableType VisitFunc(Token token)
+		private Variable VisitFunc(Token token)
 		{
 			var node = (NonterminalToken) token;
 			var type = (TerminalToken) node.Tokens[0];
 			if (Dispatch.ContainsKey((TokenType)type.Symbol.Id))
 				return Dispatch[(TokenType)type.Symbol.Id](node);
-			return VariableType.Error;
+			return Variable.Error;
 		}
-		private Vector ILEmitter(Vector a, Vector b)
-		{
-			return a + b;
-		}
-		private VariableType VisitVector(Token token)
+
+		#region Basic Parsing
+		private Variable VisitVector(Token token)
 		{
 			var node = (NonterminalToken) token;
-			return VariableType.Vector;
+			return new Variable(new Vector(VisitVectorList(node.Tokens[1]).Reverse()));
 		}
-		private VariableType VisitDouble(Token token)
+		private IEnumerable<Variable> VisitVectorList(Token token)
+		{
+			var node = (NonterminalToken) token;
+			while (node.Tokens.Length > 2)
+			{
+				yield return Visit(node.Tokens[2]);
+				if((TokenType)node.Tokens[0].Symbol.Id == TokenType.Vector)
+				{
+					yield return Visit(node.Tokens[0]);
+					yield break;
+				}
+				node = (NonterminalToken)node.Tokens[0];
+			}
+			yield return Visit(node.Tokens[0]);
+		}
+		private Variable VisitDouble(Token token)
 		{
 			var node = (TerminalToken)token;
-			if (il != null)
+			if (node.Text.Contains("E"))
 			{
-				if (node.Text.Contains("E"))
-				{
-					var split = node.Text.Split('E');
-					var b = double.Parse(split[0]);
-					var e = double.Parse(split[1]);
-					var d = b * Math.Pow(10, e);
-					il.Emit(OpCodes.Ldc_R8, d);
-				}
-				else
-				{
-					var d = double.Parse(node.Text);
-					il.Emit(OpCodes.Ldc_R8, d);
-				}
+				var split = node.Text.Split('E');
+				var b = double.Parse(split[0]);
+				var e = double.Parse(split[1]);
+				var d = b * Math.Pow(10, e);
+				return new Variable(d);
 			}
-			return VariableType.Double;
+			else
+			{
+				long l;
+				if(long.TryParse(node.Text, out l))
+					return new Variable(l);
+				var d = double.Parse(node.Text);
+				return new Variable(d);
+			}
 		}
-		private VariableType VisitHex(Token token)
+		private Variable VisitHex(Token token)
 		{
 			var node = (TerminalToken) token;
-			if(il != null)
-			{
-				var i = long.Parse(node.Text.Substring(2), NumberStyles.HexNumber);
-				il.Emit(OpCodes.Ldc_R8, (double)i);
-			}
-			return VariableType.Double;
+			var i = long.Parse(node.Text.Substring(2), NumberStyles.HexNumber);
+			return new Variable(i);
 		}
-		private VariableType VisitNegation(Token token)
+		private Variable VisitID(Token token)
+		{
+			var node = (TerminalToken) token;
+			return Memory.GetVariable(node.Text);
+		}
+		#endregion
+
+		#region Unary
+		private Variable VisitNegation(Token token)
 		{
 			var node = (NonterminalToken) token;
 			
@@ -398,261 +396,144 @@ namespace Calculator.Grammar
 				return VisitLogicalNegation(token);
 			
 			var left = Visit(node.Tokens[1]);
-			if (il != null)
-			{
-				il.Emit(OpCodes.Ldc_R8, (double)-1);
-				il.Emit(OpCodes.Mul);
-			}
+			left.Value *= -1;
 			return left;
 		}
-		private VariableType VisitLogicalNegation(Token token)
+		private Variable VisitLogicalNegation(Token token)
 		{
 			var node = (NonterminalToken)token;
-
 			var right = Visit(node.Tokens[1]);
-			if (il != null)
-				il.Emit(OpCodes.Conv_I4);
+			return new Variable(~(int) right.Value);
+		}
+		#endregion
 
-			if (il != null)
-			{
-				il.Emit(OpCodes.Not);
-				il.Emit(OpCodes.Conv_R8);
-			}
-			return VariableType.Double;
-		}
-		private VariableType VisitID(Token token)
-		{
-			var node = (TerminalToken) token;
-			if(il != null)
-			{
-				il.Emit(OpCodes.Ldarg_0);
-				il.Emit(OpCodes.Ldstr, node.Text);
-				il.EmitCall(OpCodes.Callvirt, Memory.GetType().GetMethod("GetVariable"), null);
-				il.Emit(OpCodes.Ldfld, typeof (Variable).GetField("ValueD"));
-			}
-			var variable = Memory.GetVariable(node.Text);
-			if (variable == null)
-				return VariableType.Error;
-			return variable.Type;
-		}
-		private VariableType VisitOp(Token token)
-		{
-			var node = (NonterminalToken)token;
-			var left = Visit(node.Tokens[0]);
-			var right = Visit(node.Tokens[2]);
-
-			if (il != null)
-			{
-				OpCode op;
-				switch ((TokenType)node.Tokens[1].Symbol.Id)
-				{
-					case TokenType.Mult:
-						op = OpCodes.Mul;
-						break;
-					case TokenType.Plus:
-						op = OpCodes.Add;
-						break;
-					case TokenType.Minus:
-						op = OpCodes.Sub;
-						break;
-					case TokenType.Divide:
-						op = OpCodes.Div;
-						break;
-					case TokenType.Mod:
-						op = OpCodes.Rem;
-						break;
-					default:
-						throw new ArgumentOutOfRangeException();
-				}
-				il.Emit(op);
-			}
-			return Coerce(left, right);
-		}
-		private VariableType VisitInteger(Token token)
+		#region Operators
+		private Variable VisitInteger(Token token)
 		{
 			var node = (NonterminalToken)token;
 
 			var left = Visit(node.Tokens[0]);
-			if(il != null)
-				il.Emit(OpCodes.Conv_I4);
-			
 			var right = Visit(node.Tokens[2]);
-			if (il != null)
-				il.Emit(OpCodes.Conv_I4);
-
-			if (il != null)
+			OpCode op;
+			switch ((TokenType)node.Tokens[1].Symbol.Id)
 			{
-				OpCode op;
-				switch ((TokenType)node.Tokens[1].Symbol.Id)
-				{
-					case TokenType.ShiftLeft:
-						op = OpCodes.Shl;
-						break;
-					case TokenType.ShiftRight:
-						op = OpCodes.Shr;
-						break;
-					case TokenType.LogicalOr:
-						op = OpCodes.Or;
-						break;
-					case TokenType.LogicalAnd:
-						op = OpCodes.And;
-						break;
-					default:
-						return VariableType.Error;
-				}
-				il.Emit(op);
-				il.Emit(OpCodes.Conv_R8);
+				case TokenType.ShiftLeft:
+					return left << (int)right.Value;
+				case TokenType.ShiftRight:
+					return left >> (int)right.Value;
+				case TokenType.LogicalOr:
+					return left | right;
+				case TokenType.LogicalAnd:
+					return left & right;
+				default:
+					return Variable.Error;
 			}
-			return VariableType.Double;
 		}
-		private VariableType VisitPow(Token token)
+		private Variable VisitOp(Token token)
 		{
 			var node = (NonterminalToken) token;
 			var left = Visit(node.Tokens[0]);
 			var right = Visit(node.Tokens[2]);
-			if (left != VariableType.Double || right != VariableType.Double)
-				return VariableType.Error;
-			if (il != null)
-			{
-				il.EmitCall(OpCodes.Call, typeof(Math).GetMethod("Pow"), null);
-			}
-			return VariableType.Double;
-		}
 
-		private VariableType VisitMiscFunc(Token token)
-		{
-			var node = (NonterminalToken)token;
-			var type = Visit(node.Tokens[1]);
-			if (il != null)
+			switch ((TokenType) node.Tokens[1].Symbol.Id)
 			{
-				MethodInfo info;
-				switch ((TokenType)node.Tokens[0].Symbol.Id)
-				{
-					case TokenType.Abs:
-						info = typeof(Math).GetMethod("Abs", new[] {typeof(double)});
-						break;
-					case TokenType.Sqrt:
-						info = typeof(Math).GetMethod("Sqrt", new[] { typeof(double) });
-						break;
-					case TokenType.Ln:
-						info = typeof(Math).GetMethod("Log", new[] { typeof(double) });
-						break;
-					case TokenType.Log:
-						info = typeof(Math).GetMethod("Log10", new[] { typeof(double) });
-						break;
-					default:
-						throw new ArgumentOutOfRangeException();
-				}
-				il.EmitCall(OpCodes.Call, info, null);
+				case TokenType.Mult:
+					return left * right;
+				case TokenType.Plus:
+					return left + right;
+				case TokenType.Minus:
+					return left - right;
+				case TokenType.Divide:
+					return left / right;
+				case TokenType.Mod:
+					return left % right;
+				default:
+					throw new ArgumentOutOfRangeException();
 			}
-			
-			return type;
 		}
-		private VariableType VisitTrig(Token token)
+		private Variable VisitPow(Token token)
 		{
 			var node = (NonterminalToken) token;
-			var type = Visit(node.Tokens[1]);
-			if (type != VariableType.Double)
-				return VariableType.Error;
-			bool degreeAfter;
-			MethodInfo info;
-			if (il == null)
-				return VariableType.Double;
+			var left = Visit(node.Tokens[0]);
+			var right = Visit(node.Tokens[2]);
+			return new Variable(Math.Pow(left.Value, right.Value));
+		}
+		private Variable VisitFactorial(Token token)
+		{
+			var node = (NonterminalToken)token;
+			var left = Visit(node.Tokens[0]);
+			return new Variable(Factorial(left.Value));
+		}
+		public static double Factorial(double d)
+		{
+			double output = 1;
+			for (int i = (int)d; i >= 1; i--)
+				output *= i;
+			return output;
+		}
+		#endregion
+		
+		
+
+		private Variable VisitMiscFunc(Token token)
+		{
+			var node = (NonterminalToken)token;
+			var left = Visit(node.Tokens[1]);
+			switch ((TokenType)node.Tokens[0].Symbol.Id)
+			{
+				case TokenType.Abs:
+					return left.Abs();
+				case TokenType.Sqrt:
+					return left.Sqrt();
+				case TokenType.Ln:
+					return left.Ln();
+				case TokenType.Log:
+					return left.Log();
+				case TokenType.Dot:
+					return ((Vector)left.Value).Dot();
+				case TokenType.Cross:
+					return ((Vector)left.Value).Cross();
+				default:
+					throw new ArgumentOutOfRangeException();
+			}
+		}
+		private Variable VisitTrig(Token token)
+		{
+			var node = (NonterminalToken) token;
+			var left = Visit(node.Tokens[1]);
+			var degreeBefore = Program.Radians ? 1 : 0.0174532925199433;
+			var degreeAfter = !Program.Radians ? 57.2957795130823 : 1;
 			switch ((TokenType)node.Tokens[0].Symbol.Id)
 			{
 				case TokenType.Sin:
-					info = typeof(Math).GetMethod("Sin");
-					degreeAfter = false;
-					break;
+					return new Variable(Math.Sin(left.Value * degreeBefore));
 				case TokenType.Cos:
-					info = typeof(Math).GetMethod("Cos");
-					degreeAfter = false;
-					break;
+					return new Variable(Math.Cos(left.Value * degreeBefore));
 				case TokenType.Tan:
-					info = typeof(Math).GetMethod("Tan");
-					degreeAfter = false;
-					break;
+					return new Variable(Math.Tan(left.Value * degreeBefore));
 				case TokenType.Asin:
-					info = typeof(Math).GetMethod("Asin");
-					degreeAfter = true;
-					break;
+					return new Variable(degreeAfter * Math.Asin(left.Value));
 				case TokenType.Acos:
-					info = typeof(Math).GetMethod("Acos");
-					degreeAfter = true;
-					break;
+					return new Variable(degreeAfter * Math.Acos(left.Value));
 				case TokenType.Atan:
-					info = typeof(Math).GetMethod("Atan");
-					degreeAfter = true;
-					break;
+					return new Variable(degreeAfter * Math.Atan(left.Value));
 				default:
 					throw new NotImplementedException();
 			}
-			if(!Program.Radians && !degreeAfter)
-			{
-				//Convert degrees to radians
-				il.Emit(OpCodes.Ldc_R8, (double)0.0174532925199433);
-				il.Emit(OpCodes.Mul);
-			}
-			il.EmitCall(OpCodes.Call, info, null);
-			if (!Program.Radians && degreeAfter)
-			{
-				//Convert radians to degrees
-				il.Emit(OpCodes.Ldc_R8, (double)57.2957795130823);
-				il.Emit(OpCodes.Mul);
-			}
-			return VariableType.Double;
 		}
-		private VariableType VisitRadDeg(Token token)
+		private Variable VisitRadDeg(Token token)
 		{
 			var node = (NonterminalToken) token;
-			var type = Visit(node.Tokens[1]);
-			if (type != VariableType.Double)
-				throw new ArgumentException();
-			if (il != null)
+			var left = Visit(node.Tokens[1]);
+			switch ((TokenType)node.Tokens[0].Symbol.Id)
 			{
-				switch ((TokenType)node.Tokens[0].Symbol.Id)
-				{
-					case TokenType.Rad:
-						il.Emit(OpCodes.Ldc_R8, (double)0.0174532925199433);
-						il.Emit(OpCodes.Mul);
-						break;
-					case TokenType.Deg:
-						il.Emit(OpCodes.Ldc_R8, (double)57.2957795130823);
-						il.Emit(OpCodes.Mul);
-						break;
-					default:
-						throw new NotImplementedException();
-				}
+				case TokenType.Rad:
+					return left * 0.0174532925199433;
+				case TokenType.Deg:
+					return left * 57.2957795130823;
+				default:
+					throw new NotImplementedException();
 			}
-			return VariableType.Double;
-		}
-		/*
-		private VariableType VisitEquals(Token node)
-		{
-			VariableName = node.GetChild(0).Text;
-			VariableType = Visit(node.GetChild(1));
-			return VariableType;
-		}
-		private VariableType VisitVector(ITree node)
-		{
-			var nodes = new VariableType[node.ChildCount - 1];
-			for (int i = 0; i < nodes.Length; i++)
-				nodes[i] = Visit(node.GetChild(i + 1));
-			throw new NotImplementedException();
-			return VariableType.Vector;
-		}*/
-		private VariableType VisitFactorial(Token token)
-		{
-			var node = (NonterminalToken) token;
-			var left = Visit(node.Tokens[0]);
-			if (left != VariableType.Double)
-				throw new ArgumentException();
-			if (il != null)
-			{
-				var info = typeof(Statement).GetMethod("Factorial", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
-				il.EmitCall(OpCodes.Call, info, null);
-			}
-			return VariableType.Double;
 		}
 		private VariableType Coerce(VariableType a, VariableType b)
 		{
@@ -663,13 +544,6 @@ namespace Calculator.Grammar
 			var min = (VariableType)Math.Min((int)a, (int)b);
 			//var max = (NodeType)Math.Max((int)a, (int)b);
 			return min;
-		}
-		public static double Factorial(double d)
-		{
-			double output = 1;
-			for (int i = (int)d; i >= 1; i--)
-				output *= i;
-			return output;
 		}
 	}
 }

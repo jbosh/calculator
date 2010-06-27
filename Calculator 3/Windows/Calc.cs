@@ -36,7 +36,7 @@ namespace Calculator.Windows
 
 			fields = new List<CalculatorField>();
 			var field = new CalculatorField(Memory);
-			field.txtQuestion.TextChanged += (o, e) => Recalculate(false);
+			field.txtQuestion.TextChanged += (o, e) => Recalculate(true);
 			fields.Add(field);
 			Controls.Add(field.lblEquals);
 			Controls.Add(field.lblAnswer);
@@ -239,7 +239,7 @@ namespace Calculator.Windows
 			if (fields.Count >= 24)
 				return;
 			var field = new CalculatorField(Memory, fields[fields.Count - 1]);
-			field.txtQuestion.TextChanged += (o, e) => Recalculate(false);
+			field.txtQuestion.TextChanged += (o, e) => Recalculate(true);
 			fields.Add(field);
 			Controls.Add(field.lblEquals);
 			Controls.Add(field.lblAnswer);
@@ -262,7 +262,7 @@ namespace Calculator.Windows
 		private class CalculatorField
 		{
 			public readonly Statement statement;
-			public readonly int index;
+			public readonly int Index;
 			public readonly Label lblAnswer;
 			public readonly Label lblEquals;
 			public readonly TextBoxAdvanced txtQuestion;
@@ -282,7 +282,7 @@ namespace Calculator.Windows
 			#region Constructors
 			public CalculatorField(MemoryManager memory)
 			{
-				index = 0;
+				Index = 0;
 				lblEquals = new Label();
 				lblAnswer = new Label();
 				txtQuestion = new TextBoxAdvanced();
@@ -298,7 +298,7 @@ namespace Calculator.Windows
 				txtQuestion.Location = new Point(3, 2);
 				txtQuestion.Name = "txtQuestion";
 				txtQuestion.Size = new Size(427, 20);
-				txtQuestion.TabIndex = index;
+				txtQuestion.TabIndex = Index;
 				txtQuestion.TextChanged += (o, e) => txtQuestion_TextChanged();
 				var font = new Font("Consolas", txtQuestion.Font.SizeInPoints);
 				if (font.Name != "Consolas")
@@ -320,12 +320,12 @@ namespace Calculator.Windows
 			}
 			public CalculatorField(MemoryManager memory, CalculatorField previous) : this(memory)
 			{
-				index = previous.index + 1;
+				Index = previous.Index + 1;
 
 				lblAnswer.Location = new Point(450, previous.lblAnswer.Bottom + 5);
 				txtQuestion.Location = new Point(3, previous.txtQuestion.Bottom + 2);
 				txtQuestion.Name = "txtQuestion";
-				txtQuestion.TabIndex = index;
+				txtQuestion.TabIndex = Index;
 
 				lblEquals.AutoSize = true;
 				lblEquals.Location = new Point(434, txtQuestion.Top + 4);
@@ -340,25 +340,32 @@ namespace Calculator.Windows
 			}
 			public void txtQuestion_TextChanged()
 			{
-				txtQuestion.Text = txtQuestion.Text
-					.Replace("\\pi", "π")
-					.Replace("\\mu", "μ")
-					.Replace("\\Theta", "Θ")
-					.Replace("\\theta", "θ")
-					.Replace("\\snowman", "☃")
-					.Replace("\\Omega", "Ω")
-					.Replace("\\omega", "ѡ")
-					.Replace("\\alpha", "ɑ")
-					.Replace("\\Beta", "Β")
-					.Replace("\\beta", "β")
-					.Replace("\\gamma", "γ")
-					.Replace("\\delta", "δ")
-					.Replace("\\Delta", "Δ");
-
+				CheckForReplacement(@"\pi", "π");
+				CheckForReplacement(@"\mu", "μ");
+				CheckForReplacement(@"\Theta", "Θ");
+				CheckForReplacement(@"\theta", "θ");
+				CheckForReplacement(@"\snowman", "☃");
+				CheckForReplacement(@"\Omega", "Ω");
+				CheckForReplacement(@"\omega", "ѡ");
+				CheckForReplacement(@"\alpha", "ɑ");
+				CheckForReplacement(@"\Beta", "Β");
+				CheckForReplacement(@"\beta", "β");
+				CheckForReplacement(@"\gamma", "γ");
+				CheckForReplacement(@"\delta", "δ");
+				CheckForReplacement(@"\Delta", "Δ");
 				statement.ProcessString(txtQuestion.Text);
 				Calculate(false);
 			}
-
+			private void CheckForReplacement(string alias, string replace)
+			{
+				var index = txtQuestion.Text.IndexOf(alias);
+				if (index < 0)
+					return;
+				txtQuestion.Text = txtQuestion.Text
+					.Remove(index, alias.Length)
+					.Insert(index, replace);
+				txtQuestion.SelectionStart = txtQuestion.CaretStart = index + replace.Length;
+			}
 			public void lblAnswer_Click(object sender, EventArgs e)
 			{
 				if (lblAnswer.Text != null)

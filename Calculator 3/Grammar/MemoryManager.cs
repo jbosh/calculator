@@ -20,16 +20,16 @@ namespace Calculator.Grammar
 		}
 		public void SetVariable(string name, double value)
 		{
-			SetVariable(name, new Variable(name, value));
+			SetVariable(name, new Variable(value, name));
 		}
 		public void SetVariable(string name, Vector value)
 		{
-			SetVariable(name, new Variable(name, value));
+			SetVariable(name, new Variable(value, name));
 		}
 		public void SetVariable(string name, Variable value)
 		{
 			if (!Memory[Memory.Count - 1].ContainsKey(name))
-				Memory[Memory.Count - 1].Add(name, null);
+				Memory[Memory.Count - 1].Add(name, Variable.Error);
 			Memory[Memory.Count - 1][name] = value;
 		}
 		public Variable GetVariable(string name)
@@ -37,7 +37,7 @@ namespace Calculator.Grammar
 			for (int i = Memory.Count - 1; i >= 0; i--)
 				if (Memory[i].ContainsKey(name))
 					return Memory[i][name];
-			return null;
+			return Variable.Error;
 		}
 		public void Push()
 		{

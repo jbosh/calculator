@@ -1,8 +1,9 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using System.Xml;
@@ -110,6 +111,7 @@ namespace Calculator
 						Memory.SetVariable("G", 6.67428E-11);
 						Memory.SetVariable("g", 9.8);
 						Memory.SetVariable("pi", Math.PI);
+						Memory.SetVariable("π", Math.PI);
 						Memory.SetVariable("e", Math.E);
 						Memory.SetVariable("c", 299792458.0);
 						Memory.SetVariable("x", 0);
@@ -266,7 +268,29 @@ namespace Calculator
 		{
 			if (value is double)
 				return FormatOutput((double) value);
+			if (value is Variable)
+			{
+				var v = ((Variable) value).Value;
+				if(v == null)
+					return "NaN";
+				return FormatOutput(v);
+			}
+			if (value is Vector)
+				return FormatOutput((Vector) value);
 			return "";
+		}
+		public static string FormatOutput(Vector value)
+		{
+			var builder = new StringBuilder();
+			builder.Append('{');
+			for (int i = 0; i < value.Length; i++)
+			{
+				builder.Append(FormatOutput(value[i]));
+				if (i != value.Length - 1)
+					builder.Append("; ");
+			}
+			builder.Append('}');
+			return builder.ToString();
 		}
 		public static string FormatOutput(double value)
 		{

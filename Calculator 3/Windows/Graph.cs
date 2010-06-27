@@ -114,7 +114,7 @@ namespace Calculator.Windows
 				int j = 0;
 				foreach (var stat in parent.Statements)
 				{
-					var y = (float)stat.Execute();
+					var y = (float)stat.Execute().Value;
 					//a + (b - a) * amt
 					//y/rectHeight = viewY/viewHeight
 					y = ClientSize.Height - (y - ViewRect.Top) / ViewRect.Height * ClientSize.Height;

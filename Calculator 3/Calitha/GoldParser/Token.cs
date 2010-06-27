@@ -55,7 +55,7 @@ namespace Calitha.GoldParser
 		/// <summary>
 		/// The symbol that this token represents.
 		/// </summary>
-		public override Symbol Symbol { get { return symbol; } }
+		public override Symbol Symbol { [DebuggerStepThrough] get { return symbol; } }
 		private Symbol symbol;
 
 		/// <summary>
