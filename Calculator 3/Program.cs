@@ -10,7 +10,6 @@ using System.Xml;
 using Calculator.Grammar;
 using Calculator.Windows;
 using Help=Calculator.Windows.Help;
-using System.Diagnostics;
 
 namespace Calculator
 {
@@ -118,7 +117,8 @@ namespace Calculator
 						Memory.SetVariable("c", 299792458.0);
 						Memory.SetVariable("x", 0);
 						Memory.Push();
-						var stat = new Statement(Memory);
+						Statement.Memory = Memory;
+						var stat = new Statement();
 						Console.WriteLine(stat.ProcessString(formula));
 						return;
 					}
@@ -199,6 +199,8 @@ namespace Calculator
 				Directory.CreateDirectory(SettingsFolder);
 			using (var writer = XmlWriter.Create(SettingsFile))
 			{
+				if (writer == null)
+					return;
 				writer.WriteStartElement("calculator");
 				writer.WriteAttributeString("version", Version.ToString(4));
 				//Boolean values must be lower case.
@@ -284,7 +286,7 @@ namespace Calculator
 				return FormatOutput((Vector) value);
 			return "";
 		}
-		public static string FormatOutput(Vector value)
+		private static string FormatOutput(Vector value)
 		{
 			var builder = new StringBuilder();
 			builder.Append('{');
@@ -297,7 +299,7 @@ namespace Calculator
 			builder.Append('}');
 			return builder.ToString();
 		}
-		public static string FormatOutput(double value)
+		private static string FormatOutput(double value)
 		{
 			switch (Format)
 			{
@@ -306,16 +308,11 @@ namespace Calculator
 						value = Math.Round(value, Rounding);
 					if (ThousandsSeperator && !value.ToString().Contains("E"))
 						return value.ToString("#,0." + new string('#', 50));
-					else
-						return value.ToString();
+					return value.ToString();
 				case OutputFormat.Hex:
 					return "0x" + ((int) value).ToString("X");
 				case OutputFormat.Scientific:
-					string scientific;
-					if (Rounding == -1)
-						scientific = value.ToString("E");
-					else
-						scientific = value.ToString("E" + Rounding + "");
+					var scientific = value.ToString("E" + (Rounding == -1 ? "" : "Rounding "));
 					var index = scientific.IndexOf('E') + 1;
 					if (scientific[index] == '-')
 						index++;

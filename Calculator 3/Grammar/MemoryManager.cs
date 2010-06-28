@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace Calculator.Grammar
 {
@@ -38,14 +35,6 @@ namespace Calculator.Grammar
 				if (Memory[i].ContainsKey(name))
 					return Memory[i][name];
 			return Variable.Error;
-		}
-		/// <summary>
-		/// Resets only the topmost item on the stack.
-		/// </summary>
-		public void ResetTop()
-		{
-			Pop();
-			Push();
 		}
 		public void Push()
 		{

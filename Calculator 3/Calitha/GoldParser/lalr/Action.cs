@@ -1,4 +1,3 @@
-using System;
 namespace Calitha.GoldParser.lalr
 {
 	public enum ActionType

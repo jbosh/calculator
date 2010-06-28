@@ -1,4 +1,3 @@
-using System;
 using System.Diagnostics;
 
 namespace Calitha.GoldParser
@@ -38,8 +37,8 @@ namespace Calitha.GoldParser
 		public TerminalToken(Symbol symbol, string text, Location location)
 		{
 			this.symbol = symbol;
-			this.Text = text;
-			this.Location = location;
+			Text = text;
+			Location = location;
 		}
 
 		/// <summary>
@@ -81,8 +80,8 @@ namespace Calitha.GoldParser
 		/// <param name="tokens">The tokens that are reduced.</param>
 		public NonterminalToken(Rule rule, Token[] tokens)
 		{
-			this.Rule = rule;
-			this.Tokens = tokens;
+			Rule = rule;
+			Tokens = tokens;
 		}
 
 		public void ClearTokens()

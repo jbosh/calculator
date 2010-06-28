@@ -3,13 +3,13 @@ using Calculator.Grammar;
 
 namespace Calculator
 {
+#if RUN_TESTS
 	static class Tests
 	{
-		private static MemoryManager Memory;
 		public static void RunTests()
 		{
 			#region Constants
-			Memory = new MemoryManager();
+			var Memory = new MemoryManager();
 			Memory.SetVariable("G", 6.67428E-11);
 			Memory.SetVariable("g", 9.8);
 			Memory.SetVariable("pi", Math.PI);
@@ -18,6 +18,7 @@ namespace Calculator
 			Memory.SetVariable("c", 299792458.0);
 			Memory.SetVariable("x", 0);
 			Memory.Push();
+			Statement.Memory = Memory;
 			#endregion
 
 			TestFunction("2.3441", 2.34);
@@ -28,6 +29,7 @@ namespace Calculator
 			TestFunction("203,20,2", 203202);
 			TestFunction("2E.2", 3.17);
 			TestFunction("e", 2.72);
+			TestFunction("π", 3.14);
 			TestFunction("{2;4;3}", new Vector(2, 4, 3));
 			TestFunction("0xF0", 240);
 			TestFunction("0xffabcde12348", 281113358574408);
@@ -109,17 +111,19 @@ namespace Calculator
 			Memory["g"] = new Variable(20, "g");
 			Memory["e2"] = new Variable(15, "e2");
 			Memory["v"] = new Variable(new Vector(3, 2, 1));
+			Memory["☃"] = new Variable(32);
 			TestFunction("a", 2);
 			TestFunction("g * a", 40);
 			TestFunction("a(33)", 66);
 			TestFunction("33a", 66);
 			TestFunction("e2", 15);
 			TestFunction("v/len(v)", new Vector(.8, .53, .27));
+			TestFunction("☃", 32);
 			Memory.Pop();
 		}
 		private static void TestFunction(string function, dynamic correct)
 		{
-			var stat = new Statement(Memory);
+			var stat = new Statement();
 			var output = stat.ProcessString(function);
 			if (output.Value is double)
 				output.Value = Math.Round(output.Value, 2);
@@ -127,4 +131,5 @@ namespace Calculator
 				throw new ApplicationException(string.Format("Failed on \"{0}\". Answer: {1}.", function, output));
 		}
 	}
+#endif
 }

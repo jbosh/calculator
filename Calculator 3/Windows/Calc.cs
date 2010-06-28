@@ -4,14 +4,13 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using Calculator.Properties;
 using Calculator.Grammar;
 
 namespace Calculator.Windows
 {
 	public partial class Calc : Form, ICalculator
 	{
-		private MemoryManager Memory;
+		private readonly MemoryManager Memory;
 		public IEnumerable<Statement> Statements
 		{
 			get { return fields.Select(f => f.statement); }
@@ -24,10 +23,12 @@ namespace Calculator.Windows
 			Memory.SetVariable("G", 6.67428E-11);
 			Memory.SetVariable("g", 9.8);
 			Memory.SetVariable("pi", Math.PI);
+			Memory.SetVariable("π", Math.PI);
 			Memory.SetVariable("e", Math.E);
 			Memory.SetVariable("c", 299792458.0);
 			Memory.SetVariable("x", 0);
 			Memory.Push();
+			Statement.Memory = Memory;
 
 			InitializeComponent();
 			if (Environment.OSVersion.Platform == PlatformID.Unix)
@@ -35,7 +36,7 @@ namespace Calculator.Windows
 			KeyDown += Calc_KeyDown;
 
 			fields = new List<CalculatorField>();
-			var field = new CalculatorField(Memory);
+			var field = new CalculatorField();
 			field.txtQuestion.TextChanged += (o, e) => Recalculate(false);
 			fields.Add(field);
 			Controls.Add(field.lblEquals);
@@ -48,13 +49,13 @@ namespace Calculator.Windows
 		#region ICalculator Members
 		public void Recalculate(bool global)
 		{
-			if (TopMost != Program.AlwaysOnTop)
-				TopMost = Program.AlwaysOnTop;
+			TopMost = Program.AlwaysOnTop;
 			foreach (CalculatorField field in fields)
 				field.Calculate(global);
 			if(graph != null)
 				graph.Recalculate(global);
-			Memory.ResetTop();
+			Memory.Pop();
+			Memory.Push();
 		}
 		#endregion
 		private void Calc_KeyDown(object sender, KeyEventArgs e)
@@ -229,15 +230,11 @@ namespace Calculator.Windows
 					break;
 			}
 		}
-		public void Push()
-		{
-			Push("");
-		}
-		public void Push(string text)
+		private void Push(string text = "")
 		{
 			if (fields.Count >= 24)
 				return;
-			var field = new CalculatorField(Memory, fields[fields.Count - 1]);
+			var field = new CalculatorField(fields[fields.Count - 1]);
 			field.txtQuestion.TextChanged += (o, e) => Recalculate(false);
 			fields.Add(field);
 			Controls.Add(field.lblEquals);
@@ -246,7 +243,7 @@ namespace Calculator.Windows
 			ClientSize = new Size(ClientSize.Width, field.Bottom + 2);
 			field.Text = text;
 		}
-		public void Pop()
+		private void Pop()
 		{
 			if (fields.Count <= 1)
 				return;
@@ -279,7 +276,7 @@ namespace Calculator.Windows
 				get { return lblAnswer.Text; }
 			}
 			#region Constructors
-			public CalculatorField(MemoryManager memory)
+			public CalculatorField()
 			{
 				Index = 0;
 				lblEquals = new Label();
@@ -292,7 +289,7 @@ namespace Calculator.Windows
 				lblAnswer.TabIndex = 0;
 				lblAnswer.TabStop = false;
 
-				statement = new Statement(memory);
+				statement = new Statement();
 				txtQuestion.CaretStart = 0;
 				txtQuestion.Location = new Point(3, 2);
 				txtQuestion.Name = "txtQuestion";
@@ -317,7 +314,7 @@ namespace Calculator.Windows
 
 				lblAnswer.Click += lblAnswer_Click;
 			}
-			public CalculatorField(MemoryManager memory, CalculatorField previous) : this(memory)
+			public CalculatorField(CalculatorField previous) : this()
 			{
 				Index = previous.Index + 1;
 
@@ -337,7 +334,7 @@ namespace Calculator.Windows
 				var parse = statement.ProcessString(txtQuestion.Text);
 				lblAnswer.Text = Program.FormatOutput(parse);
 			}
-			public void txtQuestion_TextChanged()
+			private void txtQuestion_TextChanged()
 			{
 				CheckForReplacement(@"\pi", "π");
 				CheckForReplacement(@"\mu", "μ");
@@ -365,7 +362,7 @@ namespace Calculator.Windows
 					.Insert(index, replace);
 				txtQuestion.SelectionStart = txtQuestion.CaretStart = index + replace.Length;
 			}
-			public void lblAnswer_Click(object sender, EventArgs e)
+			private void lblAnswer_Click(object sender, EventArgs e)
 			{
 				if (lblAnswer.Text != null)
 					Clipboard.SetText(Answer);

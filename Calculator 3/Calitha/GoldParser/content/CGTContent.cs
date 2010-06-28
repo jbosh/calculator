@@ -1,7 +1,4 @@
-using System.Collections.Generic;
 using System.Linq;
-using Calitha.Common;
-using Calitha.GoldParser.dfa;
 using Calitha.GoldParser.structure;
 
 namespace Calitha.GoldParser.content

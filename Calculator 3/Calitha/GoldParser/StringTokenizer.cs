@@ -263,8 +263,8 @@ namespace Calitha.GoldParser
 		/// <param name="location">The input location when the DFA was in this state.</param>
 		public AcceptInfo(EndState state, Location location)
 		{
-			this.State = state;
-			this.Location = location;
+			State = state;
+			Location = location;
 		}
 
 		/// <summary>

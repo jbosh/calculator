@@ -1,6 +1,4 @@
 using Calitha.GoldParser.structure;
-using System.Linq;
-using System.Collections.Generic;
 
 namespace Calitha.GoldParser.content
 {

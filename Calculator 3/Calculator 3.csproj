@@ -220,9 +220,7 @@
     </None>
     <EmbeddedResource Include="Grammer.cgt" />
     <Content Include="Calculator.ico" />
-    <Content Include="Calculator.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <None Include="Calculator.xml" />
     <Content Include="Tasks.txt" />
   </ItemGroup>
   <ItemGroup>

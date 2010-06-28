@@ -1,7 +1,3 @@
-using System;
-using System.Collections;
-using System.Diagnostics;
-
 namespace Calitha.GoldParser
 {
 	/// <summary>
@@ -18,9 +14,9 @@ namespace Calitha.GoldParser
 		/// <param name="rhs">The right hand side. The symbols that can be reduced.</param>
 		public Rule(int id, Symbol lhs, Symbol[] rhs)
 		{
-			this.Id = id;
-			this.Lhs = lhs;
-			this.Rhs = rhs;
+			Id = id;
+			Lhs = lhs;
+			Rhs = rhs;
 		}
 
 		/// <summary>

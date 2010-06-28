@@ -27,9 +27,9 @@ namespace Calitha.GoldParser
 
 		private void Init(int position, int lineNr, int columnNr)
 		{
-			this.Position = position;
-			this.LineNr = lineNr;
-			this.ColumnNr = columnNr;
+			Position = position;
+			LineNr = lineNr;
+			ColumnNr = columnNr;
 		}
 
 		public Location Clone()

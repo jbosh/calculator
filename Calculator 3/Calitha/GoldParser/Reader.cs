@@ -7,7 +7,7 @@ using Calitha.GoldParser.dfa;
 using Calitha.GoldParser.lalr;
 using Calitha.GoldParser.structure;
 using DFA = Calitha.GoldParser.dfa;
-using State=Calitha.GoldParser.dfa.State;
+using State = Calitha.GoldParser.dfa.State;
 
 namespace Calitha.GoldParser
 {
@@ -81,7 +81,7 @@ namespace Calitha.GoldParser
 					throw new CGTStructureException("File header is invalid",e);
 				}
 				var records = new List<Record>();
-				while (!(stream.Position == stream.Length))
+				while (stream.Position != stream.Length)
 				{
 					records.Add(ReadRecord(reader));
 				}
@@ -155,7 +155,7 @@ namespace Calitha.GoldParser
 			
 			foreach (var stateRecord in content.DFAStateTable)
 			{
-				foreach (EdgeSubRecord edgeRecord in stateRecord.EdgeSubRecords)
+				foreach (var edgeRecord in stateRecord.EdgeSubRecords)
 				{
 					var source = states[stateRecord.Index];
 					var target = states[edgeRecord.TargetIndex];
@@ -200,7 +200,7 @@ namespace Calitha.GoldParser
 			foreach (var record in content.LALRStateTable)
 			{
 				var state = states[record.Index];
-				foreach (ActionSubRecord subRecord in record.ActionSubRecords)
+				foreach (var subRecord in record.ActionSubRecords)
 				{
 					var action =
 						ActionFactory.CreateAction(subRecord,

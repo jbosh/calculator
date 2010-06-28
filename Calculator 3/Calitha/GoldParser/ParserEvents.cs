@@ -11,7 +11,7 @@ namespace Calitha.GoldParser
 	{
 		public TokenReadEventArgs(TerminalToken token)
 		{
-			this.Token = token;
+			Token = token;
 			Continue = true;
 		}
 
@@ -34,8 +34,8 @@ namespace Calitha.GoldParser
 	{
 		public ShiftEventArgs(TerminalToken token, State newState)
 		{
-			this.Token = token;
-			this.NewState = newState;
+			Token = token;
+			NewState = newState;
 		}
 
 		/// <summary>
@@ -56,9 +56,9 @@ namespace Calitha.GoldParser
 	{
 		public ReduceEventArgs(Rule rule, NonterminalToken token, State newState)
 		{
-			this.Rule = rule;
-			this.Token = token;
-			this.NewState = newState;
+			Rule = rule;
+			Token = token;
+			NewState = newState;
 			Continue = true;
 		}
 
@@ -92,8 +92,8 @@ namespace Calitha.GoldParser
 	{
 		public GotoEventArgs(Symbol symbol, State newState)
 		{
-			this.Symbol = symbol;
-			this.NewState = newState;
+			Symbol = symbol;
+			NewState = newState;
 		}
 
 		/// <summary>
@@ -114,7 +114,7 @@ namespace Calitha.GoldParser
 	{
 		public AcceptEventArgs(NonterminalToken token)
 		{
-			this.Token = token;
+			Token = token;
 		}
 
 		/// <summary>
@@ -131,7 +131,7 @@ namespace Calitha.GoldParser
 	{
 		public TokenErrorEventArgs(TerminalToken token)
 		{
-			this.Token = token;
+			Token = token;
 			Continue = false;
 		}
 

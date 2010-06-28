@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 
 namespace Calitha.GoldParser.lalr
@@ -14,7 +13,7 @@ namespace Calitha.GoldParser.lalr
 		/// <param name="id">The id of the state.</param>
 		public State(int id)
 		{
-			this.Id = id;
+			Id = id;
 			Actions = new Dictionary<Symbol, Action>();
 		}
 

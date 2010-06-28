@@ -1,18 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Calculator.Grammar
 {
-	public enum VariableType
-	{
-		Error = 0,
-		Vector,
-		Double,
-		Bool,
-	}
-	public struct Variable
+	public struct Variable : IEquatable<Variable>
 	{
 		public string Name;
 		public dynamic Value;
@@ -121,6 +112,22 @@ namespace Calculator.Grammar
 		{
 			return !(a == b);
 		}
+		public bool Equals(Variable other)
+		{
+			return Equals(other.Name, Name) && Equals(other.Value, Value);
+		}
+		public override bool Equals(object obj)
+		{
+			if (ReferenceEquals(null, obj)) return false;
+			if (obj.GetType() != typeof (Variable)) return false;
+			return Equals((Variable) obj);
+		}
+		public override int GetHashCode()
+		{
+			var hash = (Name != null ? Name.GetHashCode() : 0) * 397;
+			hash %= Value != null ? (int) Value.GetHashCode() : 0;
+			return hash;
+		}
 		#endregion
 
 		public override string ToString()
@@ -133,6 +140,7 @@ namespace Calculator.Grammar
 				return Value.ToString();
 			return "null";
 		}
+
 		
 	}
 }
