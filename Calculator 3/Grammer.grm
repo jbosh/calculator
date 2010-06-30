@@ -8,7 +8,8 @@
 
 ! ------------------------------------------------- Terminals
 ![{Letter}|{Printable Extended}][{Digit}{Letter}|{Printable Extended}]*
-{ReadableUnicode} = {&0100 .. &D7FF} + {&DC00 .. &FFF0}
+!{ReadableUnicode} = {&0100 .. &D7FF} + {&DC00 .. &FFF0}
+{ReadableUnicode} = {&0200 .. &0400} + {&2603}
 Id = ({Letter}|{Printable Extended}|{ReadableUnicode})({Digit}|{Letter}|{Printable Extended}|{ReadableUnicode})*
 Double = {Digit}+ '.' {Digit}*
     | '.' {Digit}+  

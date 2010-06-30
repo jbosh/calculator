@@ -69,7 +69,7 @@ namespace Calculator.Grammar
 		private static readonly Regex RegMulti
 			= new Regex(@"([\d\w\)]+)( +)([\d\w\(\{]+)", RegexOptions.Compiled);
 		private static readonly Regex RegHex
-			= new Regex(@"0x[\d\.a..fA..F]+", RegexOptions.Compiled);
+			= new Regex(@"0x[\d\.a-fA-F]+", RegexOptions.Compiled);
 		private static readonly Regex RegFloat
 			= new Regex(@"[\d\.]+E[\d\.]", RegexOptions.Compiled);
 		public string VariableName { get; private set; }

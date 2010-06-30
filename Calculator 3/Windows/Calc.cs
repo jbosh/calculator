@@ -336,19 +336,19 @@ namespace Calculator.Windows
 			}
 			private void txtQuestion_TextChanged()
 			{
-				CheckForReplacement(@"\pi", "π");
-				CheckForReplacement(@"\mu", "μ");
-				CheckForReplacement(@"\Theta", "Θ");
-				CheckForReplacement(@"\theta", "θ");
-				CheckForReplacement(@"\snowman", "☃");
-				CheckForReplacement(@"\Omega", "Ω");
-				CheckForReplacement(@"\omega", "ѡ");
-				CheckForReplacement(@"\alpha", "ɑ");
-				CheckForReplacement(@"\Beta", "Β");
-				CheckForReplacement(@"\beta", "β");
-				CheckForReplacement(@"\gamma", "γ");
-				CheckForReplacement(@"\delta", "δ");
-				CheckForReplacement(@"\Delta", "Δ");
+				CheckForReplacement(@"\pi", "π");//03C0
+				CheckForReplacement(@"\mu", "μ");//03BC
+				CheckForReplacement(@"\Theta", "Θ");//03D1
+				CheckForReplacement(@"\theta", "θ");//0398
+				CheckForReplacement(@"\snowman", "☃");//2603
+				CheckForReplacement(@"\Omega", "Ω");//03A9
+				CheckForReplacement(@"\omega", "ѡ");//03C9
+				CheckForReplacement(@"\alpha", "ɑ");//03B1
+				CheckForReplacement(@"\Beta", "Β");//0392
+				CheckForReplacement(@"\beta", "β");//03D0
+				CheckForReplacement(@"\gamma", "γ");//0263
+				CheckForReplacement(@"\delta", "δ");//03B4
+				CheckForReplacement(@"\Delta", "Δ");//0394
 				statement.ProcessString(txtQuestion.Text);
 				Calculate(false);
 			}

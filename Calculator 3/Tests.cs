@@ -32,6 +32,7 @@ namespace Calculator
 			TestFunction("π", 3.14);
 			TestFunction("{2;4;3}", new Vector(2, 4, 3));
 			TestFunction("0xF0", 240);
+			TestFunction("0xCD", 205);
 			TestFunction("0xffabcde12348", 281113358574408);
 			
 			TestFunction("-.27", -.27);
