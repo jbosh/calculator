@@ -150,7 +150,7 @@ namespace Calitha.GoldParser
 				{
 					state = new State(stateRecord.Index);
 				}
-				states.Add(state);				
+				states.Add(state);
 			}
 			
 			foreach (var stateRecord in content.DFAStateTable)

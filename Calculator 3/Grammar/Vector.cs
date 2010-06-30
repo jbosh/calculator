@@ -83,6 +83,7 @@ namespace Calculator.Grammar
 		{
 			return a / b;
 		}
+
 		public Variable Dot()
 		{
 			if (Values.Length != 2)
@@ -120,7 +121,6 @@ namespace Calculator.Grammar
 			return Variable.Error;
 		}
 
-
 		public Variable Length()
 		{
 			var d = 0;
@@ -128,11 +128,33 @@ namespace Calculator.Grammar
 				d += Values[i].Value * Values[i].Value;
 			return new Variable(Math.Sqrt(d));
 		}
+
 		public Variable Normalize()
 		{
 			return new Variable(this / Length().Value);
 		}
 
+		public Variable Round()
+		{
+			var output = new Vector(Values);
+			for (var i = 0; i < output.Count; i++)
+				output[i] = Values[i].Round();
+			return new Variable(output);
+		}
+		public Variable Ceiling()
+		{
+			var output = new Vector(Values);
+			for (var i = 0; i < output.Count; i++)
+				output[i] = Values[i].Ceiling();
+			return new Variable(output);
+		}
+		public Variable Floor()
+		{
+			var output = new Vector(Values);
+			for (var i = 0; i < output.Count; i++)
+				output[i] = Values[i].Floor();
+			return new Variable(output);
+		}
 
 		public static bool operator == (Vector a, Vector b)
 		{

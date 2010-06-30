@@ -101,6 +101,24 @@ namespace Calculator.Grammar
 		{
 			return new Variable(Math.Log10(Value));
 		}
+		public Variable Round()
+		{
+			if (Value is Vector)
+				return ((Vector) Value).Round();
+			return new Variable(Math.Round(Value));
+		}
+		public Variable Ceiling()
+		{
+			if (Value is Vector)
+				return ((Vector)Value).Ceiling();
+			return new Variable(Math.Ceiling(Value));
+		}
+		public Variable Floor()
+		{
+			if (Value is Vector)
+				return ((Vector)Value).Floor();
+			return new Variable(Math.Floor(Value));
+		}
 		#endregion
 
 		#region Equality
@@ -140,7 +158,5 @@ namespace Calculator.Grammar
 				return Value.ToString();
 			return "null";
 		}
-
-		
 	}
 }

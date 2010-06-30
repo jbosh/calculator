@@ -81,6 +81,12 @@ namespace Calculator
 			TestFunction("sin deg rad 30", .5);
 			TestFunction("[58sin 45]^2", 1682.00);
 			TestFunction("-2160 - abs(2160) % 512", -2272.0);
+			TestFunction("round(2.7301043) * 100", 300);
+			TestFunction("floor(2.73123412) * 100", 200);
+			TestFunction("ceil(2.132) * 100", 300);
+			TestFunction("round{2.7301043; 3.2123} * 100", new Vector(300, 300));
+			TestFunction("floor{2.73123412; 1.232341} * 100", new Vector(200, 100));
+			TestFunction("ceil{2.132;8.812} * 100", new Vector(300, 900));
 
 			TestFunction("{2; 4}+{1; 1}", new Vector(3, 5));
 			TestFunction("{2; 4}-{1; 1}", new Vector(1, 3));
