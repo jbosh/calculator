@@ -23,6 +23,8 @@ namespace Calculator.Windows
 			{
 				Recalulating = true;
 				chkAntialias.Checked = Program.Antialiasing;
+				//This is a required check so that windows will not keep
+				//tromping on each other when TopMost is true.
 				if (TopMost != Program.AlwaysOnTop)
 					TopMost = Program.AlwaysOnTop;
 				chkOnTop.Checked = Program.AlwaysOnTop;

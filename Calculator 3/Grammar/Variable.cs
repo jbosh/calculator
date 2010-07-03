@@ -105,19 +105,19 @@ namespace Calculator.Grammar
 		{
 			if (Value is Vector)
 				return ((Vector) Value).Round();
-			return new Variable(Math.Round(Value));
+			return new Variable(Math.Round((double)Value));
 		}
 		public Variable Ceiling()
 		{
 			if (Value is Vector)
 				return ((Vector)Value).Ceiling();
-			return new Variable(Math.Ceiling(Value));
+			return new Variable(Math.Ceiling((double)Value));
 		}
 		public Variable Floor()
 		{
 			if (Value is Vector)
 				return ((Vector)Value).Floor();
-			return new Variable(Math.Floor(Value));
+			return new Variable(Math.Floor((double)Value));
 		}
 		#endregion
 

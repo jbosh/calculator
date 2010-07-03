@@ -49,7 +49,10 @@ namespace Calculator.Windows
 		#region ICalculator Members
 		public void Recalculate(bool global)
 		{
-			TopMost = Program.AlwaysOnTop;
+			//This is a required check so that windows will not keep
+			//tromping on each other when TopMost is true.
+			if (TopMost != Program.AlwaysOnTop)
+				TopMost = Program.AlwaysOnTop;
 			foreach (CalculatorField field in fields)
 				field.Calculate(global);
 			if(graph != null)

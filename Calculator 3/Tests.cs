@@ -84,6 +84,9 @@ namespace Calculator
 			TestFunction("round(2.7301043) * 100", 300);
 			TestFunction("floor(2.73123412) * 100", 200);
 			TestFunction("ceil(2.132) * 100", 300);
+			TestFunction("round 3", 3);
+			TestFunction("floor 3", 3);
+			TestFunction("ceil 3", 3);
 			TestFunction("round{2.7301043; 3.2123} * 100", new Vector(300, 300));
 			TestFunction("floor{2.73123412; 1.232341} * 100", new Vector(200, 100));
 			TestFunction("ceil{2.132;8.812} * 100", new Vector(300, 900));

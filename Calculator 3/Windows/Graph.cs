@@ -138,6 +138,8 @@ namespace Calculator.Windows
 		}
 		public void Recalculate(bool global)
 		{
+			//This is a required check so that windows will not keep
+			//tromping on each other when TopMost is true.
 			if (TopMost != Program.AlwaysOnTop)
 				TopMost = Program.AlwaysOnTop;
 			if(InvokeRequired)
