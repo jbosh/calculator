@@ -182,27 +182,21 @@ namespace Calculator.Grammar
 				VariableName = split[0].Trim();
 				preprocess = split[1];
 			}
-			try
+
+			root = parser.Parse(preprocess);
+			var variable = default(Variable);
+			if (root == null)
+				variable.Value = null;
+			else
+				variable = Visit(root);
+			if (variable.Value != null)
 			{
-				root = parser.Parse(preprocess);
-				var variable = Visit(root);
-				if (variable.Value != null)
-				{
-					if (!string.IsNullOrEmpty(VariableName))
-						Memory.SetVariable(VariableName, variable);
-					Error = false;
-					return variable;
-				}
-					
+				if (!string.IsNullOrEmpty(VariableName))
+					Memory.SetVariable(VariableName, variable);
+				Error = false;
+				return variable;
 			}
-#if DEBUG
-			catch (Exception ex)
-			{
-				Console.WriteLine(ex);
-			}
-#else
-			catch{}
-#endif
+
 			return Variable.Error;
 		}
 		public Variable Execute()

@@ -164,7 +164,12 @@ namespace Calitha.GoldParser
 		private void ParseTerminal(TerminalToken token)
 		{
 			var currentState = stateStack.Peek();
-
+			if(!currentState.Actions.ContainsKey(token.Symbol))
+			{
+				continueParsing = false;
+				FireParseError(token);
+				return;
+			}
 			var action = currentState.Actions[token.Symbol];
 
 			switch (action.Type)

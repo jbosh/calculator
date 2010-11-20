@@ -24,7 +24,9 @@ namespace Calculator.Grammar
 				a.Value = (long) a.Value;
 			if (b.Value is double)
 				b.Value = (long) b.Value;
-			return new Variable(a.Value & b.Value);
+			if(a.Value is int || a.Value is long)
+				return new Variable(a.Value & b.Value);
+			return new Variable();
 		}
 		public static Variable operator |(Variable a, Variable b)
 		{
@@ -38,7 +40,9 @@ namespace Calculator.Grammar
 		{
 			if (a.Value is double)
 				a.Value = (long)a.Value;
-			return new Variable(a.Value << count);
+			if(a.Value is long || a.Value is int)
+				return new Variable(a.Value << count);
+			return new Variable();
 		}
 		public static Variable operator >>(Variable a, int count)
 		{
