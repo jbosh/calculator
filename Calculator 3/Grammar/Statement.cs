@@ -74,7 +74,7 @@ namespace Calculator.Grammar
 		private static readonly Regex RegHex
 			= new Regex(@"0x[\d\.a-fA-F]+", RegexOptions.Compiled);
 		private static readonly Regex RegFloat
-			= new Regex(@"[\d\.]+E[\d\.]", RegexOptions.Compiled);
+			= new Regex(@"[\d\.]+E[-\d\.]+", RegexOptions.Compiled);
 		public string VariableName { get; private set; }
 		public bool Error { get; private set; }
 
@@ -100,6 +100,7 @@ namespace Calculator.Grammar
 				{TokenType.Id, VisitID},
 
 				{TokenType.Negation, VisitNegation},
+				{TokenType.Minus, VisitMinus},
 
 				{TokenType.ShiftExpression, VisitInteger},
 				{TokenType.LogicalExpression, VisitInteger},
@@ -154,7 +155,20 @@ namespace Calculator.Grammar
 		public Variable ProcessString(string source)
 		{
 			if (Text == source && !Error)
-				return Execute();
+			{
+				try
+				{
+					var returnValue = Execute();
+					if (returnValue.Value == null)
+						Error = true;
+					else
+						return returnValue;
+				}
+				catch
+				{
+					Error = true;
+				}
+			}
 			VariableName = null;
 			Error = true;
 			if (string.IsNullOrWhiteSpace(source))
@@ -174,6 +188,8 @@ namespace Calculator.Grammar
 				var variable = Visit(root);
 				if (variable.Value != null)
 				{
+					if (!string.IsNullOrEmpty(VariableName))
+						Memory.SetVariable(VariableName, variable);
 					Error = false;
 					return variable;
 				}
@@ -196,6 +212,8 @@ namespace Calculator.Grammar
 			var output = Visit(root);
 			if (!string.IsNullOrEmpty(VariableName))
 				Memory.SetVariable(VariableName, output);
+			if (output.Value == null)
+				Error = true;
 			return output;
 		}
 		private static string Preprocess(string source)
@@ -343,7 +361,14 @@ namespace Calculator.Grammar
 				}
 				node = (NonterminalToken)node.Tokens[0];
 			}
-			yield return Visit(node.Tokens[0]);
+			if (node.Tokens.Length == 2 && node.Tokens[0].Symbol.Id == (int)TokenType.Minus)
+			{
+				var variable = Visit(node.Tokens[1]);
+				variable = new Variable(variable.Value * -1, variable.Name);
+				yield return variable;
+			}
+			else
+				yield return Visit(node.Tokens[0]);
 		}
 		private static Variable VisitDouble(Token token)
 		{
@@ -379,6 +404,18 @@ namespace Calculator.Grammar
 		#endregion
 
 		#region Unary
+		private static Variable VisitMinus(Token token)
+		{
+			var node = (TerminalToken)token;
+
+			//if ((TokenType)node.Tokens[0].Symbol.Id != TokenType.Minus)
+			//	return VisitLogicalNegation(token);
+
+			//var left = Visit(node.Tokens[1]);
+			//left.Value *= -1;
+			//return left;
+			return new Variable();
+		}
 		private static Variable VisitNegation(Token token)
 		{
 			var node = (NonterminalToken) token;
@@ -446,7 +483,7 @@ namespace Calculator.Grammar
 			var node = (NonterminalToken) token;
 			var left = Visit(node.Tokens[0]);
 			var right = Visit(node.Tokens[2]);
-			return new Variable(Math.Pow(left.Value, right.Value));
+			return new Variable(Math.Pow((double)left.Value, (double)right.Value));
 		}
 		private static Variable VisitFactorial(Token token)
 		{

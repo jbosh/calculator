@@ -17,6 +17,7 @@ namespace Calculator.Windows
 		}
 		private readonly List<CalculatorField> fields;
 		private Graph graph;
+		private bool AlreadyCalculating;
 		public Calc()
 		{
 			Memory = new MemoryManager();
@@ -37,7 +38,6 @@ namespace Calculator.Windows
 
 			fields = new List<CalculatorField>();
 			var field = new CalculatorField();
-			field.txtQuestion.TextChanged += (o, e) => Recalculate(false);
 			fields.Add(field);
 			Controls.Add(field.lblEquals);
 			Controls.Add(field.lblAnswer);
@@ -49,6 +49,9 @@ namespace Calculator.Windows
 		#region ICalculator Members
 		public void Recalculate(bool global)
 		{
+			if (AlreadyCalculating)
+				return;
+			AlreadyCalculating = true;
 			//This is a required check so that windows will not keep
 			//tromping on each other when TopMost is true.
 			if (TopMost != Program.AlwaysOnTop)
@@ -59,6 +62,7 @@ namespace Calculator.Windows
 				graph.Recalculate(global);
 			Memory.Pop();
 			Memory.Push();
+			AlreadyCalculating = false;
 		}
 		#endregion
 		private void Calc_KeyDown(object sender, KeyEventArgs e)

@@ -26,6 +26,18 @@ Double = {Digit}+ '.' {Digit}*
     | {Digit}+ '.' {Digit}* 'E' {Digit}+
     | {Digit}+ '.' {Digit}* 'E' '.' {Digit}+
     | {Digit}+ '.' {Digit}* 'E' {Digit}+ '.' {Digit}*
+
+    | {Digit}+ 'E' '-' {Digit}+
+    | {Digit}+ 'E' '-' '.' {Digit}+
+    | {Digit}+ 'E' '-' {Digit}+ '.' {Digit}*
+
+    | '.' {Digit}+ 'E' '-' {Digit}+
+    | '.' {Digit}+ 'E' '-' '.' {Digit}+
+    | '.' {Digit}+ 'E' '-' {Digit}+ '.' {Digit}*
+
+    | {Digit}+ '.' {Digit}* 'E' '-' {Digit}+
+    | {Digit}+ '.' {Digit}* 'E' '-' '.' {Digit}+
+    | {Digit}+ '.' {Digit}* 'E' '-' {Digit}+ '.' {Digit}*
 Hex = '0x'[ABCDEFabcdef0123456789]+
 
 ! ------------------------------------------------- Rules

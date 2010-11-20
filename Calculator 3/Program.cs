@@ -142,56 +142,63 @@ namespace Calculator
 		{
 			if (!File.Exists(SettingsFile))
 				return;
-			using (var reader = XmlReader.Create(SettingsFile))
-				while (reader.Read())
-				{
-					if (reader.NodeType != XmlNodeType.Element)
-						continue;
-					switch (reader.Name)
+			try
+			{
+				using (var reader = XmlReader.Create(SettingsFile))
+					while (reader.Read())
 					{
-						case "calculator":
-							Version = new Version(reader.GetAttribute("version"));
-							break;
-						case "alwaysOnTop":
-							AlwaysOnTop = reader.ReadElementContentAsBoolean();
-							break;
-						case "inRadans":
-							Radians = reader.ReadElementContentAsBoolean();
-							break;
-						case "thousandsSeperator":
-							ThousandsSeperator = reader.ReadElementContentAsBoolean();
-							break;
-						case "rounding":
-							Rounding = reader.ReadElementContentAsInt();
-							break;
-						case "outputFormat":
-							switch (reader.ReadElementContentAsString().ToLower())
-							{
-								case "scientific":
-									Format = OutputFormat.Scientific;
-									break;
-								case "hex":
-									Format = OutputFormat.Hex;
-									break;
-								case "standard":
-									Format = OutputFormat.Standard;
-									break;
-								default:
-									Format = OutputFormat.Standard;
-									break;
-							}
-							break;
-						case "sleepMilliseconds":
-							SleepMilliseconds = reader.ReadElementContentAsInt();
-							break;
-						case "antiAlias":
-							Antialiasing = reader.ReadElementContentAsBoolean();
-							break;
-						case "workingDir":
-							WorkingDirectory = reader.ReadElementContentAsString();
-							break;
+						if (reader.NodeType != XmlNodeType.Element)
+							continue;
+						switch (reader.Name)
+						{
+							case "calculator":
+								Version = new Version(reader.GetAttribute("version"));
+								break;
+							case "alwaysOnTop":
+								AlwaysOnTop = reader.ReadElementContentAsBoolean();
+								break;
+							case "inRadans":
+								Radians = reader.ReadElementContentAsBoolean();
+								break;
+							case "thousandsSeperator":
+								ThousandsSeperator = reader.ReadElementContentAsBoolean();
+								break;
+							case "rounding":
+								Rounding = reader.ReadElementContentAsInt();
+								break;
+							case "outputFormat":
+								switch (reader.ReadElementContentAsString().ToLower())
+								{
+									case "scientific":
+										Format = OutputFormat.Scientific;
+										break;
+									case "hex":
+										Format = OutputFormat.Hex;
+										break;
+									case "standard":
+										Format = OutputFormat.Standard;
+										break;
+									default:
+										Format = OutputFormat.Standard;
+										break;
+								}
+								break;
+							case "sleepMilliseconds":
+								SleepMilliseconds = reader.ReadElementContentAsInt();
+								break;
+							case "antiAlias":
+								Antialiasing = reader.ReadElementContentAsBoolean();
+								break;
+							case "workingDir":
+								WorkingDirectory = reader.ReadElementContentAsString();
+								break;
+						}
 					}
-				}
+			}
+			catch
+			{
+				File.Delete(SettingsFile);
+			}
 		}
 		private static void SaveSettings()
 		{

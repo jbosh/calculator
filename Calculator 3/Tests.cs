@@ -24,6 +24,7 @@ namespace Calculator
 			TestFunction("2.3441", 2.34);
 			TestFunction("2E17", 2E17);
 			TestFunction("3.16E2", 316);
+			TestFunction("316E-2", 3.16);
 			TestFunction(".3E2", 30);
 			TestFunction("0.2E12", 200000000000);
 			TestFunction("203,20,2", 203202);
@@ -97,6 +98,7 @@ namespace Calculator
 			TestFunction("abs({2; -32; 12}", new Vector(2, 32, 12));
 			TestFunction("{2; 4} * 2", new Vector(4, 8));
 			TestFunction("{2; 4} * 2 / 4", new Vector(1, 2));
+			TestFunction("{-1; -3; -5}", new Vector(-1, -3, -5));
 
 			TestFunction("33{2}", new Vector(66));
 			TestFunction("{{2; 3}; {1; 1}; {0; 1}} + {{0; 1}; {2; 3}; {4; 5}} ",
@@ -115,11 +117,14 @@ namespace Calculator
 
 			TestFunction("{2}<<3", null);
 			TestFunction("{2;3} & 2", null);
+			//TestFunction("len{norm{21;123;1}}", 1);
 
 			Memory.Push();
 			Memory["a"] = new Variable(2, "a");
 			Memory["g"] = new Variable(20, "g");
 			Memory["e2"] = new Variable(15, "e2");
+			Memory["pos"] = new Variable(new Vector(432, 35));
+			Memory["n"] = new Variable(new Vector(0, 1));
 			Memory["v"] = new Variable(new Vector(3, 2, 1));
 			Memory["☃"] = new Variable(32);
 			TestFunction("a", 2);
@@ -129,6 +134,7 @@ namespace Calculator
 			TestFunction("e2", 15);
 			TestFunction("v/len(v)", new Vector(.8, .53, .27));
 			TestFunction("☃", 32);
+			TestFunction("pos + n", new Vector(432, 36));
 			Memory.Pop();
 		}
 		private static void TestFunction(string function, dynamic correct)
