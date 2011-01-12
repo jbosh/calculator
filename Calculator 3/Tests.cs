@@ -45,6 +45,8 @@ namespace Calculator
 			TestFunction("(1 << 3) + 2", 10);
 			TestFunction("9 & 1", 1);
 			TestFunction("32412 | 2", 32414);
+			TestFunction("(2 + 0x3F) & 0xFFFFFFC0", 64);
+			TestFunction("(75 + 0x3F) & 0xFFFFFFC0", 128);
 
 			TestFunction("-2 1 3 4 g", -235.2);
 			TestFunction("2^2", 4);
@@ -117,7 +119,7 @@ namespace Calculator
 
 			TestFunction("{2}<<3", null);
 			TestFunction("{2;3} & 2", null);
-			//TestFunction("len{norm{21;123;1}}", 1);
+			TestFunction("len(norm{21;123;1})", 1);
 
 			Memory.Push();
 			Memory["a"] = new Variable(2, "a");

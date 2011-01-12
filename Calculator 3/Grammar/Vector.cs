@@ -123,7 +123,7 @@ namespace Calculator.Grammar
 
 		public Variable Length()
 		{
-			var d = 0;
+			var d = 0.0;
 			for (int i = 0; i < Count; i++)
 				d += Values[i].Value * Values[i].Value;
 			return new Variable(Math.Sqrt(d));
