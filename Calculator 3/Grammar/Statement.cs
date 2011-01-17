@@ -456,6 +456,9 @@ namespace Calculator.Grammar
 			var left = Visit(node.Tokens[0]);
 			var right = Visit(node.Tokens[2]);
 
+			if (left.Value == null || right.Value == null)
+				return new Variable();
+
 			switch ((TokenType) node.Tokens[1].Symbol.Id)
 			{
 				case TokenType.Mult:
