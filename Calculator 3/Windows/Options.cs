@@ -14,7 +14,6 @@ namespace Calculator.Windows
 			radioStandard.Click += (a, b) => RadioStandardClicked();
 			radioScientific.Click += (a, b) => RadioScientificClicked();
 			radioHex.Click += (a, b) => RadioHexClicked();
-			radioHex.Enabled = false;
 		}
 		#region ICalculator Members
 		public void Recalculate(bool global)
