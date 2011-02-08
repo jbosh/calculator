@@ -480,12 +480,16 @@ namespace Calculator.Grammar
 			var node = (NonterminalToken) token;
 			var left = Visit(node.Tokens[0]);
 			var right = Visit(node.Tokens[2]);
+			if (left.Value == null || right.Value == null)
+				return new Variable();
 			return new Variable(Math.Pow((double)left.Value, (double)right.Value));
 		}
 		private static Variable VisitFactorial(Token token)
 		{
 			var node = (NonterminalToken)token;
 			var left = Visit(node.Tokens[0]);
+			if (left.Value == null)
+				return new Variable();
 			return new Variable(CalcMath.Factorial(left.Value));
 		}
 		#endregion
