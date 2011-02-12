@@ -38,6 +38,7 @@ namespace Calculator.Windows
 
 			fields = new List<CalculatorField>();
 			var field = new CalculatorField();
+			field.txtQuestion.TextChanged += (o, e) => Recalculate(false);
 			fields.Add(field);
 			Controls.Add(field.lblEquals);
 			Controls.Add(field.lblAnswer);
