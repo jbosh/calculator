@@ -345,16 +345,13 @@ namespace Calculator.Grammar
 		private static IEnumerable<Variable> VisitVectorList(Token token)
 		{
 			var node = (NonterminalToken) token;
-			while (node.Tokens.Length > 2)
+			while ((TokenType)node.Tokens[0].Symbol.Id == TokenType.ExpressionList)
 			{
 				yield return Visit(node.Tokens[2]);
-				if((TokenType)node.Tokens[0].Symbol.Id == TokenType.Vector)
-				{
-					yield return Visit(node.Tokens[0]);
-					yield break;
-				}
 				node = (NonterminalToken)node.Tokens[0];
 			}
+			if(node.Tokens.Length == 3)
+				yield return Visit(node.Tokens[2]);
 			if (node.Tokens.Length == 2 && node.Tokens[0].Symbol.Id == (int)TokenType.Minus)
 			{
 				var variable = Visit(node.Tokens[1]);
