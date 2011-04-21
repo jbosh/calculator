@@ -129,6 +129,8 @@ namespace Calculator
 			Memory["n"] = new Variable(new Vector(0, 1));
 			Memory["v"] = new Variable(new Vector(3, 2, 1));
 			Memory["☃"] = new Variable(32);
+			Memory["x"] = new Variable(-5);
+			Memory["y"] = new Variable(-1.6);
 			TestFunction("a", 2);
 			TestFunction("g * a", 40);
 			TestFunction("a(33)", 66);
@@ -137,6 +139,7 @@ namespace Calculator
 			TestFunction("v/len(v)", new Vector(.8, .53, .27));
 			TestFunction("☃", 32);
 			TestFunction("pos + n", new Vector(432, 36));
+			TestFunction("atan(x / y)", 72.26);
 			Memory.Pop();
 		}
 		private static void TestFunction(string function, dynamic correct)

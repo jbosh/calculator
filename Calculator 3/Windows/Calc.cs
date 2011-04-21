@@ -357,8 +357,6 @@ namespace Calculator.Windows
 				CheckForReplacement(@"\gamma", "γ");//0263
 				CheckForReplacement(@"\delta", "δ");//03B4
 				CheckForReplacement(@"\Delta", "Δ");//0394
-				statement.ProcessString(txtQuestion.Text);
-				Calculate(false);
 			}
 			private void CheckForReplacement(string alias, string replace)
 			{
