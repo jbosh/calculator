@@ -529,6 +529,8 @@ namespace Calculator.Grammar
 		{
 			var node = (NonterminalToken) token;
 			var left = Visit(node.Tokens[1]);
+			if (left.Value == null)
+				return new Variable();
 			var degreeBefore = Program.Radians ? 1 : 0.0174532925199433;
 			var degreeAfter = !Program.Radians ? 57.2957795130823 : 1;
 			switch ((TokenType)node.Tokens[0].Symbol.Id)

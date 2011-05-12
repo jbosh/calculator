@@ -102,6 +102,11 @@ namespace Calculator.Grammar
 		{
 			if (Values.Length != 2)
 				return Variable.Error;
+			if (Values[0].Value == null)
+				return Variable.Error;
+			if (Values[1].Value == null)
+				return Variable.Error;
+
 			var a = (Vector)Values[0].Value;
 			var b = (Vector)Values[1].Value;
 			if (a.Count != b.Count)

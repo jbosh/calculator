@@ -110,6 +110,7 @@ namespace Calculator
 			TestFunction("cross{{0; 20}; {15; 0}}", -300);
 			TestFunction("cross{{15; 0}; {0; 20}}", 300);
 			TestFunction("cross{{3; -3; 1}; {4; 9; 2}}", new Vector(-15, -2, 39));
+			TestFunction("cross{{0;1;2}; null}", null);
 			TestFunction("len{3;2;1}", 3.74);
 			TestFunction("norm{3;2;1}", new Vector(.8, .53, .27));
 			TestFunction("{(0xfa/255); 0xb4/255; (0x76/255)}", new Vector(.98, .71, .46));
