@@ -514,13 +514,21 @@ namespace Calculator.Grammar
 				case TokenType.Floor:
 					return left.Floor();
 				case TokenType.Dot:
-					return ((Vector)left.Value).Dot();
+					if(left.Value is Vector)
+						return ((Vector)left.Value).Dot();
+					return new Variable();
 				case TokenType.Cross:
-					return ((Vector)left.Value).Cross();
+					if (left.Value is Vector)
+						return ((Vector)left.Value).Cross();
+					return new Variable();
 				case TokenType.Normalize:
-					return ((Vector)left.Value).Normalize();
+					if (left.Value is Vector)
+						return ((Vector)left.Value).Normalize();
+					return new Variable();
 				case TokenType.Length:
-					return ((Vector)left.Value).Length();
+					if (left.Value is Vector)
+						return ((Vector)left.Value).Length();
+					return new Variable();
 				default:
 					throw new ArgumentOutOfRangeException();
 			}

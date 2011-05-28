@@ -8,7 +8,7 @@ namespace Calculator.Grammar
 	public struct Vector
 	{
 		public Variable [] Values;
-		public int Count { get { return Values.Length; } }
+		public int Count { get { return Values != null ? Values.Length : 0; } }
 		public Variable this[int index]
 		{
 			get { return Values[index]; }
@@ -51,6 +51,14 @@ namespace Calculator.Grammar
 			for (var i = 0; i < output.Count; i++)
 				output[i] -= b[i];
 			return output;
+		}
+		public static Vector operator +(Vector a, double b)
+		{
+			return new Vector();
+		}
+		public static Vector operator -(Vector a, double b)
+		{
+			return new Vector();
 		}
 		public static Vector operator *(Vector a, Vector b)
 		{
