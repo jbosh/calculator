@@ -544,16 +544,38 @@ namespace Calculator.Grammar
 			switch ((TokenType)node.Tokens[0].Symbol.Id)
 			{
 				case TokenType.Sin:
+					if (left.Value is Vector)
+						return new Variable();
 					return new Variable(Math.Sin(left.Value * degreeBefore));
 				case TokenType.Cos:
+					if (left.Value is Vector)
+						return new Variable();
 					return new Variable(Math.Cos(left.Value * degreeBefore));
 				case TokenType.Tan:
+					if (left.Value is Vector)
+						return new Variable();
 					return new Variable(Math.Tan(left.Value * degreeBefore));
 				case TokenType.Asin:
+					if (left.Value is Vector)
+						return new Variable();
 					return new Variable(degreeAfter * Math.Asin(left.Value));
 				case TokenType.Acos:
+					if (left.Value is Vector)
+						return new Variable();
 					return new Variable(degreeAfter * Math.Acos(left.Value));
 				case TokenType.Atan:
+					if (left.Value is Vector && left.Value.Count == 2)
+					{
+						var y = left.Value[0].Value;
+						var x = left.Value[1].Value;
+						if (x == null || y == null)
+							return new Variable();
+						if (x is Vector || y is Vector)
+							return new Variable();
+						return new Variable(degreeAfter * Math.Atan2((double)y, (double)x));
+					}
+					if (left.Value is Vector)
+						return new Variable();
 					return new Variable(degreeAfter * Math.Atan(left.Value));
 				default:
 					throw new NotImplementedException();

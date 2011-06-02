@@ -93,6 +93,10 @@ namespace Calculator
 			TestFunction("round{2.7301043; 3.2123} * 100", new Vector(300, 300));
 			TestFunction("floor{2.73123412; 1.232341} * 100", new Vector(200, 100));
 			TestFunction("ceil{2.132;8.812} * 100", new Vector(300, 900));
+			TestFunction("atan{2.4}", null);
+			TestFunction("atan{1;1}", 45);
+			TestFunction("atan{-1;-1}", -135);
+			TestFunction("atan{1;0}", 90);
 
 			TestFunction("{2; 4}+{1; 1}", new Vector(3, 5));
 			TestFunction("{2; 4}-{1; 1}", new Vector(1, 3));
