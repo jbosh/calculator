@@ -16,8 +16,9 @@ namespace Calculator
 	internal enum OutputFormat
 	{
 		Standard = 0,
-		Hex = 1,
-		Scientific = 2
+		Hex,
+		Scientific,
+		Binary,
 	}
 	internal static class Program
 	{
@@ -178,6 +179,9 @@ namespace Calculator
 									case "standard":
 										Format = OutputFormat.Standard;
 										break;
+									case "binary":
+										Format = OutputFormat.Binary;
+										break;
 									default:
 										Format = OutputFormat.Standard;
 										break;
@@ -282,6 +286,8 @@ namespace Calculator
 		{
 			if (value is double)
 				return FormatOutput((double) value);
+			if (value is long)
+				return FormatOutput((long)value);
 			if (value is Variable)
 			{
 				var v = ((Variable) value).Value;
@@ -310,14 +316,15 @@ namespace Calculator
 		{
 			switch (Format)
 			{
+				case OutputFormat.Binary: //No binary with doubles
+				case OutputFormat.Hex: //No hex with doubles
 				case OutputFormat.Standard:
 					if (Rounding != -1)
 						value = Math.Round(value, Rounding);
 					if (ThousandsSeperator && !value.ToString().Contains("E"))
 						return value.ToString("#,0." + new string('#', 50));
 					return value.ToString();
-				case OutputFormat.Hex:
-					return "0x" + ((int) value).ToString("X");
+				
 				case OutputFormat.Scientific:
 					var scientific = value.ToString("E" + (Rounding == -1 ? "" : "Rounding "));
 					var index = scientific.IndexOf('E') + 1;
@@ -335,6 +342,30 @@ namespace Calculator
 					if (scientific[scientific.Length - 1] == 'E')
 						scientific = scientific.Remove(scientific.Length - 1, 1);
 					return scientific;
+				default:
+					throw new ArgumentOutOfRangeException();
+			}
+		}
+		private static string FormatOutput(long value)
+		{
+			switch (Format)
+			{
+				case OutputFormat.Hex:
+					return "0x" + ((int)value).ToString("X");
+				case OutputFormat.Scientific: //No scientific with longs (might be in future)
+				case OutputFormat.Standard:
+					if (ThousandsSeperator)
+						return value.ToString("#,0." + new string('#', 50));
+					return value.ToString();
+				case OutputFormat.Binary:
+					var top = Rounding == -1 ? 15 : Rounding;
+					var builder = new StringBuilder();
+					for (var i = top; i >= 0; i--)
+					{
+						var bit = value & (1L << i);
+						builder.Append(bit != 0 ? '1' : '0');
+					}
+					return builder.ToString();
 				default:
 					throw new ArgumentOutOfRangeException();
 			}

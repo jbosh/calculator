@@ -14,6 +14,7 @@ namespace Calculator.Windows
 			radioStandard.Click += (a, b) => RadioStandardClicked();
 			radioScientific.Click += (a, b) => RadioScientificClicked();
 			radioHex.Click += (a, b) => RadioHexClicked();
+			radioBinary.Click += (a, b) => RadioBinaryClicked();
 		}
 		#region ICalculator Members
 		public void Recalculate(bool global)
@@ -103,6 +104,7 @@ namespace Calculator.Windows
 			radioStandard.Checked = false;
 			radioScientific.Checked = true;
 			radioHex.Checked = false;
+			radioBinary.Checked = false;
 			chkThousands.Enabled = false;
 			numRounding.Enabled = true;
 			Program.Format = OutputFormat.Scientific;
@@ -114,10 +116,25 @@ namespace Calculator.Windows
 			radioStandard.Checked = false;
 			radioScientific.Checked = false;
 			radioHex.Checked = true;
+			radioBinary.Checked = false;
 			chkThousands.Enabled = false;
 			numRounding.Enabled = false;
 			Program.Format = OutputFormat.Hex;
 		}
+
+		public void RadioBinaryClicked()
+		{
+			if (Recalulating)
+				return;
+			radioStandard.Checked = false;
+			radioScientific.Checked = false;
+			radioHex.Checked = false;
+			radioBinary.Checked = true;
+			chkThousands.Enabled = false;
+			numRounding.Enabled = true;
+			Program.Format = OutputFormat.Binary;
+		}
+
 
 		private void chkThousands_CheckedChanged(object sender, EventArgs e)
 		{

@@ -39,6 +39,7 @@
 			this.chkThousands = new System.Windows.Forms.CheckBox();
 			this.label2 = new System.Windows.Forms.Label();
 			this.chkAntialias = new System.Windows.Forms.CheckBox();
+			this.radioBinary = new System.Windows.Forms.RadioButton();
 			((System.ComponentModel.ISupportInitialize)(this.numRounding)).BeginInit();
 			this.SuspendLayout();
 			// 
@@ -122,7 +123,7 @@
 			// chkThousands
 			// 
 			this.chkThousands.AutoSize = true;
-			this.chkThousands.Location = new System.Drawing.Point(12, 179);
+			this.chkThousands.Location = new System.Drawing.Point(12, 197);
 			this.chkThousands.Name = "chkThousands";
 			this.chkThousands.Size = new System.Drawing.Size(129, 17);
 			this.chkThousands.TabIndex = 8;
@@ -149,11 +150,22 @@
 			this.chkAntialias.UseVisualStyleBackColor = true;
 			this.chkAntialias.CheckedChanged += new System.EventHandler(this.chkAntialias_CheckedChanged);
 			// 
+			// radioBinary
+			// 
+			this.radioBinary.Location = new System.Drawing.Point(12, 174);
+			this.radioBinary.Name = "radioBinary";
+			this.radioBinary.Size = new System.Drawing.Size(104, 19);
+			this.radioBinary.TabIndex = 11;
+			this.radioBinary.TabStop = true;
+			this.radioBinary.Text = "Binary";
+			this.radioBinary.UseVisualStyleBackColor = true;
+			// 
 			// Options
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(164, 210);
+			this.ClientSize = new System.Drawing.Size(164, 224);
+			this.Controls.Add(this.radioBinary);
 			this.Controls.Add(this.chkAntialias);
 			this.Controls.Add(this.label2);
 			this.Controls.Add(this.chkThousands);
@@ -186,5 +198,6 @@
 		private System.Windows.Forms.CheckBox chkThousands;
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.CheckBox chkAntialias;
+		private System.Windows.Forms.RadioButton radioBinary;
 	}
 }
