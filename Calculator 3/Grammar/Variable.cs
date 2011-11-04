@@ -77,6 +77,8 @@ namespace Calculator.Grammar
 		{
 			if(b.Value == null)
 				return new Variable();
+			if (b.Value is Vector)
+				return new Variable(a.Value / b.Value);
 			// Because integer division doesn't work, must cast to double.
 			return new Variable(a.Value / (double)b.Value);
 		}

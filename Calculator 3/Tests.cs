@@ -119,6 +119,7 @@ namespace Calculator
 			TestFunction("norm{3;2;1}", new Vector(.8, .53, .27));
 			TestFunction("{(0xfa/255); 0xb4/255; (0x76/255)}", new Vector(.98, .71, .46));
 			TestFunction("{0xfa/255; 0xb4/255; 0x76/255}", new Vector(.98, .71, .46));
+			TestFunction("{1;2}/{2;4}", new Vector(.5, .5));
 
 			TestFunction("-", null);
 			TestFunction("alpha", null);

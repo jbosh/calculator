@@ -92,6 +92,14 @@ namespace Calculator.Grammar
 			return a / b;
 		}
 
+		public static Vector operator /(Vector a, Vector b)
+		{
+			var output = new Vector(a.Values);
+			for (var i = 0; i < output.Count; i++)
+				output[i] /= b[i];
+			return output;
+		}
+
 		public Variable Dot()
 		{
 			if (Values.Length != 2)
