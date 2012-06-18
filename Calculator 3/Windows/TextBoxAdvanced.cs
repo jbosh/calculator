@@ -1,4 +1,8 @@
+#region
+
 using System.Windows.Forms;
+
+#endregion
 
 namespace Calculator
 {
@@ -11,10 +15,12 @@ namespace Calculator
 			KeyDown += TextBoxAdvanced_KeyDown;
 			MouseDown += TextBoxAdvanced_MouseDown;
 		}
+
 		/// <summary>
 		/// True if the cursor is on the left side of the selection.
 		/// </summary>
 		public int CaretStart { get; set; }
+
 		private void TextBoxAdvanced_MouseDown(object sender, MouseEventArgs e)
 		{
 			if (e.Clicks < 2)
@@ -26,11 +32,11 @@ namespace Calculator
 				return;
 			}
 		}
+
 		private void TextBoxAdvanced_KeyUp(object sender, KeyEventArgs e)
 		{
 			if (SelectionLength == 0)
 				CaretStart = SelectionStart;
-			Text = Text.Replace(new string((char) 127, 1), "");
 			if (!e.Control)
 				return;
 			/*switch(e.KeyCode)
@@ -53,6 +59,19 @@ namespace Calculator
 					break;
 			}*/
 		}
+		protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+		{
+			switch (keyData)
+			{
+				case Keys.Control | Keys.Back:
+					SendKeys.SendWait("^+{LEFT}{BACKSPACE}");
+					return true;
+				case Keys.Control | Keys.Delete:
+					SendKeys.SendWait("^+{RIGHT}{BACKSPACE}");
+					return true;
+			}
+			return base.ProcessCmdKey(ref msg, keyData);
+		}
 		private void TextBoxAdvanced_KeyDown(object sender, KeyEventArgs e)
 		{
 			if (!e.Control)
@@ -65,7 +84,7 @@ namespace Calculator
 					{
 						if (CaretStart < SelectionStart + SelectionLength)
 						{
-							int index = FindPreviousWord(SelectionStart + SelectionLength, Text);
+							var index = FindPreviousWord(SelectionStart + SelectionLength, Text);
 							if (index < CaretStart)
 								index = CaretStart;
 							index -= SelectionStart + SelectionLength;
@@ -73,7 +92,7 @@ namespace Calculator
 						}
 						else
 						{
-							int index = FindPreviousWord(SelectionStart, Text);
+							var index = FindPreviousWord(SelectionStart, Text);
 							index -= SelectionStart;
 							SelectionStart += index;
 							SelectionLength -= index;
@@ -81,7 +100,7 @@ namespace Calculator
 					}
 					else
 					{
-						int index = FindPreviousWord(SelectionStart, Text);
+						var index = FindPreviousWord(SelectionStart, Text);
 						SelectionStart = index;
 					}
 					break;
@@ -91,7 +110,7 @@ namespace Calculator
 					{
 						if (SelectionStart < CaretStart)
 						{
-							int index = FindNextWord(SelectionStart, Text);
+							var index = FindNextWord(SelectionStart, Text);
 							if (CaretStart < index)
 								index = CaretStart;
 							index -= SelectionStart;
@@ -100,58 +119,24 @@ namespace Calculator
 						}
 						else
 						{
-							int index = FindNextWord(SelectionStart + SelectionLength, Text);
+							var index = FindNextWord(SelectionStart + SelectionLength, Text);
 							index -= SelectionStart + SelectionLength;
 							SelectionLength += index;
 						}
 					}
 					else
 					{
-						int index = FindNextWord(SelectionStart, Text);
+						var index = FindNextWord(SelectionStart, Text);
 						SelectionStart = index;
-					}
-					break;
-				case Keys.Back:
-					e.Handled = true;
-					if (SelectionLength > 0)
-					{
-						int start = SelectionStart;
-						Text = Text.Remove(start, SelectionLength);
-						SelectionStart = start;
-					}
-					else
-					{
-						int start = SelectionStart;
-						int index = FindPreviousWord(start, Text);
-						Text = Text.Remove(index, start - index);
-						SelectionStart = index;
-					}
-					break;
-				case Keys.Delete:
-					e.Handled = true;
-					if (SelectionLength > 0)
-					{
-						int start = SelectionStart;
-						Text = Text.Remove(start, SelectionLength);
-						SelectionStart = start;
-					}
-					else
-					{
-						int start = SelectionStart;
-						int index = FindNextWord(start, Text);
-						string cut = Text.Substring(start, index - start);
-						Text = Text.Remove(start, index - start);
-						SelectionStart = start;
-						if (e.Shift)
-							Clipboard.SetText(cut);
 					}
 					break;
 			}
 		}
+
 		private static int FindPreviousWord(int index, string sentence)
 		{
 			//Int = 0, Letter = 1
-			int type = -1;
+			var type = -1;
 			for (index--; index >= 0; index--)
 			{
 				//Letter
@@ -178,10 +163,11 @@ namespace Calculator
 			}
 			return 0;
 		}
+
 		private static int FindNextWord(int index, string sentence)
 		{
 			//Int = 0, Letter = 1
-			int type = -1;
+			var type = -1;
 			for (; index < sentence.Length; index++)
 			{
 				//Letter
