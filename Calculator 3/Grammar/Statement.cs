@@ -36,6 +36,7 @@ namespace Calculator.Grammar
 			Acos,
 			Asin,
 			Atan,
+			Binary,//25
 			Ceiling,
 			Cos,
 			Cross,
@@ -73,6 +74,8 @@ namespace Calculator.Grammar
 			= new Regex(@"([\d\w\)]+)( +)([\d\w\(\{]+)", RegexOptions.Compiled);
 		private static readonly Regex RegHex
 			= new Regex(@"0x[\d\.a-fA-F]+", RegexOptions.Compiled);
+		private static readonly Regex RegBinary
+			= new Regex(@"0b[10]+", RegexOptions.Compiled);
 		private static readonly Regex RegFloat
 			= new Regex(@"[\d\.]+E[-\d\.]+", RegexOptions.Compiled);
 		public string VariableName { get; private set; }
@@ -98,6 +101,7 @@ namespace Calculator.Grammar
 				{TokenType.Value, VisitValue},
 				{TokenType.Vector, VisitVector},
 				{TokenType.Id, VisitID},
+				{TokenType.Binary, VisitBinary},
 
 				{TokenType.Negation, VisitNegation},
 				{TokenType.Minus, VisitMinus},
@@ -229,7 +233,9 @@ namespace Calculator.Grammar
 					match = RegSpaces.Match(source, i);
 					if(!match.Success)
 						break;
-					if (RegFloat.IsMatch(source, match.Index + 1) || RegHex.IsMatch(source, match.Index + 1))
+					if (RegFloat.IsMatch(source, match.Index + 1) 
+						|| RegHex.IsMatch(source, match.Index + 1)
+						|| RegBinary.IsMatch(source, match.Index + 1))
 						i = match.Index + match.Length;
 					else
 					{
@@ -380,6 +386,14 @@ namespace Calculator.Grammar
 				var d = double.Parse(node.Text);
 				return new Variable(d);
 			}
+		}
+		private static Variable VisitBinary(Token token)
+		{
+			var node = (TerminalToken)token;
+			var i = node.Text
+				.Substring(2)
+				.Aggregate(0L, (current, t) => (current << 1) | (t == '0' ? 0 : 1));
+			return new Variable(i);
 		}
 		private static Variable VisitHex(Token token)
 		{

@@ -8,7 +8,7 @@ namespace Calculator
 	{
 		public static void RunTests()
 		{
-			#region Constants
+	#region Constants
 			var Memory = new MemoryManager();
 			Memory.SetVariable("G", 6.67428E-11);
 			Memory.SetVariable("g", 9.8);
@@ -130,6 +130,14 @@ namespace Calculator
 			TestFunction("length(normalize{21;123;1})", 1);
 			TestFunction("dot{2;2}", 4);
 
+			TestFunction("0b1", 1);
+			TestFunction("0b0", 0);
+			TestFunction("0b1001", 9);
+			TestFunction("0b010<<2", 8);
+			TestFunction("π*(0b010<<2)", 25.13);
+			TestFunction("{0b121;0xABC}", null);
+			TestFunction("{0b101;0xABC}", new Vector(5, 2748));
+	
 			Memory.Push();
 			Memory["a"] = new Variable(2, "a");
 			Memory["g"] = new Variable(20, "g");

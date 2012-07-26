@@ -39,6 +39,7 @@ Double = {Digit}+ '.' {Digit}*
     | {Digit}+ '.' {Digit}* 'E' '-' '.' {Digit}+
     | {Digit}+ '.' {Digit}* 'E' '-' {Digit}+ '.' {Digit}*
 Hex = '0x'[ABCDEFabcdef0123456789]+
+Binary = '0b'[10]+
 
 ! ------------------------------------------------- Rules
 <Statement> ::= <Logical Expression>
@@ -96,6 +97,7 @@ Hex = '0x'[ABCDEFabcdef0123456789]+
           | ID
           | '(' <Logical Expression> ')'
           | Hex
+          | Binary
           | <Vector Expression>
 
 <Vector Expression> ::= '{' <Expression List> '}'
