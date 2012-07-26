@@ -86,13 +86,13 @@ namespace Calculator
 			TestFunction("-2160 - abs(2160) % 512", -2272.0);
 			TestFunction("round(2.7301043) * 100", 300);
 			TestFunction("floor(2.73123412) * 100", 200);
-			TestFunction("ceil(2.132) * 100", 300);
+			TestFunction("ceiling(2.132) * 100", 300);
 			TestFunction("round 3", 3);
 			TestFunction("floor 3", 3);
-			TestFunction("ceil 3", 3);
+			TestFunction("ceiling 3", 3);
 			TestFunction("round{2.7301043; 3.2123} * 100", new Vector(300, 300));
 			TestFunction("floor{2.73123412; 1.232341} * 100", new Vector(200, 100));
-			TestFunction("ceil{2.132;8.812} * 100", new Vector(300, 900));
+			TestFunction("ceiling{2.132;8.812} * 100", new Vector(300, 900));
 			TestFunction("atan{2.4}", null);
 			TestFunction("atan{1;1}", 45);
 			TestFunction("atan{-1;-1}", -135);
@@ -115,8 +115,8 @@ namespace Calculator
 			TestFunction("cross{{15; 0}; {0; 20}}", 300);
 			TestFunction("cross{{3; -3; 1}; {4; 9; 2}}", new Vector(-15, -2, 39));
 			TestFunction("cross{{0;1;2}; null}", null);
-			TestFunction("len{3;2;1}", 3.74);
-			TestFunction("norm{3;2;1}", new Vector(.8, .53, .27));
+			TestFunction("length{3;2;1}", 3.74);
+			TestFunction("normalize{3;2;1}", new Vector(.8, .53, .27));
 			TestFunction("{(0xfa/255); 0xb4/255; (0x76/255)}", new Vector(.98, .71, .46));
 			TestFunction("{0xfa/255; 0xb4/255; 0x76/255}", new Vector(.98, .71, .46));
 			TestFunction("{1;2}/{2;4}", new Vector(.5, .5));
@@ -127,7 +127,7 @@ namespace Calculator
 
 			TestFunction("{2}<<3", null);
 			TestFunction("{2;3} & 2", null);
-			TestFunction("len(norm{21;123;1})", 1);
+			TestFunction("length(normalize{21;123;1})", 1);
 			TestFunction("dot{2;2}", 4);
 
 			Memory.Push();
@@ -145,7 +145,7 @@ namespace Calculator
 			TestFunction("a(33)", 66);
 			TestFunction("33a", 66);
 			TestFunction("e2", 15);
-			TestFunction("v/len(v)", new Vector(.8, .53, .27));
+			TestFunction("v/length(v)", new Vector(.8, .53, .27));
 			TestFunction("☃", 32);
 			TestFunction("pos + n", new Vector(432, 36));
 			TestFunction("atan(x / y)", 72.26);

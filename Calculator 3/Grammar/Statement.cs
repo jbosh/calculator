@@ -299,11 +299,11 @@ namespace Calculator.Grammar
 				case "atan":
 				case "dot":
 				case "cross":
-				case "norm":
-				case "len":
+				case "normalize":
+				case "length":
 				case "round":
 				case "floor":
-				case "ceil":
+				case "ceiling":
 					return true;
 				default:
 					return false;

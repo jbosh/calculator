@@ -85,11 +85,11 @@ Hex = '0x'[ABCDEFabcdef0123456789]+
              | 'sqrt' <Function>
              | 'cross' <Vector Expression>
              | 'dot' <Vector Expression>
-             | 'norm' <Function>
-             | 'len' <Function>
+             | 'normalize' <Function>
+             | 'length' <Function>
              | 'round' <Function>
              | 'floor' <Function>
-             | 'ceil' <Function>
+             | 'ceiling' <Function>
              | <Value>
 
 <Value> ::= Double
