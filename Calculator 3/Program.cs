@@ -359,7 +359,7 @@ namespace Calculator
 					return value.ToString();
 				case OutputFormat.Binary:
 					var top = Rounding == -1 ? 15 : Rounding;
-					var builder = new StringBuilder();
+					var builder = new StringBuilder("0b");
 					for (var i = top; i >= 0; i--)
 					{
 						var bit = value & (1L << i);

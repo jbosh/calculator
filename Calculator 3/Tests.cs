@@ -128,6 +128,7 @@ namespace Calculator
 			TestFunction("{2}<<3", null);
 			TestFunction("{2;3} & 2", null);
 			TestFunction("len(norm{21;123;1})", 1);
+			TestFunction("dot{2;2}", 4);
 
 			Memory.Push();
 			Memory["a"] = new Variable(2, "a");

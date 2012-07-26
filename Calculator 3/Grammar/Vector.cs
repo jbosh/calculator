@@ -104,14 +104,21 @@ namespace Calculator.Grammar
 		{
 			if (Values.Length != 2)
 				return Variable.Error;
-			var a = (Vector)Values[0].Value;
-			var b = (Vector)Values[1].Value;
-			if (a.Count != b.Count)
-				return Variable.Error;
-			var d = 0.0;
-			for (int i = 0; i < a.Count; i++)
-				d += a[i].Value * b[i].Value;
-			return new Variable(d);
+			if (Values[0].Value is Vector && Values[1].Value is Vector)
+			{
+				var a = (Vector) Values[0].Value;
+				var b = (Vector) Values[1].Value;
+				if (a.Count != b.Count)
+					return Variable.Error;
+				var d = 0.0;
+				for (int i = 0; i < a.Count; i++)
+					d += a[i].Value * b[i].Value;
+				return new Variable(d);
+			}
+			else
+			{
+				return new Variable(Values[0].Value * Values[1].Value);
+			}
 		}
 
 		public Variable Cross()

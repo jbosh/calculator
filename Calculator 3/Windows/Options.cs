@@ -42,6 +42,9 @@ namespace Calculator.Windows
 					case OutputFormat.Scientific:
 						RadioScientificClicked();
 						break;
+					case OutputFormat.Binary:
+						RadioBinaryClicked();
+						break;
 				}
 				Recalulating = false;
 			}
