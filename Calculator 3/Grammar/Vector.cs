@@ -183,6 +183,13 @@ namespace Calculator.Grammar
 				output[i] = Values[i].Floor();
 			return new Variable(output);
 		}
+		public Variable Endian()
+		{
+			var output = new Vector(Values);
+			for (var i = 0; i < output.Count; i++)
+				output[i] = Values[i].Endian();
+			return new Variable(output);
+		}
 
 		public static bool operator == (Vector a, Vector b)
 		{

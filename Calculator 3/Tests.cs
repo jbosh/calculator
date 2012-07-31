@@ -137,6 +137,12 @@ namespace Calculator
 			TestFunction("π*(0b010<<2)", 25.13);
 			TestFunction("{0b121;0xABC}", null);
 			TestFunction("{0b101;0xABC}", new Vector(5, 2748));
+			TestFunction("endian(0xFF0000FF)", -16776961);
+			TestFunction("endian(0xFF00)", 0x00FF);
+			TestFunction("endian(0x82B85400)", 0x0054B882);
+			TestFunction("endian(2193118208)", 0x0054B882);
+			TestFunction("endian{2193118208}", new Vector(0x0054B882));
+
 	
 			Memory.Push();
 			Memory["a"] = new Variable(2, "a");

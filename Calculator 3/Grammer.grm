@@ -91,6 +91,7 @@ Binary = '0b'[10]+
              | 'round' <Function>
              | 'floor' <Function>
              | 'ceiling' <Function>
+             | 'endian' <Function>
              | <Value>
 
 <Value> ::= Double

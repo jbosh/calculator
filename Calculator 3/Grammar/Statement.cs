@@ -41,8 +41,9 @@ namespace Calculator.Grammar
 			Cos,
 			Cross,
 			Deg,
-			Dot,
+			Dot,//30
             Double,
+			Endian,
 			Floor,
 			Hex,
 			Id,
@@ -128,6 +129,7 @@ namespace Calculator.Grammar
 				{TokenType.Round, VisitMiscFunc},
 				{TokenType.Floor, VisitMiscFunc},
 				{TokenType.Ceiling, VisitMiscFunc},
+				{TokenType.Endian, VisitMiscFunc},
 
 				{TokenType.Sqrt, VisitMiscFunc},
 				{TokenType.Ln, VisitMiscFunc},
@@ -310,6 +312,7 @@ namespace Calculator.Grammar
 				case "round":
 				case "floor":
 				case "ceiling":
+				case "endian":
 					return true;
 				default:
 					return false;
@@ -525,6 +528,8 @@ namespace Calculator.Grammar
 					return left.Round();
 				case TokenType.Ceiling:
 					return left.Ceiling();
+				case TokenType.Endian:
+					return left.Endian();
 				case TokenType.Floor:
 					return left.Floor();
 				case TokenType.Dot:
