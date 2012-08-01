@@ -154,6 +154,7 @@ namespace Calculator
 			Memory["☃"] = new Variable(32);
 			Memory["x"] = new Variable(-5);
 			Memory["y"] = new Variable(-1.6);
+			Memory["a_b"] = new Variable(2);
 			TestFunction("a", 2);
 			TestFunction("g * a", 40);
 			TestFunction("a(33)", 66);
@@ -163,6 +164,7 @@ namespace Calculator
 			TestFunction("☃", 32);
 			TestFunction("pos + n", new Vector(432, 36));
 			TestFunction("atan(x / y)", 72.26);
+			TestFunction("a_b + 2", 4);
 			Memory.Pop();
 		}
 		private static void TestFunction(string function, dynamic correct)
