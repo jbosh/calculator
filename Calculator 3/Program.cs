@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
@@ -77,6 +78,7 @@ namespace Calculator
 			}
 		}
 		private static Version Version { get; set; }
+		private static Version CurrentVersion { get; set; }
 		public static OutputFormat Format
 		{
 			get { return format; }
@@ -99,10 +101,11 @@ namespace Calculator
 			Tests.RunTests();
 #endif
 			SleepMilliseconds = 60;
-			Version = new Version(3, 0, 0, 0);
+			CurrentVersion = Assembly.GetExecutingAssembly().GetName().Version;
+			Version = CurrentVersion;
 			LoadSettings();
 
-			foreach (string t in args)
+			foreach (var t in args)
 			{
 				switch (t)
 				{
@@ -153,7 +156,7 @@ namespace Calculator
 						switch (reader.Name)
 						{
 							case "calculator":
-								Version = new Version(reader.GetAttribute("version") ?? "3.0.0.0");
+								Version = new Version(reader.GetAttribute("version") ?? "");
 								break;
 							case "alwaysOnTop":
 								AlwaysOnTop = reader.ReadElementContentAsBoolean();
