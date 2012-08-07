@@ -102,9 +102,9 @@ namespace Calculator
 			Version = new Version(3, 0, 0, 0);
 			LoadSettings();
 
-			for (var i = 0; i < args.Length; i++)
+			foreach (string t in args)
 			{
-				switch (args[i])
+				switch (t)
 				{
 					case "-c":
 					{
@@ -153,7 +153,7 @@ namespace Calculator
 						switch (reader.Name)
 						{
 							case "calculator":
-								Version = new Version(reader.GetAttribute("version"));
+								Version = new Version(reader.GetAttribute("version") ?? "3.0.0.0");
 								break;
 							case "alwaysOnTop":
 								AlwaysOnTop = reader.ReadElementContentAsBoolean();
@@ -210,8 +210,6 @@ namespace Calculator
 				Directory.CreateDirectory(SettingsFolder);
 			using (var writer = XmlWriter.Create(SettingsFile))
 			{
-				if (writer == null)
-					return;
 				writer.WriteStartElement("calculator");
 				writer.WriteAttributeString("version", Version.ToString(4));
 				//Boolean values must be lower case.
@@ -303,7 +301,7 @@ namespace Calculator
 		{
 			var builder = new StringBuilder();
 			builder.Append('{');
-			for (int i = 0; i < value.Count; i++)
+			for (var i = 0; i < value.Count; i++)
 			{
 				builder.Append(FormatOutput(value[i]));
 				if (i != value.Count - 1)
@@ -316,15 +314,6 @@ namespace Calculator
 		{
 			switch (Format)
 			{
-				case OutputFormat.Binary: //No binary with doubles
-				case OutputFormat.Hex: //No hex with doubles
-				case OutputFormat.Standard:
-					if (Rounding != -1)
-						value = Math.Round(value, Rounding);
-					if (ThousandsSeperator && !value.ToString().Contains("E"))
-						return value.ToString("#,0." + new string('#', 50));
-					return value.ToString();
-				
 				case OutputFormat.Scientific:
 					var scientific = value.ToString("E" + (Rounding == -1 ? "" : "Rounding "));
 					var index = scientific.IndexOf('E') + 1;
@@ -342,8 +331,15 @@ namespace Calculator
 					if (scientific[scientific.Length - 1] == 'E')
 						scientific = scientific.Remove(scientific.Length - 1, 1);
 					return scientific;
+				case OutputFormat.Binary: //No binary with doubles
+				case OutputFormat.Hex: //No hex with doubles
+				case OutputFormat.Standard:
 				default:
-					throw new ArgumentOutOfRangeException();
+					if (Rounding != -1)
+						value = Math.Round(value, Rounding);
+					if (ThousandsSeperator && !value.ToString().Contains("E"))
+						return value.ToString("#,0." + new string('#', 50));
+					return value.ToString();
 			}
 		}
 		private static string FormatOutput(long value)
@@ -352,11 +348,7 @@ namespace Calculator
 			{
 				case OutputFormat.Hex:
 					return "0x" + ((int)value).ToString("X");
-				case OutputFormat.Scientific: //No scientific with longs (might be in future)
-				case OutputFormat.Standard:
-					if (ThousandsSeperator)
-						return value.ToString("#,0." + new string('#', 50));
-					return value.ToString();
+				
 				case OutputFormat.Binary:
 					var top = Rounding == -1 ? 15 : Rounding;
 					var builder = new StringBuilder("0b");
@@ -366,8 +358,12 @@ namespace Calculator
 						builder.Append(bit != 0 ? '1' : '0');
 					}
 					return builder.ToString();
+				case OutputFormat.Scientific: //No scientific with longs (might be in future)
+				case OutputFormat.Standard:
 				default:
-					throw new ArgumentOutOfRangeException();
+					if (ThousandsSeperator)
+						return value.ToString("#,0." + new string('#', 50));
+					return value.ToString();
 			}
 		}
 	}

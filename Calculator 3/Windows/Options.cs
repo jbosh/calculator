@@ -1,14 +1,17 @@
 ﻿using System;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace Calculator.Windows
 {
 	public partial class Options : Form, ICalculator
 	{
+		private Mutex Lock;
 		private bool Recalulating;
 		public Options()
 		{
 			InitializeComponent();
+			Lock = new Mutex();
 			KeyPreview = true;
 			KeyDown += Options_KeyDown;
 			radioStandard.Click += (a, b) => RadioStandardClicked();
@@ -19,35 +22,36 @@ namespace Calculator.Windows
 		#region ICalculator Members
 		public void Recalculate(bool global)
 		{
-			lock (this)
+			Lock.WaitOne();
+
+			Recalulating = true;
+			chkAntialias.Checked = Program.Antialiasing;
+			//This is a required check so that windows will not keep
+			//tromping on each other when TopMost is true.
+			if (TopMost != Program.AlwaysOnTop)
+				TopMost = Program.AlwaysOnTop;
+			chkOnTop.Checked = Program.AlwaysOnTop;
+			numRounding.Value = Program.Rounding;
+			btnTrig.Text = Program.Radians ? "Radians" : "Degrees";
+			chkThousands.Checked = Program.ThousandsSeperator;
+			switch (Program.Format)
 			{
-				Recalulating = true;
-				chkAntialias.Checked = Program.Antialiasing;
-				//This is a required check so that windows will not keep
-				//tromping on each other when TopMost is true.
-				if (TopMost != Program.AlwaysOnTop)
-					TopMost = Program.AlwaysOnTop;
-				chkOnTop.Checked = Program.AlwaysOnTop;
-				numRounding.Value = Program.Rounding;
-				btnTrig.Text = Program.Radians ? "Radians" : "Degrees";
-				chkThousands.Checked = Program.ThousandsSeperator;
-				switch (Program.Format)
-				{
-					case OutputFormat.Standard:
-						RadioStandardClicked();
-						break;
-					case OutputFormat.Hex:
-						RadioHexClicked();
-						break;
-					case OutputFormat.Scientific:
-						RadioScientificClicked();
-						break;
-					case OutputFormat.Binary:
-						RadioBinaryClicked();
-						break;
-				}
-				Recalulating = false;
+				case OutputFormat.Standard:
+					RadioStandardClicked();
+					break;
+				case OutputFormat.Hex:
+					RadioHexClicked();
+					break;
+				case OutputFormat.Scientific:
+					RadioScientificClicked();
+					break;
+				case OutputFormat.Binary:
+					RadioBinaryClicked();
+					break;
 			}
+			Recalulating = false;
+
+			Lock.ReleaseMutex();
 		}
 		#endregion
 		private void Options_KeyDown(object sender, KeyEventArgs e)
@@ -89,50 +93,48 @@ namespace Calculator.Windows
 			Program.Rounding = (int) numRounding.Value;
 		}
 
-		public void RadioStandardClicked()
+		private bool ClickRadioButton(RadioButton btn)
 		{
 			if (Recalulating)
+				return true;
+			radioStandard.Checked = btn == radioStandard;
+			radioScientific.Checked = btn == radioScientific;
+			radioHex.Checked = btn == radioHex;
+			radioBinary.Checked = btn == radioBinary;
+			return false;
+		}
+
+		private void RadioStandardClicked()
+		{
+			if (ClickRadioButton(radioStandard))
 				return;
-			radioStandard.Checked = true;
-			radioScientific.Checked = false;
-			radioHex.Checked = false;
 			chkThousands.Enabled = true;
 			numRounding.Enabled = true;
 			Program.Format = OutputFormat.Standard;
 		}
-		public void RadioScientificClicked()
+
+		private void RadioScientificClicked()
 		{
-			if (Recalulating)
+			if (ClickRadioButton(radioScientific))
 				return;
-			radioStandard.Checked = false;
-			radioScientific.Checked = true;
-			radioHex.Checked = false;
-			radioBinary.Checked = false;
 			chkThousands.Enabled = false;
 			numRounding.Enabled = true;
 			Program.Format = OutputFormat.Scientific;
 		}
-		public void RadioHexClicked()
+
+		private void RadioHexClicked()
 		{
-			if (Recalulating)
+			if (ClickRadioButton(radioHex))
 				return;
-			radioStandard.Checked = false;
-			radioScientific.Checked = false;
-			radioHex.Checked = true;
-			radioBinary.Checked = false;
 			chkThousands.Enabled = false;
 			numRounding.Enabled = false;
 			Program.Format = OutputFormat.Hex;
 		}
 
-		public void RadioBinaryClicked()
+		private void RadioBinaryClicked()
 		{
-			if (Recalulating)
+			if (ClickRadioButton(radioBinary))
 				return;
-			radioStandard.Checked = false;
-			radioScientific.Checked = false;
-			radioHex.Checked = false;
-			radioBinary.Checked = true;
 			chkThousands.Enabled = false;
 			numRounding.Enabled = true;
 			Program.Format = OutputFormat.Binary;

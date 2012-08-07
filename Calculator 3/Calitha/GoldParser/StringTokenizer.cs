@@ -7,7 +7,7 @@ namespace Calitha.GoldParser
 		string GetInput();
 		void SetInput(string input);
 		Location GetCurrentLocation();
-		void SetCurrentLocation(Location location);
+		void SetCurrent(Location location);
 		TerminalToken RetrieveToken();
 		bool SkipToChar(char ch);
 		bool SkipAfterChar(char ch);
@@ -59,7 +59,7 @@ namespace Calitha.GoldParser
 			return input.Location.Clone();
 		}
 
-		public void SetCurrentLocation(Location location)
+		public void SetCurrent(Location location)
 		{
 			input.Location = location.Clone();
 		}

@@ -44,7 +44,7 @@ namespace Calitha.GoldParser
 		/// <returns>The output string.</returns>
 		public override string ToString()
 		{
-			return "(pos: " + (Position + 0) + ", ln: " + (LineNr + 1) + ", col: " + (ColumnNr + 1) + ")";
+			return string.Concat("(pos: ", (Position + 0), ", ln: ", (LineNr + 1), ", col: ", (ColumnNr + 1), ")");
 		}
 
 		/// <summary>

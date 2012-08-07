@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
@@ -486,7 +487,7 @@ namespace Calculator.Grammar
 				case TokenType.Mod:
 					return left % right;
 				default:
-					throw new ArgumentOutOfRangeException();
+					throw new DataException(string.Format("Data does not operator of type {0}. Please use Mult, Plus, Minus, Divide, ...", (TokenType) node.Tokens[1].Symbol.Id));
 			}
 		}
 		private static Variable VisitPow(Token token)
@@ -549,7 +550,7 @@ namespace Calculator.Grammar
 						return ((Vector)left.Value).Length();
 					return new Variable();
 				default:
-					throw new ArgumentOutOfRangeException();
+					throw new DataException(string.Format("Unsupported token type {0}.", (TokenType)node.Tokens[0].Symbol.Id));
 			}
 		}
 		private static Variable VisitTrig(Token token)

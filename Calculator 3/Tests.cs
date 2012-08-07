@@ -143,7 +143,8 @@ namespace Calculator
 			TestFunction("endian(2193118208)", 0x0054B882);
 			TestFunction("endian{2193118208}", new Vector(0x0054B882));
 
-	
+			TestFunction("{1;2}/2", new Vector(.5, 1));
+
 			Memory.Push();
 			Memory["a"] = new Variable(2, "a");
 			Memory["g"] = new Variable(20, "g");

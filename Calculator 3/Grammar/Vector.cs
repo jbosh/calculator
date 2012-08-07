@@ -7,7 +7,7 @@ namespace Calculator.Grammar
 {
 	public struct Vector
 	{
-		public Variable [] Values;
+		private readonly Variable [] Values;
 		public int Count { get { return Values != null ? Values.Length : 0; } }
 		public Variable this[int index]
 		{
@@ -34,23 +34,22 @@ namespace Calculator.Grammar
 		{
 			Values = args.ToArray();
 		}
-		public static Vector operator +(Vector a, Vector b)
+		private static Vector PerformOp(Vector a, Vector b, Func<Variable, Variable, Variable> func)
 		{
 			if (a.Count != b.Count)
 				return new Vector();
 			var output = new Vector(a.Values);
 			for (var i = 0; i < output.Count; i++)
-				output[i] += b[i];
+				output[i] = func(a[i], b[i]);
 			return output;
+		}
+		public static Vector operator +(Vector a, Vector b)
+		{
+			return PerformOp(a, b, (v0, v1) => v0 + v1);
 		}
 		public static Vector operator -(Vector a, Vector b)
 		{
-			if (a.Count != b.Count)
-				return new Vector();
-			var output = new Vector(a.Values);
-			for (var i = 0; i < output.Count; i++)
-				output[i] -= b[i];
-			return output;
+			return PerformOp(a, b, (v0, v1) => v0 - v1);
 		}
 		public static Vector operator +(Vector a, double b)
 		{
@@ -62,12 +61,7 @@ namespace Calculator.Grammar
 		}
 		public static Vector operator *(Vector a, Vector b)
 		{
-			if (a.Count != b.Count)
-				return new Vector();
-			var output = new Vector(a.Values);
-			for (var i = 0; i < output.Count; i++)
-				output[i] *= b[i];
-			return output;
+			return PerformOp(a, b, (v0, v1) => v0 * v1);
 		}
 		public static Vector operator *(Vector a, double b)
 		{
@@ -94,10 +88,7 @@ namespace Calculator.Grammar
 
 		public static Vector operator /(Vector a, Vector b)
 		{
-			var output = new Vector(a.Values);
-			for (var i = 0; i < output.Count; i++)
-				output[i] /= b[i];
-			return output;
+			return PerformOp(a, b, (v0, v1) => v0 / v1);
 		}
 
 		public Variable Dot()
@@ -111,7 +102,7 @@ namespace Calculator.Grammar
 				if (a.Count != b.Count)
 					return Variable.Error;
 				var d = 0.0;
-				for (int i = 0; i < a.Count; i++)
+				for (var i = 0; i < a.Count; i++)
 					d += a[i].Value * b[i].Value;
 				return new Variable(d);
 			}
@@ -152,7 +143,7 @@ namespace Calculator.Grammar
 		public Variable Length()
 		{
 			var d = 0.0;
-			for (int i = 0; i < Count; i++)
+			for (var i = 0; i < Count; i++)
 				d += Values[i].Value * Values[i].Value;
 			return new Variable(Math.Sqrt(d));
 		}
@@ -161,50 +152,41 @@ namespace Calculator.Grammar
 		{
 			return new Variable(this / Length().Value);
 		}
-
-		public Variable Round()
+		private Variable PerformOp(Func<Variable, Variable> func)
 		{
 			var output = new Vector(Values);
 			for (var i = 0; i < output.Count; i++)
-				output[i] = Values[i].Round();
+				output[i] = func(Values[i]);
 			return new Variable(output);
+		}
+		public Variable Round()
+		{
+			return PerformOp(v0 => v0.Round());
 		}
 		public Variable Ceiling()
 		{
-			var output = new Vector(Values);
-			for (var i = 0; i < output.Count; i++)
-				output[i] = Values[i].Ceiling();
-			return new Variable(output);
+			return PerformOp(v0 => v0.Ceiling());
 		}
 		public Variable Floor()
 		{
-			var output = new Vector(Values);
-			for (var i = 0; i < output.Count; i++)
-				output[i] = Values[i].Floor();
-			return new Variable(output);
+			return PerformOp(v0 => v0.Floor());
 		}
 		public Variable Endian()
 		{
-			var output = new Vector(Values);
-			for (var i = 0; i < output.Count; i++)
-				output[i] = Values[i].Endian();
-			return new Variable(output);
+			return PerformOp(v0 => v0.Endian());
 		}
+		public Variable Abs()
+		{
+			return PerformOp(v0 => v0.Abs());
+		}
+
 
 		public static bool operator == (Vector a, Vector b)
 		{
-			{
-				var aNull = ReferenceEquals(a, null);
-				var bNull = ReferenceEquals(b, null);
-				if (aNull && bNull)
-					return true;
-				if (aNull || bNull)
-					return false;
-			}
 			if (a.Count != b.Count)
 				return false;
 
-			for (int i = 0; i < a.Count; i++)
+			for (var i = 0; i < a.Count; i++)
 			{
 				if(a[i].Value is double)
 				{
@@ -222,14 +204,10 @@ namespace Calculator.Grammar
 		}
 		public bool Equals(Vector other)
 		{
-			if (ReferenceEquals(null, other)) return false;
-			if (ReferenceEquals(this, other)) return true;
 			return Equals(other.Values, Values);
 		}
 		public override bool Equals(object obj)
 		{
-			if (ReferenceEquals(null, obj)) return false;
-			if (ReferenceEquals(this, obj)) return true;
 			if (obj.GetType() != typeof (Vector)) return false;
 			return Equals((Vector) obj);
 		}
@@ -241,7 +219,7 @@ namespace Calculator.Grammar
 		{
 			var builder = new StringBuilder(Values.Length * 5);
 			builder.Append('{');
-			for (int i = 0; i < Values.Length; i++)
+			for (var i = 0; i < Values.Length; i++)
 			{
 				builder.Append(Values[i]);
 				if(i != Values.Length - 1)

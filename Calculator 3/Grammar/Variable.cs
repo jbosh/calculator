@@ -96,7 +96,7 @@ namespace Calculator.Grammar
 		public Variable Abs()
 		{
 			if (Value is Vector)
-				return new Variable(new Vector(((Vector) Value).Values.Select(d => d.Abs())));
+				return ((Vector) Value).Abs();
 			return new Variable(Math.Abs(Value));
 		}
 		public Variable Sqrt()

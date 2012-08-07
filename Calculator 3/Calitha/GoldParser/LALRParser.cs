@@ -200,7 +200,7 @@ namespace Calitha.GoldParser
 				continueParsing = e.Continue != ContinueMode.Stop;
 				lookahead = e.NextToken;
 				if ((e.NextToken != null) && (e.Continue == ContinueMode.Insert))
-					tokenizer.SetCurrentLocation(token.Location);
+					tokenizer.SetCurrent(token.Location);
 			}
 		}
 
@@ -396,62 +396,46 @@ namespace Calitha.GoldParser
 
 		public List<Symbol> Symbols { get; private set; }
 
-		public delegate void TokenReadHandler(LALRParser parser, TokenReadEventArgs args);
-
-		public delegate void ShiftHandler(LALRParser parser, ShiftEventArgs args);
-
-		public delegate void ReduceHandler(LALRParser parser, ReduceEventArgs args);
-
-		public delegate void GotoHandler(LALRParser parser, GotoEventArgs args);
-
-		public delegate void AcceptHandler(LALRParser parser, AcceptEventArgs args);
-
-		public delegate void TokenErrorHandler(LALRParser parser, TokenErrorEventArgs args);
-
-		public delegate void ParseErrorHandler(LALRParser parser, ParseErrorEventArgs args);
-
-		public delegate void CommentReadHandler(LALRParser parser, CommentReadEventArgs args);
-
 		/// <summary>
 		/// This event will be called if a token has been read which will be parsed by
 		/// the LALR parser.
 		/// </summary>
-		public event TokenReadHandler OnTokenRead;
+		public event Action<LALRParser, TokenReadEventArgs> OnTokenRead;
 
 		/// <summary>
 		/// This event will be called when a token is shifted onto the stack.
 		/// </summary>
-		public event ShiftHandler OnShift;
+		public event Action<LALRParser, ShiftEventArgs> OnShift;
 
 		/// <summary>
 		/// This event will be called when tokens are reduced.
 		/// </summary>
-		public event ReduceHandler OnReduce;
+		public event Action<LALRParser, ReduceEventArgs> OnReduce;
 
 		/// <summary>
 		/// This event will be called when a goto occurs (after a reduction).
 		/// </summary>
-		public event GotoHandler OnGoto;
+		public event Action<LALRParser, GotoEventArgs> OnGoto;
 
 		/// <summary>
 		/// This event will be called if the parser is finished and the input has been
 		/// accepted.
 		/// </summary>
-		public event AcceptHandler OnAccept;
+		public event Action<LALRParser, AcceptEventArgs> OnAccept;
 
 		/// <summary>
 		/// This event will be called when the tokenizer cannot recognize the input.
 		/// </summary>
-		public event TokenErrorHandler OnTokenError;
+		public event Action<LALRParser, TokenErrorEventArgs> OnTokenError;
 
 		/// <summary>
 		/// This event will be called when the parser has a token it cannot parse.
 		/// </summary>
-		public event ParseErrorHandler OnParseError;
+		public event Action<LALRParser, ParseErrorEventArgs> OnParseError;
 
 		/// <summary>
 		/// This event will be called when a comment section has been read.
 		/// </summary>
-		public event CommentReadHandler OnCommentRead;
+		public event Action<LALRParser, CommentReadEventArgs> OnCommentRead;
 	}
 }
