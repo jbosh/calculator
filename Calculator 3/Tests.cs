@@ -144,6 +144,13 @@ namespace Calculator
 			TestFunction("endian{2193118208}", new Vector(0x0054B882));
 
 			TestFunction("{1;2}/2", new Vector(.5, 1));
+			TestFunction("2/{1;2}", new Vector(2, 1));
+			TestFunction("sqrt{1;4;9}", new Vector(1, 2, 3));
+			TestFunction("abs{-1;4;-9}", new Vector(1, 4, 9));
+			TestFunction("1 - sqrt{1;4;9}", new Vector(0, -1, -2));
+			TestFunction("{2;4}^2", new Vector(4, 16));
+			TestFunction("~r+1", null);
+			TestFunction("~{r}+1", null);
 
 			Memory.Push();
 			Memory["a"] = new Variable(2, "a");

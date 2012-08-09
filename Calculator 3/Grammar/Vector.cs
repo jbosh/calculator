@@ -34,6 +34,13 @@ namespace Calculator.Grammar
 		{
 			Values = args.ToArray();
 		}
+		private static Vector MakeVector(int count, Variable v)
+		{
+			var values = new Variable[count];
+			for (var i = 0; i < values.Length; i++)
+				values[i] = v;
+			return new Vector(values);
+		}
 		private static Vector PerformOp(Vector a, Vector b, Func<Variable, Variable, Variable> func)
 		{
 			if (a.Count != b.Count)
@@ -47,18 +54,44 @@ namespace Calculator.Grammar
 		{
 			return PerformOp(a, b, (v0, v1) => v0 + v1);
 		}
+		public static Vector operator +(Vector a, double b)
+		{
+			return a + MakeVector(a.Count, new Variable(b));
+		}
+		public static Vector operator +(Vector a, long b)
+		{
+			return a + MakeVector(a.Count, new Variable(b));
+		}
+		public static Vector operator +(long b, Vector a)
+		{
+			return MakeVector(a.Count, new Variable(b)) + a;
+		}
+		public static Vector operator +(double b, Vector a)
+		{
+			return MakeVector(a.Count, new Variable(b)) + a;
+		}
+
 		public static Vector operator -(Vector a, Vector b)
 		{
 			return PerformOp(a, b, (v0, v1) => v0 - v1);
 		}
-		public static Vector operator +(Vector a, double b)
-		{
-			return new Vector();
-		}
 		public static Vector operator -(Vector a, double b)
 		{
-			return new Vector();
+			return a - MakeVector(a.Count, new Variable(b));
 		}
+		public static Vector operator -(Vector a, long b)
+		{
+			return a - MakeVector(a.Count, new Variable(b));
+		}
+		public static Vector operator -(long b, Vector a)
+		{
+			return MakeVector(a.Count, new Variable(b)) - a;
+		}
+		public static Vector operator -(double b, Vector a)
+		{
+			return MakeVector(a.Count, new Variable(b)) - a;
+		}
+
 		public static Vector operator *(Vector a, Vector b)
 		{
 			return PerformOp(a, b, (v0, v1) => v0 * v1);
@@ -83,7 +116,7 @@ namespace Calculator.Grammar
 		}
 		public static Vector operator /(double b, Vector a)
 		{
-			return a / b;
+			return MakeVector(a.Count, new Variable(b)) / a;
 		}
 
 		public static Vector operator /(Vector a, Vector b)
@@ -156,7 +189,11 @@ namespace Calculator.Grammar
 		{
 			var output = new Vector(Values);
 			for (var i = 0; i < output.Count; i++)
+			{
+				if (Values[i].Value == null)
+					return new Variable();
 				output[i] = func(Values[i]);
+			}
 			return new Variable(output);
 		}
 		public Variable Round()
@@ -178,6 +215,22 @@ namespace Calculator.Grammar
 		public Variable Abs()
 		{
 			return PerformOp(v0 => v0.Abs());
+		}
+		public Variable Sqrt()
+		{
+			return PerformOp(v0 => v0.Sqrt());
+		}
+		public Variable Pow(double d)
+		{
+			return PerformOp(v0 => new Variable(Math.Pow((double)v0.Value, d)));
+		}
+		public Variable Pow(long d)
+		{
+			return PerformOp(v0 => new Variable(Math.Pow((double)v0.Value, d)));
+		}
+		public Variable Negate()
+		{
+			return PerformOp(v0 => v0.Negate());
 		}
 
 

@@ -440,7 +440,9 @@ namespace Calculator.Grammar
 		{
 			var node = (NonterminalToken)token;
 			var right = Visit(node.Tokens[1]);
-			return new Variable(~(int) right.Value);
+			if(right.Value == null)
+				return new Variable();
+			return right.Negate();
 		}
 		#endregion
 
@@ -497,6 +499,10 @@ namespace Calculator.Grammar
 			var right = Visit(node.Tokens[2]);
 			if (left.Value == null || right.Value == null)
 				return new Variable();
+			if(right.Value is Vector)
+				return new Variable();
+			if (left.Value is Vector)
+				return ((Vector)left.Value).Pow(right.Value);
 			return new Variable(Math.Pow((double)left.Value, (double)right.Value));
 		}
 		private static Variable VisitFactorial(Token token)

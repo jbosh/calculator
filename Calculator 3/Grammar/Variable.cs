@@ -101,6 +101,8 @@ namespace Calculator.Grammar
 		}
 		public Variable Sqrt()
 		{
+			if (Value is Vector)
+				return ((Vector) Value).Sqrt();
 			return new Variable(Math.Sqrt(Value));
 		}
 		public Variable Ln()
@@ -128,6 +130,12 @@ namespace Calculator.Grammar
 			if (Value is Vector)
 				return ((Vector)Value).Floor();
 			return new Variable(Math.Floor((double)Value));
+		}
+		public Variable Negate()
+		{
+			if (Value is Vector)
+				return ((Vector)Value).Negate();
+			return new Variable(~(int)Value);
 		}
 		public Variable Endian()
 		{
