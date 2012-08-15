@@ -50,6 +50,7 @@ namespace Calculator.Grammar
 				output[i] = func(a[i], b[i]);
 			return output;
 		}
+		#region Add
 		public static Vector operator +(Vector a, Vector b)
 		{
 			return PerformOp(a, b, (v0, v1) => v0 + v1);
@@ -70,7 +71,9 @@ namespace Calculator.Grammar
 		{
 			return MakeVector(a.Count, new Variable(b)) + a;
 		}
+		#endregion
 
+		#region Sub
 		public static Vector operator -(Vector a, Vector b)
 		{
 			return PerformOp(a, b, (v0, v1) => v0 - v1);
@@ -91,7 +94,28 @@ namespace Calculator.Grammar
 		{
 			return MakeVector(a.Count, new Variable(b)) - a;
 		}
+		#endregion
 
+		#region Shifts
+		public static Vector ShiftLeft(Vector a, Vector count)
+		{
+			return PerformOp(a, count, (v0, v1) => v0.ShiftLeft(v1));
+		}
+		public static Vector ShiftLeft(Vector a, long count)
+		{
+			return PerformOp(a, MakeVector(a.Count, new Variable(count)), (v0, v1) => v0.ShiftLeft(v1));
+		}
+		public static Vector ShiftRight(Vector a, Vector count)
+		{
+			return PerformOp(a, count, (v0, v1) => v0.ShiftRight(v1));
+		}
+		public static Vector ShiftRight(Vector a, long count)
+		{
+			return PerformOp(a, MakeVector(a.Count, new Variable(count)), (v0, v1) => v0.ShiftRight(v1));
+		}
+		#endregion
+
+		#region Or/And
 		public static Vector operator |(Vector a, Vector b)
 		{
 			return PerformOp(a, b, (v0, v1) => v0 | v1);
@@ -117,6 +141,7 @@ namespace Calculator.Grammar
 		{
 			return MakeVector(a.Count, new Variable(b)) & a;
 		}
+		#endregion
 
 		public static Vector operator *(Vector a, Vector b)
 		{

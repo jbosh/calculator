@@ -456,9 +456,9 @@ namespace Calculator.Grammar
 			switch ((TokenType)node.Tokens[1].Symbol.Id)
 			{
 				case TokenType.ShiftLeft:
-					return left << (int)right.Value;
+					return left.ShiftLeft(right);
 				case TokenType.ShiftRight:
-					return left >> (int)right.Value;
+					return left.ShiftRight(right);
 				case TokenType.LogicalOr:
 					return left | right;
 				case TokenType.LogicalAnd:

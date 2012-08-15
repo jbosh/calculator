@@ -125,8 +125,8 @@ namespace Calculator
 			TestFunction("alpha", null);
 			TestFunction("*-2", null);
 
-			TestFunction("{2}<<3", null);
-			TestFunction("{2;3} & 2", null);
+			TestFunction("{2}<<3", new Vector(16));
+			TestFunction("{2;3} & 2", new Vector(2, 2));
 			TestFunction("length(normalize{21;123;1})", 1);
 			TestFunction("dot{2;2}", 4);
 
@@ -152,7 +152,11 @@ namespace Calculator
 			TestFunction("~r+1", null);
 			TestFunction("~{r}+1", null);
 			TestFunction("~({1;1;1;1}|{1;1;0;0})", new Vector(-2, -2, -2, -2));
+			TestFunction("{1;1;1;1}&{1;1;0;0}", new Vector(1, 1, 0, 0));
 			TestFunction("~(r|r)", null);
+			TestFunction("{1;1}<<{0;1}", new Vector(1, 2));
+			TestFunction("{2;2}>>{0;1}", new Vector(2, 1));
+			TestFunction("{r}<<2", new Vector(new Variable(null)));
 
 			Memory.Push();
 			Memory["a"] = new Variable(2, "a");

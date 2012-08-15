@@ -26,7 +26,9 @@ namespace Calculator.Grammar
 				b.Value = (long) b.Value;
 			if(a.Value is int || a.Value is long)
 				return new Variable(a.Value & b.Value);
-			return new Variable();
+			if (a.Value == null || b.Value == null)
+				return new Variable();
+			return new Variable(a.Value & b.Value);
 		}
 		public static Variable operator |(Variable a, Variable b)
 		{
@@ -40,20 +42,28 @@ namespace Calculator.Grammar
 				return new Variable();
 			return new Variable(a.Value | b.Value);
 		}
-		public static Variable operator <<(Variable a, int count)
+		public Variable ShiftLeft(Variable count)
 		{
-			if (a.Value is double)
-				a.Value = (long)a.Value;
-			if(a.Value is long || a.Value is int)
-				return new Variable(a.Value << count);
+			if (Value is double)
+				Value = (long) Value;
+			if (count.Value is double)
+				count.Value = (int)count.Value;
+			if (Value is Vector || count.Value is Vector)
+				return new Variable(Vector.ShiftLeft(Value, count.Value));
+			if(Value is long || Value is int)
+				return new Variable(Value << (int)count.Value);
 			return new Variable();
 		}
-		public static Variable operator >>(Variable a, int count)
+		public Variable ShiftRight(Variable count)
 		{
-			if (a.Value is double)
-				a.Value = (long)a.Value;
-			if (a.Value is long || a.Value is int)
-				return new Variable(a.Value >> count);
+			if (Value is double)
+				Value = (long)Value;
+			if (count.Value is double)
+				count.Value = (int)count.Value;
+			if (Value is Vector || count.Value is Vector)
+				return new Variable(Vector.ShiftRight(Value, count.Value));
+			if (Value is long || Value is int)
+				return new Variable(Value >> (int)count.Value);
 			return new Variable();
 		}
 		#endregion
