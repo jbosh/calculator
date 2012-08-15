@@ -126,7 +126,7 @@ namespace Calculator.Windows
 		{
 			if (ClickRadioButton(radioHex))
 				return;
-			chkThousands.Enabled = false;
+			chkThousands.Enabled = true;
 			numRounding.Enabled = false;
 			Program.Format = OutputFormat.Hex;
 		}
@@ -135,7 +135,7 @@ namespace Calculator.Windows
 		{
 			if (ClickRadioButton(radioBinary))
 				return;
-			chkThousands.Enabled = false;
+			chkThousands.Enabled = true;
 			numRounding.Enabled = true;
 			Program.Format = OutputFormat.Binary;
 		}

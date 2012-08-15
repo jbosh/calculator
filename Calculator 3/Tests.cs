@@ -151,6 +151,8 @@ namespace Calculator
 			TestFunction("{2;4}^2", new Vector(4, 16));
 			TestFunction("~r+1", null);
 			TestFunction("~{r}+1", null);
+			TestFunction("~({1;1;1;1}|{1;1;0;0})", new Vector(-2, -2, -2, -2));
+			TestFunction("~(r|r)", null);
 
 			Memory.Push();
 			Memory["a"] = new Variable(2, "a");

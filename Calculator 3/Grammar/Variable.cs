@@ -36,7 +36,9 @@ namespace Calculator.Grammar
 				b.Value = (long)b.Value;
 			if (a.Value is int || a.Value is long)
 				return new Variable(a.Value | b.Value);
-			return new Variable();
+			if(a.Value == null || b.Value == null)
+				return new Variable();
+			return new Variable(a.Value | b.Value);
 		}
 		public static Variable operator <<(Variable a, int count)
 		{

@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
 using System.Xml;
@@ -350,17 +351,25 @@ namespace Calculator
 			switch (Format)
 			{
 				case OutputFormat.Hex:
-					return "0x" + ((int)value).ToString("X");
+					{
+						var hex = (value).ToString("X");
+						if (ThousandsSeperator)
+							hex = CommaSeperateNChars(hex, 4);
+						return "0x" + hex;
+					}
 				
 				case OutputFormat.Binary:
 					var top = Rounding == -1 ? 15 : Rounding;
-					var builder = new StringBuilder("0b");
+					var builder = new StringBuilder();
 					for (var i = top; i >= 0; i--)
 					{
 						var bit = value & (1L << i);
 						builder.Append(bit != 0 ? '1' : '0');
 					}
-					return builder.ToString();
+					var bin = builder.ToString();
+					if(ThousandsSeperator)
+						bin = CommaSeperateNChars(bin, 4);
+					return "0b" + bin;
 				case OutputFormat.Scientific: //No scientific with longs (might be in future)
 				case OutputFormat.Standard:
 				default:
@@ -368,6 +377,14 @@ namespace Calculator
 						return value.ToString("#,0." + new string('#', 50));
 					return value.ToString();
 			}
+		}
+		private static string CommaSeperateNChars(string s, int characters)
+		{
+			var matches = Regex.Matches(s, ".{1," + characters + "}", RegexOptions.RightToLeft)
+							.Cast<Match>()
+							.Select(m => m.Value)
+							.Reverse();
+			return string.Join(",", matches);
 		}
 	}
 }

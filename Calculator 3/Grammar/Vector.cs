@@ -92,6 +92,32 @@ namespace Calculator.Grammar
 			return MakeVector(a.Count, new Variable(b)) - a;
 		}
 
+		public static Vector operator |(Vector a, Vector b)
+		{
+			return PerformOp(a, b, (v0, v1) => v0 | v1);
+		}
+		public static Vector operator |(Vector a, long b)
+		{
+			return a | MakeVector(a.Count, new Variable(b));
+		}
+		public static Vector operator |(long b, Vector a)
+		{
+			return MakeVector(a.Count, new Variable(b)) | a;
+		}
+
+		public static Vector operator &(Vector a, Vector b)
+		{
+			return PerformOp(a, b, (v0, v1) => v0 & v1);
+		}
+		public static Vector operator &(Vector a, long b)
+		{
+			return a & MakeVector(a.Count, new Variable(b));
+		}
+		public static Vector operator &(long b, Vector a)
+		{
+			return MakeVector(a.Count, new Variable(b)) & a;
+		}
+
 		public static Vector operator *(Vector a, Vector b)
 		{
 			return PerformOp(a, b, (v0, v1) => v0 * v1);
