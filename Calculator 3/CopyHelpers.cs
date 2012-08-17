@@ -22,6 +22,8 @@ namespace Calculator
 			"$1={$2}",
 			@"{ [xX]=(-?\d*\.?\d+) [yY]=(-?\d*\.?\d+) [zZ]=(-?\d*\.?\d+) \.\.\. }",
 			"{$1; $2; $3}",
+			@"{ (-?\d*\.?\d+) (-?\d*\.?\d+) (-?\d*\.?\d+) (-?\d*\.?\d+) }",
+			"{$1; $2; $3; $4}",
 		};
 		private static string ProcessSimpleReplacements(string source)
 		{
