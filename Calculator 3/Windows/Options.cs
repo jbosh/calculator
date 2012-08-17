@@ -34,6 +34,7 @@ namespace Calculator.Windows
 			numRounding.Value = Program.Rounding;
 			btnTrig.Text = Program.Radians ? "Radians" : "Degrees";
 			chkThousands.Checked = Program.ThousandsSeperator;
+			chkCopyPaste.Checked = Program.CopyPasteHelper;
 			switch (Program.Format)
 			{
 				case OutputFormat.Standard:
@@ -153,6 +154,11 @@ namespace Calculator.Windows
 			if (Recalulating)
 				return;
 			Program.Antialiasing = chkAntialias.Checked;
+		}
+
+		private void chkCopyPaste_CheckedChanged(object sender, EventArgs e)
+		{
+			Program.CopyPasteHelper = chkCopyPaste.Checked;
 		}
 	}
 }

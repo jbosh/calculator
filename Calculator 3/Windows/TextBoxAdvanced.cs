@@ -1,5 +1,6 @@
 #region
 
+using System;
 using System.Windows.Forms;
 
 #endregion
@@ -71,6 +72,21 @@ namespace Calculator
 					return true;
 			}
 			return base.ProcessCmdKey(ref msg, keyData);
+		}
+		protected override void WndProc(ref Message m)
+		{
+			switch (m.Msg)
+			{
+				case 0x302: //WM_PASTE
+					if (!Clipboard.ContainsText())
+						break;
+					if(Program.CopyPasteHelper)
+						Clipboard.SetText(CopyHelpers.Process(Clipboard.GetText()));
+					goto default;
+				default:
+					base.WndProc(ref m);
+					break;
+			}
 		}
 		private void TextBoxAdvanced_KeyDown(object sender, KeyEventArgs e)
 		{

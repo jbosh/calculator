@@ -31,6 +31,7 @@ namespace Calculator
 		private static bool radians;
 		private static int rounding;
 		private static bool thousandsSeperator;
+		private static bool copyPasteHelper;
 		private static List<ICalculator> Window = new List<ICalculator>();
 		private static int SleepMilliseconds{ get; set; }
 		public static bool Radians
@@ -75,6 +76,15 @@ namespace Calculator
 			set
 			{
 				rounding = value;
+				RecalculateWindows(false);
+			}
+		}
+		public static bool CopyPasteHelper
+		{
+			get { return copyPasteHelper; }
+			set
+			{
+				copyPasteHelper = value;
 				RecalculateWindows(false);
 			}
 		}
@@ -200,6 +210,9 @@ namespace Calculator
 							case "workingDir":
 								WorkingDirectory = reader.ReadElementContentAsString();
 								break;
+							case "copyPasteHelper":
+								CopyPasteHelper = reader.ReadElementContentAsBoolean();
+								break;
 						}
 					}
 			}
@@ -212,7 +225,10 @@ namespace Calculator
 		{
 			if (!Directory.Exists(SettingsFolder))
 				Directory.CreateDirectory(SettingsFolder);
-			using (var writer = XmlWriter.Create(SettingsFile))
+			var settings = new XmlWriterSettings();
+			settings.Indent = true;
+			settings.NewLineHandling = NewLineHandling.Entitize;
+			using (var writer = XmlWriter.Create(SettingsFile, settings))
 			{
 				writer.WriteStartElement("calculator");
 				writer.WriteAttributeString("version", Version.ToString(4));
@@ -223,10 +239,11 @@ namespace Calculator
 				writer.WriteElementString("antiAlias", Antialiasing.ToString().ToLower());
 
 				writer.WriteElementString("rounding", Rounding.ToString());
-				writer.WriteComment("outputFormat can be hex, scientific, or standard.");
+				writer.WriteComment("outputFormat can be hex, scientific, binary, or standard.");
 				writer.WriteElementString("outputFormat", Format.ToString());
 				writer.WriteElementString("workingDir", WorkingDirectory);
 				writer.WriteElementString("sleepMilliseconds", SleepMilliseconds.ToString());
+				writer.WriteElementString("copyPasteHelper", CopyPasteHelper.ToString().ToLower());
 				writer.WriteEndElement();
 			}
 		}
