@@ -157,6 +157,10 @@ namespace Calculator
 			TestFunction("{1;1}<<{0;1}", new Vector(1, 2));
 			TestFunction("{2;2}>>{0;1}", new Vector(2, 1));
 			TestFunction("{r}<<2", new Vector(new Variable(null)));
+			TestFunction("{r}<<2", new Vector(new Variable(null)));
+			TestFunction("r>>5", null);
+			TestFunction("r&5", null);
+			TestFunction("0x80000000 >> (r&63)", null);
 
 			Memory.Push();
 			Memory["a"] = new Variable(2, "a");

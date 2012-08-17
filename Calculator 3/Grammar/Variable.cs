@@ -44,6 +44,8 @@ namespace Calculator.Grammar
 		}
 		public Variable ShiftLeft(Variable count)
 		{
+			if (count.Value == null || Value == null)
+				return new Variable();
 			if (Value is double)
 				Value = (long) Value;
 			if (count.Value is double)
@@ -56,6 +58,8 @@ namespace Calculator.Grammar
 		}
 		public Variable ShiftRight(Variable count)
 		{
+			if(count.Value == null || Value == null)
+				return new Variable();
 			if (Value is double)
 				Value = (long)Value;
 			if (count.Value is double)
