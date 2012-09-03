@@ -13,16 +13,17 @@ namespace Calculator
 		{
 			var destination = source;
 			destination = ProcessSimpleReplacements(destination);
+			destination = destination.Trim();
 			return destination;
 		}
 		#region Simple Replacements
 		private static string[] Replacements = new string[]
 		{
-			@"\+\t\t([\w][\w\d]+)\s+{(.+)}\t[\w][\w\d]+",
+			@"[+-]\t\t(\[?[\w][\w\d\[\]]+\]?)\s+{(.+)}\t([\w][\w\d]+\s)+",
 			"$1={$2}",
-			@"{ [xX]=(-?\d*\.?\d+) [yY]=(-?\d*\.?\d+) [zZ]=(-?\d*\.?\d+) \.\.\. }",
+			@"{ [xX]=(-?\d*\.?[eE]?\d+) [yY]=(-?\d*\.?[eE]?\d+) [zZ]=(-?\d*\.?[eE]?\d+) \.\.\. }",
 			"{$1; $2; $3}",
-			@"{ (-?\d*\.?\d+) (-?\d*\.?\d+) (-?\d*\.?\d+) (-?\d*\.?\d+) }",
+			@"{ (-?\d*\.?[eE]?\d+) (-?\d*\.?[eE]?\d+) (-?\d*\.?[eE]?\d+) (-?\d*\.?[eE]?\d+) }",
 			"{$1; $2; $3; $4}",
 		};
 		private static string ProcessSimpleReplacements(string source)

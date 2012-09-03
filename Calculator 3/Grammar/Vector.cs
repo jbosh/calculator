@@ -190,10 +190,9 @@ namespace Calculator.Grammar
 					d += a[i].Value * b[i].Value;
 				return new Variable(d);
 			}
-			else
-			{
-				return new Variable(Values[0].Value * Values[1].Value);
-			}
+			if (Values[0].Value == null || Values[1].Value == null)
+				return new Variable();
+			return new Variable(Values[0].Value * Values[1].Value);
 		}
 
 		public Variable Cross()
@@ -226,6 +225,10 @@ namespace Calculator.Grammar
 
 		public Variable Length()
 		{
+			if(Values == null)
+				return new Variable();
+			if (Values.Any(v => v.Value is Vector))
+				return new Variable();
 			var d = 0.0;
 			for (var i = 0; i < Count; i++)
 				d += Values[i].Value * Values[i].Value;
@@ -234,7 +237,10 @@ namespace Calculator.Grammar
 
 		public Variable Normalize()
 		{
-			return new Variable(this / Length().Value);
+			var len = Length();
+			if(len.Value == null)
+				return new Variable();
+			return new Variable(this / len.Value);
 		}
 		private Variable PerformOp(Func<Variable, Variable> func)
 		{

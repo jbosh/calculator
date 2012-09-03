@@ -128,6 +128,7 @@ namespace Calculator
 			TestFunction("{2}<<3", new Vector(16));
 			TestFunction("{2;3} & 2", new Vector(2, 2));
 			TestFunction("length(normalize{21;123;1})", 1);
+			TestFunction("length({2}+{2;3})", null);
 			TestFunction("dot{2;2}", 4);
 
 			TestFunction("0b1", 1);
@@ -183,6 +184,8 @@ namespace Calculator
 			TestFunction("pos + n", new Vector(432, 36));
 			TestFunction("atan(x / y)", 72.26);
 			TestFunction("a_b + 2", 4);
+			TestFunction("dot{pos;r}", null);
+			TestFunction("normalize{n}", null);
 			Memory.Pop();
 		}
 		private static void TestFunction(string function, dynamic correct)
