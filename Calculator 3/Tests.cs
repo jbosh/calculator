@@ -10,13 +10,7 @@ namespace Calculator
 		{
 	#region Constants
 			var Memory = new MemoryManager();
-			Memory.SetVariable("G", 6.67428E-11);
-			Memory.SetVariable("g", 9.8);
-			Memory.SetVariable("pi", Math.PI);
-			Memory.SetVariable("π", Math.PI);
-			Memory.SetVariable("e", Math.E);
-			Memory.SetVariable("c", 299792458.0);
-			Memory.SetVariable("x", 0);
+			Memory.SetDefaultConstants();
 			Memory.Push();
 			Statement.Memory = Memory;
 			#endregion

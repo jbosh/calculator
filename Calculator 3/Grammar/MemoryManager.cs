@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Calculator.Grammar
 {
@@ -43,6 +44,19 @@ namespace Calculator.Grammar
 		public void Pop()
 		{
 			Memory.RemoveAt(Memory.Count - 1);
+		}
+		public void SetDefaultConstants()
+		{
+			SetVariable("G", 6.67428E-11);
+			SetVariable("g", 9.8);
+			SetVariable("pi", Math.PI);
+			SetVariable("π", Math.PI);
+			SetVariable("e", Math.E);
+			SetVariable("c", 299792458.0);
+			SetVariable("x", 0);
+			SetVariable("kb", 1024);
+			SetVariable("mb", 1024 * 1024);
+			SetVariable("gb", 1024 * 1024 * 1024);
 		}
 	}
 }
