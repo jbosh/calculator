@@ -153,6 +153,30 @@ namespace Calculator.Grammar
 				return ((Vector)Value).Negate();
 			return new Variable(~(int)Value);
 		}
+		public Variable Sin()
+		{
+			var degreeBefore = Program.Radians ? 1 : 0.0174532925199433;
+
+			if (Value is Vector)
+				return ((Vector)Value).Sin();
+			return new Variable(Math.Sin(Value * degreeBefore));
+		}
+		public Variable Cos()
+		{
+			var degreeBefore = Program.Radians ? 1 : 0.0174532925199433;
+
+			if (Value is Vector)
+				return ((Vector)Value).Cos();
+			return new Variable(Math.Cos(Value * degreeBefore));
+		}
+		public Variable Tan()
+		{
+			var degreeBefore = Program.Radians ? 1 : 0.0174532925199433;
+
+			if (Value is Vector)
+				return ((Vector)Value).Tan();
+			return new Variable(Math.Tan(Value * degreeBefore));
+		}
 		public Variable Endian()
 		{
 			if (Value is Vector)

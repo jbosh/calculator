@@ -570,17 +570,11 @@ namespace Calculator.Grammar
 			switch ((TokenType)node.Tokens[0].Symbol.Id)
 			{
 				case TokenType.Sin:
-					if (left.Value is Vector)
-						return new Variable();
-					return new Variable(Math.Sin(left.Value * degreeBefore));
+					return left.Sin();
 				case TokenType.Cos:
-					if (left.Value is Vector)
-						return new Variable();
-					return new Variable(Math.Cos(left.Value * degreeBefore));
+					return left.Cos();
 				case TokenType.Tan:
-					if (left.Value is Vector)
-						return new Variable();
-					return new Variable(Math.Tan(left.Value * degreeBefore));
+					return left.Tan();
 				case TokenType.Asin:
 					if (left.Value is Vector)
 						return new Variable();

@@ -163,6 +163,9 @@ namespace Calculator
 			TestFunction("r&5", null);
 			TestFunction("0x80000000 >> (r&63)", null);
 
+			TestFunction("sin({-180; -90; 180})", new Vector(0, -1, 0));
+			TestFunction("cos({-180; -90; 180})", new Vector(-1, 0, -1));
+
 			Memory.Push();
 			Memory["a"] = new Variable(2, "a");
 			Memory["g"] = new Variable(20, "g");
@@ -187,6 +190,9 @@ namespace Calculator
 			TestFunction("dot{pos;r}", null);
 			TestFunction("normalize{n}", null);
 			Memory.Pop();
+
+			TestCopyFunction("+		normal	{ -0.13749852 -0.98042428 0.13977858 0.13977858 }	vector float", "normal={-0.13749852; -0.98042428; 0.13977858; 0.13977858}");
+			TestCopyFunction("+		A	{ -0.05659103 -0.40351867 0.05752944 0.00000000 }	vector float", "A={-0.05659103; -0.40351867; 0.05752944; 0.00000000}");
 		}
 		private static void TestFunction(string function, dynamic correct)
 		{
@@ -196,6 +202,12 @@ namespace Calculator
 				output.Value = Math.Round(output.Value, 2);
 			if(output.Value != correct)
 				throw new ApplicationException(string.Format("Failed on \"{0}\". Answer: {1}.", function, output));
+		}
+		private static void TestCopyFunction(string input, string correct)
+		{
+			var output = CopyHelpers.Process(input);
+			if (output != correct)
+				throw new ApplicationException(string.Format("Failed on \"{0}\". Answer: {1}.", input, output));
 		}
 	}
 #endif

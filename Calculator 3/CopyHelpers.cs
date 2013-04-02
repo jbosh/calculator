@@ -17,9 +17,9 @@ namespace Calculator
 			return destination;
 		}
 		#region Simple Replacements
-		private static string[] Replacements = new string[]
+		private static string[] Replacements = new[]
 		{
-			@"[+-]\t\t(\[?[\w][\w\d\[\]]+\]?)\s+{(.+)}\t([\w][\w\d]+\s)+",
+			@"[+-]\t\t(\[?[\w][\w\d\[\]]*\]?)\s+{(.+)}\t([\w][\w\d]+\s*)+",
 			"$1={$2}",
 			@"{ [xX]=(-?\d*\.?[eE]?\d+) [yY]=(-?\d*\.?[eE]?\d+) [zZ]=(-?\d*\.?[eE]?\d+) \.\.\. }",
 			"{$1; $2; $3}",

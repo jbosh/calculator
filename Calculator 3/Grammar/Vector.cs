@@ -289,6 +289,18 @@ namespace Calculator.Grammar
 		{
 			return PerformOp(v0 => v0.Negate());
 		}
+		public Variable Sin()
+		{
+			return PerformOp(v0 => v0.Sin());
+		}
+		public Variable Cos()
+		{
+			return PerformOp(v0 => v0.Cos());
+		}
+		public Variable Tan()
+		{
+			return PerformOp(v0 => v0.Tan());
+		}
 
 
 		public static bool operator == (Vector a, Vector b)
