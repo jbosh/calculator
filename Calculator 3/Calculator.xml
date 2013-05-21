@@ -2,7 +2,7 @@
 <calculator version="3.1.0.0">
 	<alwaysOnTop>true</alwaysOnTop>
 	<inRadians>false</inRadians>
-	<thousandsSeperator>false</thousandsSeperator>
+	<thousandsSeparator>false</thousandsSeparator>
 	<rounding>-1</rounding>
 	<outputFormat>standard</outputFormat><!--Can be hex, scientific, or standard.-->
 	<antiAlias>true</antiAlias>

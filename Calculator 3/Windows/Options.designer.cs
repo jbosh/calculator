@@ -128,7 +128,7 @@
 			this.chkThousands.Name = "chkThousands";
 			this.chkThousands.Size = new System.Drawing.Size(129, 17);
 			this.chkThousands.TabIndex = 8;
-			this.chkThousands.Text = "Thousands seperator.";
+			this.chkThousands.Text = "Thousands separator.";
 			this.chkThousands.UseVisualStyleBackColor = true;
 			this.chkThousands.CheckedChanged += new System.EventHandler(this.chkThousands_CheckedChanged);
 			// 

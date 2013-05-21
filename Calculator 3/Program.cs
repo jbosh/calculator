@@ -30,7 +30,7 @@ namespace Calculator
 		private static Form HelpForm, OptionsForm;
 		private static bool radians;
 		private static int rounding;
-		private static bool defaultThousandsSeperator;
+		private static bool defaultThousandsSeparator;
 		private static bool copyPasteHelper;
 		private static List<ICalculator> Window = new List<ICalculator>();
 		private static int SleepMilliseconds{ get; set; }
@@ -52,12 +52,12 @@ namespace Calculator
 				RecalculateWindows(false);
 			}
 		}
-		public static bool DefaultThousandsSeperator
+		public static bool DefaultThousandsSeparator
 		{
-			get { return defaultThousandsSeperator; }
+			get { return defaultThousandsSeparator; }
 			set
 			{
-				defaultThousandsSeperator = value;
+				defaultThousandsSeparator = value;
 				RecalculateWindows(false);
 			}
 		}
@@ -175,8 +175,8 @@ namespace Calculator
 							case "inRadans":
 								Radians = reader.ReadElementContentAsBoolean();
 								break;
-							case "thousandsSeperator":
-								DefaultThousandsSeperator = reader.ReadElementContentAsBoolean();
+							case "thousandsSeparator":
+								DefaultThousandsSeparator = reader.ReadElementContentAsBoolean();
 								break;
 							case "rounding":
 								Rounding = reader.ReadElementContentAsInt();
@@ -232,7 +232,7 @@ namespace Calculator
 				//Boolean values must be lower case.
 				writer.WriteElementString("alwaysOnTop", AlwaysOnTop.ToString().ToLower());
 				writer.WriteElementString("inRadans", Radians.ToString().ToLower());
-				writer.WriteElementString("thousandsSeperator", DefaultThousandsSeperator.ToString().ToLower());
+				writer.WriteElementString("thousandsSeparator", DefaultThousandsSeparator.ToString().ToLower());
 				writer.WriteElementString("antiAlias", Antialiasing.ToString().ToLower());
 
 				writer.WriteElementString("rounding", Rounding.ToString());
@@ -297,37 +297,37 @@ namespace Calculator
 					break;
 			}
 		}
-		public static string FormatOutput(object value, OutputFormat format, bool thousandsSeperator)
+		public static string FormatOutput(object value, OutputFormat format, bool thousandsSeparator)
 		{
 			if (value is double)
-				return FormatOutput((double)value, format, thousandsSeperator);
+				return FormatOutput((double)value, format, thousandsSeparator);
 			if (value is long)
-				return FormatOutput((long)value, format, thousandsSeperator);
+				return FormatOutput((long)value, format, thousandsSeparator);
 			if (value is Variable)
 			{
 				var v = ((Variable) value).Value;
 				if(v == null)
 					return "NaN";
-				return FormatOutput(v, format, thousandsSeperator);
+				return FormatOutput(v, format, thousandsSeparator);
 			}
 			if (value is Vector)
-				return FormatOutput((Vector)value, format, thousandsSeperator);
+				return FormatOutput((Vector)value, format, thousandsSeparator);
 			return "";
 		}
-		private static string FormatOutput(Vector value, OutputFormat format, bool thousandsSeperator)
+		private static string FormatOutput(Vector value, OutputFormat format, bool thousandsSeparator)
 		{
 			var builder = new StringBuilder();
 			builder.Append('{');
 			for (var i = 0; i < value.Count; i++)
 			{
-				builder.Append(FormatOutput(value[i], format, thousandsSeperator));
+				builder.Append(FormatOutput(value[i], format, thousandsSeparator));
 				if (i != value.Count - 1)
 					builder.Append("; ");
 			}
 			builder.Append('}');
 			return builder.ToString();
 		}
-		private static string FormatOutput(double value, OutputFormat format, bool thousandsSeperator)
+		private static string FormatOutput(double value, OutputFormat format, bool thousandsSeparator)
 		{
 			switch (format)
 			{
@@ -354,19 +354,19 @@ namespace Calculator
 				default:
 					if (Rounding != -1)
 						value = Math.Round(value, Rounding);
-					if (thousandsSeperator && !value.ToString().Contains("E"))
+					if (thousandsSeparator && !value.ToString().Contains("E"))
 						return value.ToString("#,0." + new string('#', 50));
 					return value.ToString();
 			}
 		}
-		private static string FormatOutput(long value, OutputFormat format, bool thousandsSeperator)
+		private static string FormatOutput(long value, OutputFormat format, bool thousandsSeparator)
 		{
 			switch (format)
 			{
 				case OutputFormat.Hex:
 					{
 						var hex = (value).ToString("X");
-						if (thousandsSeperator)
+						if (thousandsSeparator)
 							hex = CommaSeperateNChars(hex, 4);
 						return "0x" + hex;
 					}
@@ -380,13 +380,13 @@ namespace Calculator
 						builder.Append(bit != 0 ? '1' : '0');
 					}
 					var bin = builder.ToString();
-					if (thousandsSeperator)
+					if (thousandsSeparator)
 						bin = CommaSeperateNChars(bin, 4);
 					return "0b" + bin;
 				case OutputFormat.Scientific: //No scientific with longs (might be in future)
 				case OutputFormat.Standard:
 				default:
-					if (thousandsSeperator)
+					if (thousandsSeparator)
 						return value.ToString("#,0." + new string('#', 50));
 					return value.ToString();
 			}

@@ -265,7 +265,7 @@ namespace Calculator.Windows
 			public readonly Label lblEquals;
 			public readonly TextBoxAdvanced txtQuestion;
 			public OutputFormat Format;
-			public bool ThousandsSeperator;
+			public bool ThousandsSeparator;
 			public int Bottom
 			{
 				get { return txtQuestion.Bottom; }
@@ -317,7 +317,7 @@ namespace Calculator.Windows
 				lblEquals.TabStop = false;
 
 				Format = Program.DefaultFormat;
-				ThousandsSeperator = Program.DefaultThousandsSeperator;
+				ThousandsSeparator = Program.DefaultThousandsSeparator;
 
 				lblAnswer.Click += lblAnswer_Click;
 			}
@@ -339,7 +339,7 @@ namespace Calculator.Windows
 				if (global)
 					statement.Reset();
 				var parse = statement.ProcessString(txtQuestion.Text);
-				lblAnswer.Text = Program.FormatOutput(parse, Format, ThousandsSeperator);
+				lblAnswer.Text = Program.FormatOutput(parse, Format, ThousandsSeparator);
 			}
 			private void txtQuestion_TextChanged()
 			{
@@ -382,7 +382,7 @@ namespace Calculator.Windows
 					var itemHex = new ToolStripMenuItem("Hex", null, lblAnswerMenu_Click);
 					var itemScientific = new ToolStripMenuItem("Scientific", null, lblAnswerMenu_Click);
 					var itemBinary = new ToolStripMenuItem("Binary", null, lblAnswerMenu_Click);
-					var itemThousands = new ToolStripMenuItem("Thousands Seperator", null, lblAnswerMenu_Click);
+					var itemThousands = new ToolStripMenuItem("Thousands Separator", null, lblAnswerMenu_Click);
 					menu.Items.Add(itemStandard);
 					menu.Items.Add(itemHex);
 					menu.Items.Add(itemScientific);
@@ -406,7 +406,7 @@ namespace Calculator.Windows
 						default:
 							throw new NotImplementedException();
 					}
-					itemThousands.Checked = ThousandsSeperator;
+					itemThousands.Checked = ThousandsSeparator;
 
 					menu.Show(lblAnswer, mouseArgs.X, mouseArgs.Y);
 				}
@@ -428,8 +428,8 @@ namespace Calculator.Windows
 					case "Binary":
 						Format = OutputFormat.Binary;
 						break;
-					case "Thousands Seperator":
-						ThousandsSeperator = !item.Checked;
+					case "Thousands Separator":
+						ThousandsSeparator = !item.Checked;
 						break;
 					default:
 						throw new NotImplementedException();
