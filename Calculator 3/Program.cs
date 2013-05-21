@@ -30,7 +30,7 @@ namespace Calculator
 		private static Form HelpForm, OptionsForm;
 		private static bool radians;
 		private static int rounding;
-		private static bool thousandsSeperator;
+		private static bool defaultThousandsSeperator;
 		private static bool copyPasteHelper;
 		private static List<ICalculator> Window = new List<ICalculator>();
 		private static int SleepMilliseconds{ get; set; }
@@ -52,12 +52,12 @@ namespace Calculator
 				RecalculateWindows(false);
 			}
 		}
-		public static bool ThousandsSeperator
+		public static bool DefaultThousandsSeperator
 		{
-			get { return thousandsSeperator; }
+			get { return defaultThousandsSeperator; }
 			set
 			{
-				thousandsSeperator = value;
+				defaultThousandsSeperator = value;
 				RecalculateWindows(false);
 			}
 		}
@@ -111,7 +111,7 @@ namespace Calculator
 #if RUN_TESTS
 			Tests.RunTests();
 #endif
-			SleepMilliseconds = 60;
+			SleepMilliseconds = 30;
 			CurrentVersion = Assembly.GetExecutingAssembly().GetName().Version;
 			Version = CurrentVersion;
 			LoadSettings();
@@ -176,7 +176,7 @@ namespace Calculator
 								Radians = reader.ReadElementContentAsBoolean();
 								break;
 							case "thousandsSeperator":
-								ThousandsSeperator = reader.ReadElementContentAsBoolean();
+								DefaultThousandsSeperator = reader.ReadElementContentAsBoolean();
 								break;
 							case "rounding":
 								Rounding = reader.ReadElementContentAsInt();
@@ -200,9 +200,6 @@ namespace Calculator
 										DefaultFormat = OutputFormat.Standard;
 										break;
 								}
-								break;
-							case "sleepMilliseconds":
-								SleepMilliseconds = reader.ReadElementContentAsInt();
 								break;
 							case "antiAlias":
 								Antialiasing = reader.ReadElementContentAsBoolean();
@@ -235,14 +232,13 @@ namespace Calculator
 				//Boolean values must be lower case.
 				writer.WriteElementString("alwaysOnTop", AlwaysOnTop.ToString().ToLower());
 				writer.WriteElementString("inRadans", Radians.ToString().ToLower());
-				writer.WriteElementString("thousandsSeperator", ThousandsSeperator.ToString().ToLower());
+				writer.WriteElementString("thousandsSeperator", DefaultThousandsSeperator.ToString().ToLower());
 				writer.WriteElementString("antiAlias", Antialiasing.ToString().ToLower());
 
 				writer.WriteElementString("rounding", Rounding.ToString());
 				writer.WriteComment("outputFormat can be hex, scientific, binary, or standard.");
 				writer.WriteElementString("outputFormat", DefaultFormat.ToString());
 				writer.WriteElementString("workingDir", WorkingDirectory);
-				writer.WriteElementString("sleepMilliseconds", SleepMilliseconds.ToString());
 				writer.WriteElementString("copyPasteHelper", CopyPasteHelper.ToString().ToLower());
 				writer.WriteEndElement();
 			}
@@ -301,37 +297,37 @@ namespace Calculator
 					break;
 			}
 		}
-		public static string FormatOutput(object value, OutputFormat format)
+		public static string FormatOutput(object value, OutputFormat format, bool thousandsSeperator)
 		{
 			if (value is double)
-				return FormatOutput((double) value, format);
+				return FormatOutput((double)value, format, thousandsSeperator);
 			if (value is long)
-				return FormatOutput((long)value, format);
+				return FormatOutput((long)value, format, thousandsSeperator);
 			if (value is Variable)
 			{
 				var v = ((Variable) value).Value;
 				if(v == null)
 					return "NaN";
-				return FormatOutput(v, format);
+				return FormatOutput(v, format, thousandsSeperator);
 			}
 			if (value is Vector)
-				return FormatOutput((Vector)value, format);
+				return FormatOutput((Vector)value, format, thousandsSeperator);
 			return "";
 		}
-		private static string FormatOutput(Vector value, OutputFormat format)
+		private static string FormatOutput(Vector value, OutputFormat format, bool thousandsSeperator)
 		{
 			var builder = new StringBuilder();
 			builder.Append('{');
 			for (var i = 0; i < value.Count; i++)
 			{
-				builder.Append(FormatOutput(value[i], format));
+				builder.Append(FormatOutput(value[i], format, thousandsSeperator));
 				if (i != value.Count - 1)
 					builder.Append("; ");
 			}
 			builder.Append('}');
 			return builder.ToString();
 		}
-		private static string FormatOutput(double value, OutputFormat format)
+		private static string FormatOutput(double value, OutputFormat format, bool thousandsSeperator)
 		{
 			switch (format)
 			{
@@ -358,19 +354,19 @@ namespace Calculator
 				default:
 					if (Rounding != -1)
 						value = Math.Round(value, Rounding);
-					if (ThousandsSeperator && !value.ToString().Contains("E"))
+					if (thousandsSeperator && !value.ToString().Contains("E"))
 						return value.ToString("#,0." + new string('#', 50));
 					return value.ToString();
 			}
 		}
-		private static string FormatOutput(long value, OutputFormat format)
+		private static string FormatOutput(long value, OutputFormat format, bool thousandsSeperator)
 		{
 			switch (format)
 			{
 				case OutputFormat.Hex:
 					{
 						var hex = (value).ToString("X");
-						if (ThousandsSeperator)
+						if (thousandsSeperator)
 							hex = CommaSeperateNChars(hex, 4);
 						return "0x" + hex;
 					}
@@ -384,13 +380,13 @@ namespace Calculator
 						builder.Append(bit != 0 ? '1' : '0');
 					}
 					var bin = builder.ToString();
-					if(ThousandsSeperator)
+					if (thousandsSeperator)
 						bin = CommaSeperateNChars(bin, 4);
 					return "0b" + bin;
 				case OutputFormat.Scientific: //No scientific with longs (might be in future)
 				case OutputFormat.Standard:
 				default:
-					if (ThousandsSeperator)
+					if (thousandsSeperator)
 						return value.ToString("#,0." + new string('#', 50));
 					return value.ToString();
 			}

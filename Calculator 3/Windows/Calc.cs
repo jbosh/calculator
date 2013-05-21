@@ -265,6 +265,7 @@ namespace Calculator.Windows
 			public readonly Label lblEquals;
 			public readonly TextBoxAdvanced txtQuestion;
 			public OutputFormat Format;
+			public bool ThousandsSeperator;
 			public int Bottom
 			{
 				get { return txtQuestion.Bottom; }
@@ -316,6 +317,7 @@ namespace Calculator.Windows
 				lblEquals.TabStop = false;
 
 				Format = Program.DefaultFormat;
+				ThousandsSeperator = Program.DefaultThousandsSeperator;
 
 				lblAnswer.Click += lblAnswer_Click;
 			}
@@ -337,7 +339,7 @@ namespace Calculator.Windows
 				if (global)
 					statement.Reset();
 				var parse = statement.ProcessString(txtQuestion.Text);
-				lblAnswer.Text = Program.FormatOutput(parse, Format);
+				lblAnswer.Text = Program.FormatOutput(parse, Format, ThousandsSeperator);
 			}
 			private void txtQuestion_TextChanged()
 			{
@@ -380,10 +382,13 @@ namespace Calculator.Windows
 					var itemHex = new ToolStripMenuItem("Hex", null, lblAnswerMenu_Click);
 					var itemScientific = new ToolStripMenuItem("Scientific", null, lblAnswerMenu_Click);
 					var itemBinary = new ToolStripMenuItem("Binary", null, lblAnswerMenu_Click);
+					var itemThousands = new ToolStripMenuItem("Thousands Seperator", null, lblAnswerMenu_Click);
 					menu.Items.Add(itemStandard);
 					menu.Items.Add(itemHex);
 					menu.Items.Add(itemScientific);
 					menu.Items.Add(itemBinary);
+					menu.Items.Add("-");
+					menu.Items.Add(itemThousands);
 					switch (Format)
 					{
 						case OutputFormat.Standard:
@@ -401,6 +406,8 @@ namespace Calculator.Windows
 						default:
 							throw new NotImplementedException();
 					}
+					itemThousands.Checked = ThousandsSeperator;
+
 					menu.Show(lblAnswer, mouseArgs.X, mouseArgs.Y);
 				}
 			}
@@ -420,6 +427,9 @@ namespace Calculator.Windows
 						break;
 					case "Binary":
 						Format = OutputFormat.Binary;
+						break;
+					case "Thousands Seperator":
+						ThousandsSeperator = !item.Checked;
 						break;
 					default:
 						throw new NotImplementedException();
