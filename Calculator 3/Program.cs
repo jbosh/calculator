@@ -26,7 +26,7 @@ namespace Calculator
 	{
 		private static bool alwaysOnTop;
 		private static bool antialias;
-		private static OutputFormat format;
+		private static OutputFormat defaultFormat;
 		private static Form HelpForm, OptionsForm;
 		private static bool radians;
 		private static int rounding;
@@ -90,12 +90,12 @@ namespace Calculator
 		}
 		private static Version Version { get; set; }
 		private static Version CurrentVersion { get; set; }
-		public static OutputFormat Format
+		public static OutputFormat DefaultFormat
 		{
-			get { return format; }
+			get { return defaultFormat; }
 			set
 			{
-				format = value;
+				defaultFormat = value;
 				RecalculateWindows(false);
 			}
 		}
@@ -185,19 +185,19 @@ namespace Calculator
 								switch (reader.ReadElementContentAsString().ToLower())
 								{
 									case "scientific":
-										Format = OutputFormat.Scientific;
+										DefaultFormat = OutputFormat.Scientific;
 										break;
 									case "hex":
-										Format = OutputFormat.Hex;
+										DefaultFormat = OutputFormat.Hex;
 										break;
 									case "standard":
-										Format = OutputFormat.Standard;
+										DefaultFormat = OutputFormat.Standard;
 										break;
 									case "binary":
-										Format = OutputFormat.Binary;
+										DefaultFormat = OutputFormat.Binary;
 										break;
 									default:
-										Format = OutputFormat.Standard;
+										DefaultFormat = OutputFormat.Standard;
 										break;
 								}
 								break;
@@ -240,7 +240,7 @@ namespace Calculator
 
 				writer.WriteElementString("rounding", Rounding.ToString());
 				writer.WriteComment("outputFormat can be hex, scientific, binary, or standard.");
-				writer.WriteElementString("outputFormat", Format.ToString());
+				writer.WriteElementString("outputFormat", DefaultFormat.ToString());
 				writer.WriteElementString("workingDir", WorkingDirectory);
 				writer.WriteElementString("sleepMilliseconds", SleepMilliseconds.ToString());
 				writer.WriteElementString("copyPasteHelper", CopyPasteHelper.ToString().ToLower());
@@ -301,39 +301,39 @@ namespace Calculator
 					break;
 			}
 		}
-		public static string FormatOutput(object value)
+		public static string FormatOutput(object value, OutputFormat format)
 		{
 			if (value is double)
-				return FormatOutput((double) value);
+				return FormatOutput((double) value, format);
 			if (value is long)
-				return FormatOutput((long)value);
+				return FormatOutput((long)value, format);
 			if (value is Variable)
 			{
 				var v = ((Variable) value).Value;
 				if(v == null)
 					return "NaN";
-				return FormatOutput(v);
+				return FormatOutput(v, format);
 			}
 			if (value is Vector)
-				return FormatOutput((Vector) value);
+				return FormatOutput((Vector)value, format);
 			return "";
 		}
-		private static string FormatOutput(Vector value)
+		private static string FormatOutput(Vector value, OutputFormat format)
 		{
 			var builder = new StringBuilder();
 			builder.Append('{');
 			for (var i = 0; i < value.Count; i++)
 			{
-				builder.Append(FormatOutput(value[i]));
+				builder.Append(FormatOutput(value[i], format));
 				if (i != value.Count - 1)
 					builder.Append("; ");
 			}
 			builder.Append('}');
 			return builder.ToString();
 		}
-		private static string FormatOutput(double value)
+		private static string FormatOutput(double value, OutputFormat format)
 		{
-			switch (Format)
+			switch (format)
 			{
 				case OutputFormat.Scientific:
 					var scientific = value.ToString("E" + (Rounding == -1 ? "" : "Rounding "));
@@ -363,9 +363,9 @@ namespace Calculator
 					return value.ToString();
 			}
 		}
-		private static string FormatOutput(long value)
+		private static string FormatOutput(long value, OutputFormat format)
 		{
-			switch (Format)
+			switch (format)
 			{
 				case OutputFormat.Hex:
 					{

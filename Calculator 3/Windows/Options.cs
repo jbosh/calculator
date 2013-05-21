@@ -35,7 +35,7 @@ namespace Calculator.Windows
 			btnTrig.Text = Program.Radians ? "Radians" : "Degrees";
 			chkThousands.Checked = Program.ThousandsSeperator;
 			chkCopyPaste.Checked = Program.CopyPasteHelper;
-			switch (Program.Format)
+			switch (Program.DefaultFormat)
 			{
 				case OutputFormat.Standard:
 					RadioStandardClicked();
@@ -111,7 +111,7 @@ namespace Calculator.Windows
 				return;
 			chkThousands.Enabled = true;
 			numRounding.Enabled = true;
-			Program.Format = OutputFormat.Standard;
+			Program.DefaultFormat = OutputFormat.Standard;
 		}
 
 		private void RadioScientificClicked()
@@ -120,7 +120,7 @@ namespace Calculator.Windows
 				return;
 			chkThousands.Enabled = false;
 			numRounding.Enabled = true;
-			Program.Format = OutputFormat.Scientific;
+			Program.DefaultFormat = OutputFormat.Scientific;
 		}
 
 		private void RadioHexClicked()
@@ -129,7 +129,7 @@ namespace Calculator.Windows
 				return;
 			chkThousands.Enabled = true;
 			numRounding.Enabled = false;
-			Program.Format = OutputFormat.Hex;
+			Program.DefaultFormat = OutputFormat.Hex;
 		}
 
 		private void RadioBinaryClicked()
@@ -138,7 +138,7 @@ namespace Calculator.Windows
 				return;
 			chkThousands.Enabled = true;
 			numRounding.Enabled = true;
-			Program.Format = OutputFormat.Binary;
+			Program.DefaultFormat = OutputFormat.Binary;
 		}
 
 

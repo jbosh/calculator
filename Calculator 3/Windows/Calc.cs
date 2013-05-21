@@ -264,6 +264,7 @@ namespace Calculator.Windows
 			public readonly Label lblAnswer;
 			public readonly Label lblEquals;
 			public readonly TextBoxAdvanced txtQuestion;
+			public OutputFormat Format;
 			public int Bottom
 			{
 				get { return txtQuestion.Bottom; }
@@ -314,6 +315,8 @@ namespace Calculator.Windows
 				lblEquals.Text = "=";
 				lblEquals.TabStop = false;
 
+				Format = Program.DefaultFormat;
+
 				lblAnswer.Click += lblAnswer_Click;
 			}
 			public CalculatorField(CalculatorField previous) : this()
@@ -334,7 +337,7 @@ namespace Calculator.Windows
 				if (global)
 					statement.Reset();
 				var parse = statement.ProcessString(txtQuestion.Text);
-				lblAnswer.Text = Program.FormatOutput(parse);
+				lblAnswer.Text = Program.FormatOutput(parse, Format);
 			}
 			private void txtQuestion_TextChanged()
 			{
@@ -364,8 +367,64 @@ namespace Calculator.Windows
 			}
 			private void lblAnswer_Click(object sender, EventArgs e)
 			{
-				if (lblAnswer.Text != null)
-					Clipboard.SetText(Answer);
+				var mouseArgs = (MouseEventArgs)e;
+				if (mouseArgs.Button == MouseButtons.Left)
+				{
+					if (lblAnswer.Text != null)
+						Clipboard.SetText(Answer);
+				}
+				else if (mouseArgs.Button == MouseButtons.Right)
+				{
+					var menu = new ContextMenuStrip();
+					var itemStandard = new ToolStripMenuItem("Standard", null, lblAnswerMenu_Click);
+					var itemHex = new ToolStripMenuItem("Hex", null, lblAnswerMenu_Click);
+					var itemScientific = new ToolStripMenuItem("Scientific", null, lblAnswerMenu_Click);
+					var itemBinary = new ToolStripMenuItem("Binary", null, lblAnswerMenu_Click);
+					menu.Items.Add(itemStandard);
+					menu.Items.Add(itemHex);
+					menu.Items.Add(itemScientific);
+					menu.Items.Add(itemBinary);
+					switch (Format)
+					{
+						case OutputFormat.Standard:
+							itemStandard.Checked = true;
+							break;
+						case OutputFormat.Hex:
+							itemHex.Checked = true;
+							break;
+						case OutputFormat.Scientific:
+							itemScientific.Checked = true;
+							break;
+						case OutputFormat.Binary:
+							itemBinary.Checked = true;
+							break;
+						default:
+							throw new NotImplementedException();
+					}
+					menu.Show(lblAnswer, mouseArgs.X, mouseArgs.Y);
+				}
+			}
+			private void lblAnswerMenu_Click(object sender, EventArgs e)
+			{
+				ToolStripMenuItem item = (ToolStripMenuItem)sender;
+				switch (item.Text)
+				{
+					case "Standard":
+						Format = OutputFormat.Standard;
+						break;
+					case "Hex":
+						Format = OutputFormat.Hex;
+						break;
+					case "Scientific":
+						Format = OutputFormat.Scientific;
+						break;
+					case "Binary":
+						Format = OutputFormat.Binary;
+						break;
+					default:
+						throw new NotImplementedException();
+				}
+				Calculate(false);
 			}
 			public void Clear()
 			{
