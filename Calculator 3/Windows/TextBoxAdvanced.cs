@@ -254,6 +254,7 @@ namespace Calculator
 				return string.Format("{0}: {1}", CaretStart, Value);
 			}
 		}
+		private const int MaxUndoRedoSteps = 128;
 		private int undoStackIndex;
 		private List<UndoData> undoStack;
 		void TextBoxAdvanced_TextChanged(object sender, EventArgs e)
@@ -264,6 +265,8 @@ namespace Calculator
 					return;
 				undoStack.RemoveRange(undoStackIndex, undoStack.Count - undoStackIndex);
 			}
+			if (undoStack.Count > MaxUndoRedoSteps)
+				undoStack.RemoveAt(0);
 			undoStack.Add(new UndoData(SelectionStart, Text));
 			undoStackIndex = undoStack.Count;
 		}
