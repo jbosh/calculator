@@ -116,6 +116,7 @@
     <Compile Include="Calitha\GoldParser\SymbolFactory.cs" />
     <Compile Include="Calitha\GoldParser\Token.cs" />
     <Compile Include="CopyHelpers.cs" />
+    <Compile Include="Extensions.cs" />
     <Compile Include="Grammar\CalcMath.cs" />
     <Compile Include="Grammar\MemoryManager.cs" />
     <Compile Include="Grammar\Statement.cs" />

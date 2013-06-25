@@ -2,6 +2,7 @@ using System;
 using System.Windows.Forms;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace Calculator
 {
@@ -38,27 +39,6 @@ namespace Calculator
 		{
 			if (SelectionLength == 0)
 				CaretStart = SelectionStart;
-			/*if (!e.Control)
-				return;
-			switch(e.KeyCode)
-			{
-				case Keys.C:
-					Clipboard.SetText(SelectedText);
-					e.Handled = true;
-					break;
-				case Keys.V:
-					if (Clipboard.ContainsText())
-					{
-						int start = SelectionStart;
-						Text = Text.Remove(start, SelectionLength);
-						string clipboard = Clipboard.GetText();
-						Text = Text.Insert(start, clipboard);
-						SelectionStart = start + clipboard.Length;
-						SelectionLength = 0;
-						e.Handled = true;
-					}
-					break;
-			}*/
 		}
 		protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
 		{
@@ -178,66 +158,21 @@ namespace Calculator
 			Letters,
 		}
 
+		static Regex WordIdentifier = new Regex("([a-zA-Z0-9_$]+)", RegexOptions.Compiled);
 		private static int FindPreviousWord(int index, string sentence)
 		{
-			//Int = 0, Letter = 1
-			var type = WordType.Invalid;
-			for (index--; index >= 0; index--)
-			{
-				//Letter
-				if (sentence[index] >= '0' && sentence[index] <= '9' || sentence[index] == '.')
-				{
-					if (type == WordType.Invalid)
-						type = WordType.Numbers;
-					if (type != WordType.Numbers)
-						return index + 1;
-				}
-				else if (sentence[index] >= 'A' && sentence[index] <= 'z')
-				{
-					if (type == WordType.Invalid)
-						type = WordType.Letters;
-					if (type != WordType.Letters)
-						return index + 1;
-				}
-				else
-				{
-					if (type == WordType.Invalid)
-						return index;
-					return index + 1;
-				}
-			}
-			return 0;
+			var revSentence = sentence.Reverse();
+			var nextIdx = FindNextWord(sentence.Length - index, revSentence);
+			var output = Math.Max(sentence.Length - nextIdx, 0);
+			return output;
 		}
 
 		private static int FindNextWord(int index, string sentence)
 		{
-			//Int = 0, Letter = 1
-			var type = WordType.Invalid;
-			for (; index < sentence.Length; index++)
-			{
-				//Letter
-				if (sentence[index] >= '0' && sentence[index] <= '9' || sentence[index] == '.')
-				{
-					if (type == WordType.Invalid)
-						type = WordType.Numbers;
-					if (type != WordType.Numbers)
-						return index;
-				}
-				else if (sentence[index] >= 'A' && sentence[index] <= 'z')
-				{
-					if (type == WordType.Invalid)
-						type = WordType.Letters;
-					if (type != WordType.Letters)
-						return index;
-				}
-				else
-				{
-					if (type == WordType.Invalid)
-						return index + 1;
-					return index;
-				}
-			}
-			return index;
+			var match = WordIdentifier.Match(sentence, index);
+			if(!match.Success || match.Index != index)
+				return index + 1;
+			return index + match.Length;
 		}
 
 		struct UndoData
