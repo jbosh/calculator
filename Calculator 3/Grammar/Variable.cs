@@ -42,6 +42,18 @@ namespace Calculator.Grammar
 				return new Variable();
 			return new Variable(a.Value | b.Value);
 		}
+		public static Variable operator ^(Variable a, Variable b)
+		{
+			if (a.Value is double)
+				a.Value = (long)a.Value;
+			if (b.Value is double)
+				b.Value = (long)b.Value;
+			if (a.Value is int || a.Value is long)
+				return new Variable(a.Value | b.Value);
+			if (a.Value == null || b.Value == null)
+				return new Variable();
+			return new Variable(a.Value | b.Value);
+		}
 		public Variable ShiftLeft(Variable count)
 		{
 			if (count.Value == null || Value == null)

@@ -41,6 +41,7 @@
 			this.chkAntialias = new System.Windows.Forms.CheckBox();
 			this.radioBinary = new System.Windows.Forms.RadioButton();
 			this.chkCopyPaste = new System.Windows.Forms.CheckBox();
+			this.chkUseXor = new System.Windows.Forms.CheckBox();
 			((System.ComponentModel.ISupportInitialize)(this.numRounding)).BeginInit();
 			this.SuspendLayout();
 			// 
@@ -172,11 +173,23 @@
 			this.chkCopyPaste.UseVisualStyleBackColor = true;
 			this.chkCopyPaste.CheckedChanged += new System.EventHandler(this.chkCopyPaste_CheckedChanged);
 			// 
+			// chkUseXor
+			// 
+			this.chkUseXor.AutoSize = true;
+			this.chkUseXor.Location = new System.Drawing.Point(12, 243);
+			this.chkUseXor.Name = "chkUseXor";
+			this.chkUseXor.Size = new System.Drawing.Size(89, 17);
+			this.chkUseXor.TabIndex = 13;
+			this.chkUseXor.Text = "Use ^ for xor.";
+			this.chkUseXor.UseVisualStyleBackColor = true;
+			this.chkUseXor.CheckedChanged += new System.EventHandler(this.chkUseXor_CheckedChanged);
+			// 
 			// Options
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(164, 243);
+			this.ClientSize = new System.Drawing.Size(164, 272);
+			this.Controls.Add(this.chkUseXor);
 			this.Controls.Add(this.chkCopyPaste);
 			this.Controls.Add(this.radioBinary);
 			this.Controls.Add(this.chkAntialias);
@@ -213,5 +226,6 @@
 		private System.Windows.Forms.CheckBox chkAntialias;
 		private System.Windows.Forms.RadioButton radioBinary;
 		private System.Windows.Forms.CheckBox chkCopyPaste;
+		private System.Windows.Forms.CheckBox chkUseXor;
 	}
 }

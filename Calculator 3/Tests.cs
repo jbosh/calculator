@@ -8,7 +8,7 @@ namespace Calculator
 	{
 		public static void RunTests()
 		{
-	#region Constants
+			#region Constants
 			var Memory = new MemoryManager();
 			Memory.SetDefaultConstants();
 			Memory.Push();
@@ -159,6 +159,23 @@ namespace Calculator
 
 			TestFunction("sin({-180; -90; 180})", new Vector(0, -1, 0));
 			TestFunction("cos({-180; -90; 180})", new Vector(-1, 0, -1));
+
+			Program.UseXor = true;
+			TestFunction("2^2", 0);
+			TestFunction("2^3", 1);
+			TestFunction("2**2", 4);
+			TestFunction("2.3 + 2321.23 * 234.21 - 233.231 * 2 ^ 2", 543657.58);
+			TestFunction("(4*10^6)g(15)", 7056);
+			TestFunction("[58sin 45]^2", null);
+			TestFunction("g^2^g", null);
+			TestFunction("g**2**g", Math.Pow(Math.Pow(9.8, 2), 9.8));
+			TestFunction("{2;4}^2", new Vector(0, 6));
+			TestFunction("{2;4}^{4;2}", new Vector(6, 6));
+			TestFunction("{2.0;4}^2", null);
+			TestFunction("{2;4}**2", new Vector(4, 16));
+			TestFunction("{2.0;4}**2", new Vector(4, 16));
+			Program.UseXor = false;
+
 
 			Memory.Push();
 			Memory["a"] = new Variable(2, "a");

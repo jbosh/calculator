@@ -35,6 +35,7 @@ namespace Calculator.Windows
 			btnTrig.Text = Program.Radians ? "Radians" : "Degrees";
 			chkThousands.Checked = Program.DefaultThousandsSeparator;
 			chkCopyPaste.Checked = Program.CopyPasteHelper;
+			chkUseXor.Checked = Program.UseXor;
 			switch (Program.DefaultFormat)
 			{
 				case OutputFormat.Standard:
@@ -91,7 +92,7 @@ namespace Calculator.Windows
 
 		private void numRounding_ValueChanged(object sender, EventArgs e)
 		{
-			Program.Rounding = (int) numRounding.Value;
+			Program.Rounding = (int)numRounding.Value;
 		}
 
 		private bool ClickRadioButton(RadioButton btn)
@@ -159,6 +160,11 @@ namespace Calculator.Windows
 		private void chkCopyPaste_CheckedChanged(object sender, EventArgs e)
 		{
 			Program.CopyPasteHelper = chkCopyPaste.Checked;
+		}
+
+		private void chkUseXor_CheckedChanged(object sender, EventArgs e)
+		{
+			Program.UseXor = chkUseXor.Checked;
 		}
 	}
 }

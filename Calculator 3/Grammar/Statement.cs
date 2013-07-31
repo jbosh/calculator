@@ -22,27 +22,28 @@ namespace Calculator.Grammar
 			ParenL,
 			ParenR,
 			Mult,
-			Divide,//10
+			AlwaysPow,//10
+			Divide,
 			Semicolon,
 			Exponent,
 			BraceLeft,
-			LogicalOr,
-			BraceRight,//15
+			LogicalOr,//15
+			BraceRight,
 			Tilde,
 			Plus,
 			ShiftLeft,
-			Equals,
-			ShiftRight,//20
+			Equals,//20
+			ShiftRight,
 			Abs,
 			Acos,
 			Asin,
-			Atan,
-			Binary,//25
+			Atan,//25
+			Binary,
 			Ceiling,
 			Cos,
 			Cross,
-			Deg,
-			Dot,//30
+			Deg,//30
+			Dot,
             Double,
 			Endian,
 			Floor,
@@ -396,7 +397,7 @@ namespace Calculator.Grammar
 			var node = (TerminalToken)token;
 			var i = node.Text
 				.Substring(2)
-				.Aggregate(0L, (current, t) => (current << 1) | (t == '0' ? 0 : 1));
+				.Aggregate(0L, (current, t) => (current << 1) | (t == '0' ? 0u : 1u));
 			return new Variable(i);
 		}
 		private static Variable VisitHex(Token token)
@@ -499,11 +500,30 @@ namespace Calculator.Grammar
 			var right = Visit(node.Tokens[2]);
 			if (left.Value == null || right.Value == null)
 				return new Variable();
-			if(right.Value is Vector)
-				return new Variable();
+			if (right.Value is Vector)
+			{
+				if (Program.UseXor)
+					return ((Vector)left.Value).Xor(right.Value);
+				else
+					return ((Vector)left.Value).Pow(right.Value);
+			}
 			if (left.Value is Vector)
-				return ((Vector)left.Value).Pow(right.Value);
-			return new Variable(Math.Pow((double)left.Value, (double)right.Value));
+			{
+				if (Program.UseXor && (TokenType)node.Tokens[1].Symbol.Id != TokenType.AlwaysPow)
+					return ((Vector)left.Value).Xor(right.Value);
+				else
+					return ((Vector)left.Value).Pow(right.Value);
+			}
+			if (Program.UseXor && (TokenType)node.Tokens[1].Symbol.Id != TokenType.AlwaysPow)
+			{
+				if (left.Value is double || right.Value is double)
+					return new Variable();
+				return new Variable(left.Value ^ right.Value);
+			}
+			else
+			{
+				return new Variable(Math.Pow((double)left.Value, (double)right.Value));
+			}
 		}
 		private static Variable VisitFactorial(Token token)
 		{

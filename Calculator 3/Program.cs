@@ -21,6 +21,8 @@ namespace Calculator
 		Hex,
 		Scientific,
 		Binary,
+
+		Count,
 	}
 	internal static class Program
 	{
@@ -32,6 +34,7 @@ namespace Calculator
 		private static int rounding;
 		private static bool defaultThousandsSeparator;
 		private static bool copyPasteHelper;
+		private static bool useXor;
 		private static List<ICalculator> Window = new List<ICalculator>();
 		private static int SleepMilliseconds{ get; set; }
 		public static bool Radians
@@ -85,6 +88,15 @@ namespace Calculator
 			set
 			{
 				copyPasteHelper = value;
+				RecalculateWindows(false);
+			}
+		}
+		public static bool UseXor
+		{
+			get { return useXor; }
+			set
+			{
+				useXor = value;
 				RecalculateWindows(false);
 			}
 		}
@@ -210,6 +222,9 @@ namespace Calculator
 							case "copyPasteHelper":
 								CopyPasteHelper = reader.ReadElementContentAsBoolean();
 								break;
+							case "useXor":
+								UseXor = reader.ReadElementContentAsBoolean();
+								break;
 						}
 					}
 			}
@@ -240,6 +255,7 @@ namespace Calculator
 				writer.WriteElementString("outputFormat", DefaultFormat.ToString());
 				writer.WriteElementString("workingDir", WorkingDirectory);
 				writer.WriteElementString("copyPasteHelper", CopyPasteHelper.ToString().ToLower());
+				writer.WriteElementString("useXor", UseXor.ToString().ToLower());
 				writer.WriteEndElement();
 			}
 		}
