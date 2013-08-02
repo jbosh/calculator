@@ -279,6 +279,12 @@ namespace Calculator.Windows
 			{
 				get { return lblAnswer.Text; }
 			}
+
+			public ICalculator Parent
+			{
+				get { return (ICalculator) txtQuestion.Parent; }
+			}
+
 			#region Constructors
 			public CalculatorField()
 			{
@@ -413,7 +419,7 @@ namespace Calculator.Windows
 			}
 			private void lblAnswerMenu_Click(object sender, EventArgs e)
 			{
-				ToolStripMenuItem item = (ToolStripMenuItem)sender;
+				var item = (ToolStripMenuItem)sender;
 				switch (item.Text)
 				{
 					case "Standard":
@@ -434,7 +440,7 @@ namespace Calculator.Windows
 					default:
 						throw new NotImplementedException();
 				}
-				Calculate(false);
+				Parent.Recalculate(false);
 			}
 			public void Clear()
 			{
