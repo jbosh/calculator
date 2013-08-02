@@ -285,6 +285,24 @@ namespace Calculator.Grammar
 		{
 			return PerformOp(v0 => new Variable(Math.Pow((double)v0.Value, d)));
 		}
+		public Variable Xor(double d)
+		{
+			return new Variable();
+		}
+		public Variable Xor(long d)
+		{
+			if (Values.Any(v0 => v0.Value is double))
+				return new Variable();
+			return PerformOp(v0 => new Variable(v0.Value ^ d));
+		}
+		public Variable Xor(Vector d)
+		{
+			if (Values.Any(v0 => v0.Value is double))
+				return new Variable();
+			if (d.Values.Any(v0 => v0.Value is double))
+				return new Variable();
+			return new Variable(PerformOp(this, d, (v0, v1) => new Variable(v0.Value ^ v1.Value)));
+		}
 		public Variable Negate()
 		{
 			return PerformOp(v0 => v0.Negate());

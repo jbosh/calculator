@@ -63,6 +63,7 @@ Binary = '0b'[10]+
            | <Pow Exp>
 
 <Pow Exp> ::= <Pow Exp> '^' <Negate Exp>
+            | <Pow Exp> '**' <Negate Exp>
             | <Negate Exp>
 
 <Negate Exp>  ::= '~' <Negate Exp>

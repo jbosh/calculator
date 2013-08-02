@@ -29,6 +29,7 @@ namespace Calculator.Windows
 			if (Environment.OSVersion.Platform == PlatformID.Unix)
 				FormBorderStyle = FormBorderStyle.FixedSingle;
 			KeyDown += Calc_KeyDown;
+			MouseMove += Calc_MouseMove;
 
 			fields = new List<CalculatorField>();
 			var field = new CalculatorField();
@@ -41,6 +42,14 @@ namespace Calculator.Windows
 			KeyPreview = true;
 			Show();
 		}
+
+		void Calc_MouseMove(object sender, MouseEventArgs e)
+		{
+			if ((e.Button & MouseButtons.Left) == 0)
+				return;
+			Console.WriteLine("{0} {1}", e.X, e.Y);
+		}
+
 		#region ICalculator Members
 		public void Recalculate(bool global)
 		{
@@ -60,6 +69,7 @@ namespace Calculator.Windows
 			AlreadyCalculating = false;
 		}
 		#endregion
+
 		private void Calc_KeyDown(object sender, KeyEventArgs e)
 		{
 			switch (e.KeyCode)
@@ -153,6 +163,7 @@ namespace Calculator.Windows
 			if (!e.Handled)
 				Program.GlobalKeyDown(e);
 		}
+
 		private void SaveFile()
 		{
 			var sfd = new SaveFileDialog
@@ -376,45 +387,56 @@ namespace Calculator.Windows
 			private void lblAnswer_Click(object sender, EventArgs e)
 			{
 				var mouseArgs = (MouseEventArgs)e;
-				if (mouseArgs.Button == MouseButtons.Left)
+				switch (mouseArgs.Button)
 				{
-					if (lblAnswer.Text != null)
-						Clipboard.SetText(Answer);
-				}
-				else if (mouseArgs.Button == MouseButtons.Right)
-				{
-					var menu = new ContextMenuStrip();
-					var itemStandard = new ToolStripMenuItem("Standard", null, lblAnswerMenu_Click);
-					var itemHex = new ToolStripMenuItem("Hex", null, lblAnswerMenu_Click);
-					var itemScientific = new ToolStripMenuItem("Scientific", null, lblAnswerMenu_Click);
-					var itemBinary = new ToolStripMenuItem("Binary", null, lblAnswerMenu_Click);
-					var itemThousands = new ToolStripMenuItem("Thousands Separator", null, lblAnswerMenu_Click);
-					menu.Items.Add(itemStandard);
-					menu.Items.Add(itemHex);
-					menu.Items.Add(itemScientific);
-					menu.Items.Add(itemBinary);
-					menu.Items.Add("-");
-					menu.Items.Add(itemThousands);
-					switch (Format)
-					{
-						case OutputFormat.Standard:
-							itemStandard.Checked = true;
-							break;
-						case OutputFormat.Hex:
-							itemHex.Checked = true;
-							break;
-						case OutputFormat.Scientific:
-							itemScientific.Checked = true;
-							break;
-						case OutputFormat.Binary:
-							itemBinary.Checked = true;
-							break;
-						default:
-							throw new NotImplementedException();
-					}
-					itemThousands.Checked = ThousandsSeparator;
+					case MouseButtons.Left:
+						{
+							if (lblAnswer.Text != null)
+								Clipboard.SetText(Answer);
+						}
+						break;
+					case MouseButtons.Right:
+						{
+							var menu = new ContextMenuStrip();
+							var itemStandard = new ToolStripMenuItem("Standard", null, lblAnswerMenu_Click);
+							var itemHex = new ToolStripMenuItem("Hex", null, lblAnswerMenu_Click);
+							var itemScientific = new ToolStripMenuItem("Scientific", null, lblAnswerMenu_Click);
+							var itemBinary = new ToolStripMenuItem("Binary", null, lblAnswerMenu_Click);
+							var itemThousands = new ToolStripMenuItem("Thousands Separator", null, lblAnswerMenu_Click);
+							menu.Items.Add(itemStandard);
+							menu.Items.Add(itemHex);
+							menu.Items.Add(itemScientific);
+							menu.Items.Add(itemBinary);
+							menu.Items.Add("-");
+							menu.Items.Add(itemThousands);
+							switch (Format)
+							{
+								case OutputFormat.Standard:
+									itemStandard.Checked = true;
+									break;
+								case OutputFormat.Hex:
+									itemHex.Checked = true;
+									break;
+								case OutputFormat.Scientific:
+									itemScientific.Checked = true;
+									break;
+								case OutputFormat.Binary:
+									itemBinary.Checked = true;
+									break;
+								default:
+									throw new NotImplementedException();
+							}
+							itemThousands.Checked = ThousandsSeparator;
 
-					menu.Show(lblAnswer, mouseArgs.X, mouseArgs.Y);
+							menu.Show(lblAnswer, mouseArgs.X, mouseArgs.Y);
+						}
+						break;
+					case MouseButtons.Middle:
+						{
+							Format = (OutputFormat)(((uint)Format + 1) % (uint)OutputFormat.Count);
+							Calculate(false);
+						}
+						break;
 				}
 			}
 			private void lblAnswerMenu_Click(object sender, EventArgs e)

@@ -1,9 +1,8 @@
-#region
-
 using System;
 using System.Windows.Forms;
-
-#endregion
+using System.Collections;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace Calculator
 {
@@ -15,11 +14,13 @@ namespace Calculator
 			KeyUp += TextBoxAdvanced_KeyUp;
 			KeyDown += TextBoxAdvanced_KeyDown;
 			MouseDown += TextBoxAdvanced_MouseDown;
+			TextChanged += TextBoxAdvanced_TextChanged;
+
+			undoStack = new List<UndoData>();
+			undoStack.Add(new UndoData(0, ""));
+			undoStackIndex = undoStack.Count;
 		}
 
-		/// <summary>
-		/// True if the cursor is on the left side of the selection.
-		/// </summary>
 		public int CaretStart { get; set; }
 
 		private void TextBoxAdvanced_MouseDown(object sender, MouseEventArgs e)
@@ -38,27 +39,6 @@ namespace Calculator
 		{
 			if (SelectionLength == 0)
 				CaretStart = SelectionStart;
-			if (!e.Control)
-				return;
-			/*switch(e.KeyCode)
-			{
-				case Keys.C:
-					Clipboard.SetText(SelectedText);
-					e.Handled = true;
-					break;
-				case Keys.V:
-					if (Clipboard.ContainsText())
-					{
-						int start = SelectionStart;
-						Text = Text.Remove(start, SelectionLength);
-						string clipboard = Clipboard.GetText();
-						Text = Text.Insert(start, clipboard);
-						SelectionStart = start + clipboard.Length;
-						SelectionLength = 0;
-						e.Handled = true;
-					}
-					break;
-			}*/
 		}
 		protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
 		{
@@ -70,7 +50,26 @@ namespace Calculator
 				case Keys.Control | Keys.Delete:
 					SendKeys.SendWait("^+{RIGHT}{BACKSPACE}");
 					return true;
+				case Keys.Control | Keys.Z:
+					if (undoStackIndex > 1)
+					{
+						undoStackIndex--;
+						var data = undoStack[undoStackIndex - 1];
+						Text = data.Value;
+						SelectionStart = data.CaretStart;
+					}
+					return true;
+				case Keys.Control | Keys.Y:
+					if (undoStackIndex < undoStack.Count)
+					{
+						undoStackIndex++;
+						var data = undoStack[undoStackIndex - 1];
+						Text = data.Value;
+						SelectionStart = data.CaretStart;
+					}
+					return true;
 			}
+
 			return base.ProcessCmdKey(ref msg, keyData);
 		}
 		protected override void WndProc(ref Message m)
@@ -83,6 +82,9 @@ namespace Calculator
 					if(Program.CopyPasteHelper)
 						Clipboard.SetText(CopyHelpers.Process(Clipboard.GetText()));
 					goto default;
+				case 199: //EM_UNDO
+					//intercept so that we can do it
+					break;
 				default:
 					base.WndProc(ref m);
 					break;
@@ -149,66 +151,59 @@ namespace Calculator
 			}
 		}
 
+		enum WordType
+		{
+			Invalid,
+			Numbers,
+			Letters,
+		}
+
+		static Regex WordIdentifier = new Regex("([a-zA-Z0-9_$]+)", RegexOptions.Compiled);
 		private static int FindPreviousWord(int index, string sentence)
 		{
-			//Int = 0, Letter = 1
-			var type = -1;
-			for (index--; index >= 0; index--)
-			{
-				//Letter
-				if (sentence[index] >= '0' && sentence[index] <= '9' || sentence[index] == '.')
-				{
-					if (type == -1)
-						type = 0;
-					if (type != 0)
-						return index + 1;
-				}
-				else if (sentence[index] >= 'A' && sentence[index] <= 'z')
-				{
-					if (type == -1)
-						type = 1;
-					if (type != 1)
-						return index + 1;
-				}
-				else
-				{
-					if (type == -1)
-						return index;
-					return index + 1;
-				}
-			}
-			return 0;
+			var revSentence = sentence.Reverse();
+			var nextIdx = FindNextWord(sentence.Length - index, revSentence);
+			var output = Math.Max(sentence.Length - nextIdx, 0);
+			return output;
 		}
 
 		private static int FindNextWord(int index, string sentence)
 		{
-			//Int = 0, Letter = 1
-			var type = -1;
-			for (; index < sentence.Length; index++)
+			var match = WordIdentifier.Match(sentence, index);
+			if(!match.Success || match.Index != index)
+				return index + 1;
+			return index + match.Length;
+		}
+
+		struct UndoData
+		{
+			public int CaretStart;
+			public string Value;
+			public UndoData(int caret, string value)
 			{
-				//Letter
-				if (sentence[index] >= '0' && sentence[index] <= '9' || sentence[index] == '.')
-				{
-					if (type == -1)
-						type = 0;
-					if (type != 0)
-						return index;
-				}
-				else if (sentence[index] >= 'A' && sentence[index] <= 'z')
-				{
-					if (type == -1)
-						type = 1;
-					if (type != 1)
-						return index;
-				}
-				else
-				{
-					if (type == -1)
-						return index + 1;
-					return index;
-				}
+				CaretStart = caret;
+				Value = value;
 			}
-			return index;
+			public override string ToString()
+			{
+				return string.Format("{0}: {1}", CaretStart, Value);
+			}
+		}
+		private const int MaxUndoRedoSteps = 128;
+		private int undoStackIndex;
+		private List<UndoData> undoStack;
+		void TextBoxAdvanced_TextChanged(object sender, EventArgs e)
+		{
+			if (undoStackIndex <= undoStack.Count)
+			{
+				if (undoStack[undoStackIndex - 1].Value == Text) //we're un-doing or re-doing
+					return;
+				undoStack.RemoveRange(undoStackIndex, undoStack.Count - undoStackIndex);
+			}
+			if (undoStack.Count > MaxUndoRedoSteps)
+				undoStack.RemoveAt(0);
+			undoStack.Add(new UndoData(SelectionStart, Text));
+			undoStackIndex = undoStack.Count;
 		}
 	}
 }
