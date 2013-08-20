@@ -25,13 +25,20 @@ namespace Calculator
 			"{$1; $2; $3}",
 			@"{ (-?\d*\.?[eE]?\d+) (-?\d*\.?[eE]?\d+) (-?\d*\.?[eE]?\d+) (-?\d*\.?[eE]?\d+) }",
 			"{$1; $2; $3; $4}",
+			@"^{(.+)}$",
+			"$1"
 		};
 		private static string ProcessSimpleReplacements(string source)
 		{
 			var destination = source;
-			for (var i = 0; i < Replacements.Length; i += 2)
+			var destinationBefore = "";
+			while (destination != destinationBefore)
 			{
-				destination = Regex.Replace(destination, Replacements[i + 0], Replacements[i + 1]);
+				destinationBefore = destination;
+				for (var i = 0; i < Replacements.Length; i += 2)
+				{
+					destination = Regex.Replace(destination, Replacements[i + 0], Replacements[i + 1]);
+				}
 			}
 			return destination;
 		}
