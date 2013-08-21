@@ -15,6 +15,9 @@ namespace Calculator
 			KeyDown += TextBoxAdvanced_KeyDown;
 			MouseDown += TextBoxAdvanced_MouseDown;
 			TextChanged += TextBoxAdvanced_TextChanged;
+			AllowDrop = true;
+			DragOver += TextBoxAdvanced_DragOver;
+			DragDrop += TextBoxAdvanced_DragDrop;
 
 			undoStack = new List<UndoData>();
 			undoStack.Add(new UndoData(0, ""));
@@ -40,6 +43,7 @@ namespace Calculator
 			if (SelectionLength == 0)
 				CaretStart = SelectionStart;
 		}
+
 		protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
 		{
 			switch (keyData)
@@ -72,6 +76,7 @@ namespace Calculator
 
 			return base.ProcessCmdKey(ref msg, keyData);
 		}
+
 		protected override void WndProc(ref Message m)
 		{
 			switch (m.Msg)
@@ -90,6 +95,7 @@ namespace Calculator
 					break;
 			}
 		}
+
 		private void TextBoxAdvanced_KeyDown(object sender, KeyEventArgs e)
 		{
 			if (!e.Control)
@@ -204,6 +210,48 @@ namespace Calculator
 				undoStack.RemoveAt(0);
 			undoStack.Add(new UndoData(SelectionStart, Text));
 			undoStackIndex = undoStack.Count;
+		}
+
+		int SetCaractPositionFromPoint(int x, int y)
+		{
+			var pt = PointToClient(new System.Drawing.Point(x, y));
+			var idx = GetCharIndexFromPosition(pt);
+			
+			if (idx == Text.Length - 1)
+			{
+				var caretPoint = GetPositionFromCharIndex(idx);
+				if (pt.X > caretPoint.X)
+					idx += 1;
+			}
+
+			SelectionStart = idx;
+			SelectionLength = 0;
+			if (!Focused)
+				Focus();
+			return idx;
+		}
+
+		void TextBoxAdvanced_DragOver(object sender, DragEventArgs e)
+		{
+			if (e.Data.GetDataPresent(DataFormats.Text))
+			{
+				SetCaractPositionFromPoint(e.X, e.Y);
+				e.Effect = DragDropEffects.Copy;
+				
+			}
+		}
+
+		void TextBoxAdvanced_DragDrop(object sender, DragEventArgs e)
+		{
+			if (e.Data.GetDataPresent(DataFormats.Text))
+			{
+				var str = e.Data.GetData(DataFormats.Text).ToString();
+				var idx = SetCaractPositionFromPoint(e.X, e.Y);
+				if (Program.CopyPasteHelper)
+					str = CopyHelpers.Process(str);
+				Text = Text.Insert(idx, str);
+				SelectionStart = idx + str.Length;
+			}
 		}
 	}
 }
