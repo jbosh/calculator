@@ -30,6 +30,7 @@ namespace Calculator.Windows
 				FormBorderStyle = FormBorderStyle.FixedSingle;
 			KeyDown += Calc_KeyDown;
 			MouseMove += Calc_MouseMove;
+			Resize += Calc_Resize;
 
 			fields = new List<CalculatorField>();
 			var field = new CalculatorField();
@@ -39,8 +40,20 @@ namespace Calculator.Windows
 			Controls.Add(field.lblAnswer);
 			Controls.Add(field.txtQuestion);
 
+			var size = SizeFromClientSize(new Size(ClientSize.Width, field.Bottom + 2));
+			MinimumSize = new Size(CalculatorField.TotalLabelSize + 6, size.Height);
+			MaximumSize = new Size(int.MaxValue, size.Height);
+			Size = size;
+
 			KeyPreview = true;
 			Show();
+
+			TopMost = Program.AlwaysOnTop;
+		}
+
+		void Calc_Resize(object sender, EventArgs e)
+		{
+			fields.ForEach(field => field.Resize(ClientSize.Width));
 		}
 
 		void Calc_MouseMove(object sender, MouseEventArgs e)
@@ -253,9 +266,13 @@ namespace Calculator.Windows
 			Controls.Add(field.lblEquals);
 			Controls.Add(field.lblAnswer);
 			Controls.Add(field.txtQuestion);
-			ClientSize = new Size(ClientSize.Width, field.Bottom + 2);
 			field.txtQuestion.Focus();
 			field.Text = text;
+
+			var size = SizeFromClientSize(new Size(ClientSize.Width, field.Bottom + 2));
+			MinimumSize = new Size(CalculatorField.TotalLabelSize + 6, size.Height);
+			MaximumSize = new Size(int.MaxValue, size.Height);
+			Size = size;
 		}
 		private void Pop()
 		{
@@ -268,12 +285,18 @@ namespace Calculator.Windows
 			Controls.Remove(field.lblAnswer);
 			Controls.Remove(field.txtQuestion);
 			fields.RemoveAt(fields.Count - 1);
-			ClientSize = new Size(ClientSize.Width, lastField.Bottom + 2);
 
+			var size = SizeFromClientSize(new Size(ClientSize.Width, lastField.Bottom + 2));
+			MinimumSize = new Size(CalculatorField.TotalLabelSize + 6, size.Height);
+			MaximumSize = new Size(int.MaxValue, size.Height);
+			Size = size;
 		}
 		#region Nested type: CalculatorField
 		private class CalculatorField
 		{
+			public const int EqualsLabelSize = 13;
+			public const int AnswerLabelSize = 148;
+			public const int TotalLabelSize = AnswerLabelSize + EqualsLabelSize;
 			public readonly Statement statement;
 			public readonly int Index;
 			public readonly Label lblAnswer;
@@ -310,7 +333,7 @@ namespace Calculator.Windows
 
 				lblAnswer.Location = new Point(450, 5);
 				lblAnswer.Name = "lblAnswer";
-				lblAnswer.Size = new Size(148, 17);
+				lblAnswer.Size = new Size(AnswerLabelSize, 17);
 				lblAnswer.TabIndex = 0;
 				lblAnswer.TabStop = false;
 
@@ -332,7 +355,7 @@ namespace Calculator.Windows
 				lblEquals.AutoSize = true;
 				lblEquals.Location = new Point(434, txtQuestion.Top + 4);
 				lblEquals.Name = "";
-				lblEquals.Size = new Size(13, 13);
+				lblEquals.Size = new Size(EqualsLabelSize, 13);
 				lblEquals.TabIndex = 0;
 				lblEquals.Text = "=";
 				lblEquals.TabStop = false;
@@ -342,6 +365,15 @@ namespace Calculator.Windows
 
 				lblAnswer.Click += lblAnswer_Click;
 			}
+
+			public void Resize(int width)
+			{
+				lblAnswer.Location = new Point(width - AnswerLabelSize, lblAnswer.Location.Y);
+				txtQuestion.Location = new Point(3, txtQuestion.Location.Y);
+				txtQuestion.Width = width - (AnswerLabelSize + EqualsLabelSize) - 7;
+				lblEquals.Location = new Point(width - (AnswerLabelSize + EqualsLabelSize), txtQuestion.Top + 4);
+			}
+
 			public CalculatorField(CalculatorField previous) : this()
 			{
 				Index = previous.Index + 1;
