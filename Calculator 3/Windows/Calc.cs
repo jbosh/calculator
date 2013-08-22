@@ -254,6 +254,7 @@ namespace Calculator.Windows
 			Controls.Add(field.lblAnswer);
 			Controls.Add(field.txtQuestion);
 			ClientSize = new Size(ClientSize.Width, field.Bottom + 2);
+			field.txtQuestion.Focus();
 			field.Text = text;
 		}
 		private void Pop()
@@ -261,11 +262,14 @@ namespace Calculator.Windows
 			if (fields.Count <= 1)
 				return;
 			CalculatorField field = fields[fields.Count - 1];
+			var lastField = fields[fields.Count - 2];
+			lastField.txtQuestion.Focus();
 			Controls.Remove(field.lblEquals);
 			Controls.Remove(field.lblAnswer);
 			Controls.Remove(field.txtQuestion);
 			fields.RemoveAt(fields.Count - 1);
-			ClientSize = new Size(ClientSize.Width, fields[fields.Count - 1].Bottom + 2);
+			ClientSize = new Size(ClientSize.Width, lastField.Bottom + 2);
+
 		}
 		#region Nested type: CalculatorField
 		private class CalculatorField
