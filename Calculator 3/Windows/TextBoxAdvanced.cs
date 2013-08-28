@@ -237,7 +237,14 @@ namespace Calculator
 			{
 				SetCaractPositionFromPoint(e.X, e.Y);
 				e.Effect = DragDropEffects.Copy;
-				
+			}
+			else if (e.Data.GetDataPresent(DataFormats.FileDrop))
+			{
+				var filenames = (string[])e.Data.GetData(DataFormats.FileDrop);
+				if (filenames.Length == 1)
+				{
+					e.Effect = DragDropEffects.Copy;
+				}
 			}
 		}
 
@@ -251,6 +258,16 @@ namespace Calculator
 					str = CopyHelpers.Process(str);
 				Text = Text.Insert(idx, str);
 				SelectionStart = idx + str.Length;
+			}
+			else if (e.Data.GetDataPresent(DataFormats.FileDrop))
+			{
+				var filenames = (string[])e.Data.GetData(DataFormats.FileDrop);
+				if (filenames.Length == 1)
+				{
+					var calc = Parent as Windows.Calc;
+					if (calc != null)
+						calc.ReadFile(filenames[0]);
+				}
 			}
 		}
 	}

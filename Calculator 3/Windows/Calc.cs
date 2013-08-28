@@ -51,6 +51,7 @@ namespace Calculator.Windows
 			TopMost = Program.AlwaysOnTop;
 		}
 
+		#region Forms Events
 		void Calc_Resize(object sender, EventArgs e)
 		{
 			fields.ForEach(field => field.Resize(ClientSize.Width));
@@ -62,6 +63,7 @@ namespace Calculator.Windows
 				return;
 			Console.WriteLine("{0} {1}", e.X, e.Y);
 		}
+		#endregion
 
 		#region ICalculator Members
 		public void Recalculate(bool global)
@@ -234,18 +236,7 @@ namespace Calculator.Windows
 				case DialogResult.OK:
 				case DialogResult.Yes:
 					Program.WorkingDirectory = Path.GetDirectoryName(ofd.FileName);
-					while (fields.Count != 1)
-						Pop();
-					using (var file = new StreamReader(ofd.OpenFile()))
-					{
-						var line = file.ReadLine();
-						fields[0].Text = string.IsNullOrEmpty(line) ? "" : line;
-						while (!file.EndOfStream)
-						{
-							line = file.ReadLine();
-							Push(line);
-						}
-					}
+					ReadFile(ofd.FileName);
 					break;
 				case DialogResult.Cancel:
 				case DialogResult.Abort:
@@ -254,6 +245,17 @@ namespace Calculator.Windows
 				case DialogResult.Retry:
 				case DialogResult.Ignore:
 					break;
+			}
+		}
+		public void ReadFile(string path)
+		{
+			while (fields.Count != 1)
+				Pop();
+			var lines = File.ReadAllLines(path);
+			foreach (var line in lines)
+			{
+				fields[0].Text = string.IsNullOrEmpty(line) ? "" : line;
+				Push(line);
 			}
 		}
 		private void Push(string text = "")
