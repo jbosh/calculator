@@ -108,6 +108,10 @@ namespace Calculator.Grammar
 			if (b.Value is Vector)
 				return new Variable(a.Value / b.Value);
 			// Because integer division doesn't work, must cast to double.
+			if(a.Value is Vector)
+				return new Variable(a.Value / (double)b.Value);
+			if (a.Value % b.Value == 0)
+				return new Variable(a.Value / b.Value);
 			return new Variable(a.Value / (double)b.Value);
 		}
 		public static Variable operator /(Variable a, double b)
