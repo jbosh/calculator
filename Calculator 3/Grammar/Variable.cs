@@ -149,7 +149,11 @@ namespace Calculator.Grammar
 		{
 			if (Value is Vector)
 				return ((Vector) Value).Round();
-			return new Variable(Math.Round((double)Value));
+			var amt = Math.Round((double)Value);
+			var amtLong = (long)amt;
+			if(amtLong < long.MaxValue && amtLong > long.MinValue)
+				return new Variable(amtLong);
+			return new Variable(amt);
 		}
 		public Variable Ceiling()
 		{
