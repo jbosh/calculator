@@ -21,9 +21,9 @@ namespace Calculator.Grammar
 		public static Variable operator &(Variable a, Variable b)
 		{
 			if (a.Value is double)
-				a.Value = (long) a.Value;
+				a.Value = (long)Math.Round((double)a.Value);
 			if (b.Value is double)
-				b.Value = (long) b.Value;
+				b.Value = (long)Math.Round((double)b.Value);
 			if(a.Value is int || a.Value is long)
 				return new Variable(a.Value & b.Value);
 			if (a.Value == null || b.Value == null)
@@ -33,9 +33,9 @@ namespace Calculator.Grammar
 		public static Variable operator |(Variable a, Variable b)
 		{
 			if (a.Value is double)
-				a.Value = (long)a.Value;
+				a.Value = (long)Math.Round((double)a.Value);
 			if (b.Value is double)
-				b.Value = (long)b.Value;
+				b.Value = (long)Math.Round((double)b.Value);
 			if (a.Value is int || a.Value is long)
 				return new Variable(a.Value | b.Value);
 			if(a.Value == null || b.Value == null)
@@ -45,9 +45,9 @@ namespace Calculator.Grammar
 		public static Variable operator ^(Variable a, Variable b)
 		{
 			if (a.Value is double)
-				a.Value = (long)a.Value;
+				a.Value = (long)Math.Round((double)a.Value);
 			if (b.Value is double)
-				b.Value = (long)b.Value;
+				b.Value = (long)Math.Round((double)b.Value);
 			if (a.Value is int || a.Value is long)
 				return new Variable(a.Value | b.Value);
 			if (a.Value == null || b.Value == null)
@@ -59,7 +59,7 @@ namespace Calculator.Grammar
 			if (count.Value == null || Value == null)
 				return new Variable();
 			if (Value is double)
-				Value = (long) Value;
+				Value = (long)Math.Round((double)Value);
 			if (count.Value is double)
 				count.Value = (int)count.Value;
 			if (Value is Vector || count.Value is Vector)
@@ -73,7 +73,7 @@ namespace Calculator.Grammar
 			if(count.Value == null || Value == null)
 				return new Variable();
 			if (Value is double)
-				Value = (long)Value;
+				Value = (long)Math.Round((double)Value);
 			if (count.Value is double)
 				count.Value = (int)count.Value;
 			if (Value is Vector || count.Value is Vector)
