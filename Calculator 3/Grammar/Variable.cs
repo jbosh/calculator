@@ -159,19 +159,27 @@ namespace Calculator.Grammar
 		{
 			if (Value is Vector)
 				return ((Vector)Value).Ceiling();
-			return new Variable(Math.Ceiling((double)Value));
+			var amt = Math.Ceiling((double)Value);
+			var amtLong = (long)amt;
+			if (amtLong < long.MaxValue && amtLong > long.MinValue)
+				return new Variable(amtLong);
+			return new Variable(amt);
 		}
 		public Variable Floor()
 		{
 			if (Value is Vector)
 				return ((Vector)Value).Floor();
-			return new Variable(Math.Floor((double)Value));
+			var amt = Math.Floor((double)Value);
+			var amtLong = (long)amt;
+			if (amtLong < long.MaxValue && amtLong > long.MinValue)
+				return new Variable(amtLong);
+			return new Variable(amt);
 		}
 		public Variable Negate()
 		{
 			if (Value is Vector)
 				return ((Vector)Value).Negate();
-			return new Variable(~(int)Value);
+			return new Variable(~(long)Value);
 		}
 		public Variable Sin()
 		{
