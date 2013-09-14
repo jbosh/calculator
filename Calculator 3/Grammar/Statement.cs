@@ -7,70 +7,11 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
-using Calitha.GoldParser;
 
 namespace Calculator.Grammar
 {
 	public class Statement
 	{
-		private enum TokenType : int
-		{
-			Minus = 3,
-			FactorialChar,
-			Mod,//5
-			LogicalAnd,
-			ParenL,
-			ParenR,
-			Mult,
-			AlwaysPow,//10
-			Divide,
-			Semicolon,
-			Exponent,
-			BraceLeft,
-			LogicalOr,//15
-			BraceRight,
-			Tilde,
-			Plus,
-			ShiftLeft,
-			Equals,//20
-			ShiftRight,
-			Abs,
-			Acos,
-			Asin,
-			Atan,//25
-			Binary,
-			Ceiling,
-			Cos,
-			Cross,
-			Deg,//30
-			Dot,
-            Double,
-			Endian,
-			Floor,
-			Hex,
-			Id,
-			Length,
-			Ln,
-			Log,
-			Normalize,
-			Rad,
-			Round,
-			Sin,
-			Sqrt,
-			Tan,
-			Expression,
-			ExpressionList,
-			Factorial,
-			Function,
-			LogicalExpression,
-			Negation,
-			OpExpression,
-			Pow,
-			ShiftExpression,
-			Statement,
-			Value,
-			Vector,
-		}
 		private static readonly Regex RegSpaces
 			= new Regex(@"[^a-zA-Z\d\.][\d\.]+([_a-zA-Z]+)", RegexOptions.Compiled);
 		private static readonly Regex RegMulti
@@ -89,64 +30,54 @@ namespace Calculator.Grammar
 			get; private set;
 		}
 
-		private static Dictionary<TokenType, Func<Token, Variable>> Dispatch;
+		private static Dictionary<TokenType, Func<CalcToken, Variable>> Dispatch;
 		public static MemoryManager Memory;
-		private static LALRParser parser;
-		private NonterminalToken root;
-		public Statement()
+		private CalcToken root;
+		public static void Initialize()
 		{
-			if (Dispatch == null)
+			Dispatch = new Dictionary<TokenType, Func<CalcToken, Variable>>
 			{
-				Dispatch = new Dictionary<TokenType, Func<Token, Variable>>
-				{
-				{TokenType.Hex, VisitHex},
-				{TokenType.Double, VisitDouble},
-				{TokenType.Value, VisitValue},
-				{TokenType.Vector, VisitVector},
-				{TokenType.Id, VisitID},
-				{TokenType.Binary, VisitBinary},
+			{TokenType.Hex, VisitHex},
+			{TokenType.Double, VisitDouble},
+			{TokenType.Value, VisitValue},
+			{TokenType.Vector, VisitVector},
+			{TokenType.Id, VisitID},
+			{TokenType.Binary, VisitBinary},
 
-				{TokenType.Negation, VisitNegation},
-				{TokenType.Minus, VisitMinus},
+			{TokenType.Negation, VisitNegation},
+			{TokenType.Minus, VisitMinus},
 
-				{TokenType.ShiftExpression, VisitInteger},
-				{TokenType.LogicalExpression, VisitInteger},
-				{TokenType.OpExpression, VisitOp},
-				{TokenType.Expression, VisitOp},
-				{TokenType.Pow, VisitPow},
-				{TokenType.Factorial, VisitFactorial},
+			{TokenType.ShiftExpression, VisitInteger},
+			{TokenType.LogicalExpression, VisitInteger},
+			{TokenType.OpExpression, VisitOp},
+			{TokenType.Expression, VisitOp},
+			{TokenType.Pow, VisitPow},
+			{TokenType.Factorial, VisitFactorial},
 
-				{TokenType.Function, VisitFunc},
-				{TokenType.Sin, VisitTrig},
-				{TokenType.Cos, VisitTrig},
-				{TokenType.Tan, VisitTrig},
-				{TokenType.Asin, VisitTrig},
-				{TokenType.Acos, VisitTrig},
-				{TokenType.Atan, VisitTrig},
-				{TokenType.Abs, VisitMiscFunc},
-				{TokenType.Dot, VisitMiscFunc},
-				{TokenType.Cross, VisitMiscFunc},
-				{TokenType.Length, VisitMiscFunc},
-				{TokenType.Normalize, VisitMiscFunc},
-				{TokenType.Round, VisitMiscFunc},
-				{TokenType.Floor, VisitMiscFunc},
-				{TokenType.Ceiling, VisitMiscFunc},
-				{TokenType.Endian, VisitMiscFunc},
+			{TokenType.Function, VisitFunc},
+			{TokenType.Sin, VisitTrig},
+			{TokenType.Cos, VisitTrig},
+			{TokenType.Tan, VisitTrig},
+			{TokenType.Asin, VisitTrig},
+			{TokenType.Acos, VisitTrig},
+			{TokenType.Atan, VisitTrig},
+			{TokenType.Abs, VisitMiscFunc},
+			{TokenType.Dot, VisitMiscFunc},
+			{TokenType.Cross, VisitMiscFunc},
+			{TokenType.Length, VisitMiscFunc},
+			{TokenType.Normalize, VisitMiscFunc},
+			{TokenType.Round, VisitMiscFunc},
+			{TokenType.Floor, VisitMiscFunc},
+			{TokenType.Ceiling, VisitMiscFunc},
+			{TokenType.Endian, VisitMiscFunc},
 
-				{TokenType.Sqrt, VisitMiscFunc},
-				{TokenType.Ln, VisitMiscFunc},
-				{TokenType.Log, VisitMiscFunc},
-				{TokenType.Rad, VisitRadDeg},
-				{TokenType.Deg, VisitRadDeg},
+			{TokenType.Sqrt, VisitMiscFunc},
+			{TokenType.Ln, VisitMiscFunc},
+			{TokenType.Log, VisitMiscFunc},
+			{TokenType.Rad, VisitRadDeg},
+			{TokenType.Deg, VisitRadDeg},
 
-				};
-			}
-			if (parser == null)
-			{
-				var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Calculator.Grammer.cgt");
-				var reader = new CGTReader(stream);
-				parser = reader.CreateNewParser();
-			}
+			};
 		}
 		public void Reset()
 		{
@@ -191,7 +122,7 @@ namespace Calculator.Grammar
 				preprocess = split[1];
 			}
 
-			root = parser.Parse(preprocess);
+			root = CalcToken.Parse(preprocess);
 			var variable = default(Variable);
 			if (root == null)
 				variable.Value = null;
@@ -320,10 +251,10 @@ namespace Calculator.Grammar
 					return false;
 			}
 		}
-		private static Variable Visit(Token node)
+		private static Variable Visit(CalcToken token)
 		{
-			if (Dispatch.ContainsKey((TokenType)node.Symbol.Id))
-				return Dispatch[(TokenType)node.Symbol.Id](node);
+			if (Dispatch.ContainsKey(token.Type))
+				return Dispatch[token.Type](token);
 			return Variable.Error;
 		}
 		/// <summary>
@@ -331,53 +262,34 @@ namespace Calculator.Grammar
 		/// </summary>
 		/// <param name="token"></param>
 		/// <returns></returns>
-		private static Variable VisitValue(Token token)
+		private static Variable VisitValue(CalcToken token)
 		{
-			var node = (NonterminalToken) token;
-			if (node.Tokens.Length == 3)
-				return Visit(node.Tokens[1]);
-            return Visit(node.Tokens[0]);
+			return Visit(token.Children[0]);
 		}
-		private static Variable VisitFunc(Token token)
+		private static Variable VisitFunc(CalcToken token)
 		{
-			var node = (NonterminalToken) token;
-			var type = (TerminalToken) node.Tokens[0];
-			if (Dispatch.ContainsKey((TokenType)type.Symbol.Id))
-				return Dispatch[(TokenType)type.Symbol.Id](node);
+			if (Dispatch.ContainsKey(token.Children[0].Type))
+				return Dispatch[token.Children[0].Type](token);
 			return Variable.Error;
 		}
 
 		#region Basic Parsing
-		private static Variable VisitVector(Token token)
+		private static Variable VisitVector(CalcToken token)
 		{
-			var node = (NonterminalToken) token;
-			return new Variable(new Vector(VisitVectorList(node.Tokens[1]).Reverse()));
+			return new Variable(new Vector(VisitVectorList(token.Children)));
 		}
-		private static IEnumerable<Variable> VisitVectorList(Token token)
+		private static IEnumerable<Variable> VisitVectorList(CalcToken[] tokens)
 		{
-			var node = (NonterminalToken) token;
-			while ((TokenType)node.Tokens[0].Symbol.Id == TokenType.ExpressionList)
+			foreach (var token in tokens)
 			{
-				yield return Visit(node.Tokens[2]);
-				node = (NonterminalToken)node.Tokens[0];
+				yield return Visit(token);
 			}
-			if(node.Tokens.Length == 3)
-				yield return Visit(node.Tokens[2]);
-			if (node.Tokens.Length == 2 && node.Tokens[0].Symbol.Id == (int)TokenType.Minus)
-			{
-				var variable = Visit(node.Tokens[1]);
-				variable = new Variable(variable.Value * -1, variable.Name);
-				yield return variable;
-			}
-			else
-				yield return Visit(node.Tokens[0]);
 		}
-		private static Variable VisitDouble(Token token)
+		private static Variable VisitDouble(CalcToken token)
 		{
-			var node = (TerminalToken)token;
-			if (node.Text.Contains("E"))
+			if (token.Text.Contains("E"))
 			{
-				var split = node.Text.Split('E');
+				var split = token.Text.Split('E');
 				var b = double.Parse(split[0]);
 				var e = double.Parse(split[1]);
 				var d = b * Math.Pow(10, e);
@@ -386,61 +298,46 @@ namespace Calculator.Grammar
 			else
 			{
 				long l;
-				if(long.TryParse(node.Text, out l))
+				if (long.TryParse(token.Text, out l))
 					return new Variable(l);
-				var d = double.Parse(node.Text);
+				var d = double.Parse(token.Text);
 				return new Variable(d);
 			}
 		}
-		private static Variable VisitBinary(Token token)
+		private static Variable VisitBinary(CalcToken token)
 		{
-			var node = (TerminalToken)token;
-			var i = node.Text
+			var i = token.Text
 				.Substring(2)
 				.Aggregate(0L, (current, t) => (current << 1) | (t == '0' ? 0u : 1u));
 			return new Variable(i);
 		}
-		private static Variable VisitHex(Token token)
+		private static Variable VisitHex(CalcToken token)
 		{
-			var node = (TerminalToken) token;
-			var i = long.Parse(node.Text.Substring(2), NumberStyles.HexNumber);
+			var i = long.Parse(token.Text.Substring(2), NumberStyles.HexNumber);
 			return new Variable(i);
 		}
-		private static Variable VisitID(Token token)
+		private static Variable VisitID(CalcToken token)
 		{
-			var node = (TerminalToken) token;
-			return Memory.GetVariable(node.Text);
+			return Memory.GetVariable(token.Text);
 		}
 		#endregion
 
 		#region Unary
-		private static Variable VisitMinus(Token token)
+		private static Variable VisitMinus(CalcToken token)
 		{
-			var node = (TerminalToken)token;
-
-			//if ((TokenType)node.Tokens[0].Symbol.Id != TokenType.Minus)
-			//	return VisitLogicalNegation(token);
-
-			//var left = Visit(node.Tokens[1]);
-			//left.Value *= -1;
-			//return left;
-			return new Variable();
-		}
-		private static Variable VisitNegation(Token token)
-		{
-			var node = (NonterminalToken) token;
-			
-			if ((TokenType)node.Tokens[0].Symbol.Id != TokenType.Minus)
-				return VisitLogicalNegation(token);
-			
-			var left = Visit(node.Tokens[1]);
+			var left = Visit(token.Children[0]);
 			left.Value *= -1;
 			return left;
 		}
-		private static Variable VisitLogicalNegation(Token token)
+		private static Variable VisitNegation(CalcToken token)
 		{
-			var node = (NonterminalToken)token;
-			var right = Visit(node.Tokens[1]);
+			if (token.Children[0].Type == TokenType.Minus)
+				throw new Exception();
+			return VisitLogicalNegation(token);
+		}
+		private static Variable VisitLogicalNegation(CalcToken token)
+		{
+			var right = Visit(token.Children[1]);
 			if(right.Value == null)
 				return new Variable();
 			return right.Negate();
@@ -448,13 +345,11 @@ namespace Calculator.Grammar
 		#endregion
 
 		#region Operators
-		private static Variable VisitInteger(Token token)
+		private static Variable VisitInteger(CalcToken token)
 		{
-			var node = (NonterminalToken)token;
-
-			var left = Visit(node.Tokens[0]);
-			var right = Visit(node.Tokens[2]);
-			switch ((TokenType)node.Tokens[1].Symbol.Id)
+			var left = Visit(token.Children[0]);
+			var right = Visit(token.Children[2]);
+			switch (token.Children[1].Type)
 			{
 				case TokenType.ShiftLeft:
 					return left.ShiftLeft(right);
@@ -468,16 +363,15 @@ namespace Calculator.Grammar
 					return Variable.Error;
 			}
 		}
-		private static Variable VisitOp(Token token)
+		private static Variable VisitOp(CalcToken token)
 		{
-			var node = (NonterminalToken) token;
-			var left = Visit(node.Tokens[0]);
-			var right = Visit(node.Tokens[2]);
+			var left = Visit(token.Children[0]);
+			var right = Visit(token.Children[2]);
 
 			if (left.Value == null || right.Value == null)
 				return new Variable();
 
-			switch ((TokenType) node.Tokens[1].Symbol.Id)
+			switch (token.Children[1].Type)
 			{
 				case TokenType.Mult:
 					return left * right;
@@ -490,14 +384,13 @@ namespace Calculator.Grammar
 				case TokenType.Mod:
 					return left % right;
 				default:
-					throw new DataException(string.Format("Data does not operator of type {0}. Please use Mult, Plus, Minus, Divide, ...", (TokenType) node.Tokens[1].Symbol.Id));
+					throw new DataException(string.Format("Data does not operator of type {0}. Please use Mult, Plus, Minus, Divide, ...", token.Children[1].Type));
 			}
 		}
-		private static Variable VisitPow(Token token)
+		private static Variable VisitPow(CalcToken token)
 		{
-			var node = (NonterminalToken) token;
-			var left = Visit(node.Tokens[0]);
-			var right = Visit(node.Tokens[2]);
+			var left = Visit(token.Children[0]);
+			var right = Visit(token.Children[2]);
 			if (left.Value == null || right.Value == null)
 				return new Variable();
 			if (right.Value is Vector)
@@ -509,12 +402,12 @@ namespace Calculator.Grammar
 			}
 			if (left.Value is Vector)
 			{
-				if (Program.UseXor && (TokenType)node.Tokens[1].Symbol.Id != TokenType.AlwaysPow)
+				if (Program.UseXor && token.Children[1].Type != TokenType.AlwaysPow)
 					return ((Vector)left.Value).Xor(right.Value);
 				else
 					return ((Vector)left.Value).Pow(right.Value);
 			}
-			if (Program.UseXor && (TokenType)node.Tokens[1].Symbol.Id != TokenType.AlwaysPow)
+			if (Program.UseXor && token.Children[1].Type != TokenType.AlwaysPow)
 			{
 				if (left.Value is double || right.Value is double)
 					return new Variable();
@@ -525,23 +418,21 @@ namespace Calculator.Grammar
 				return new Variable(Math.Pow((double)left.Value, (double)right.Value));
 			}
 		}
-		private static Variable VisitFactorial(Token token)
+		private static Variable VisitFactorial(CalcToken token)
 		{
-			var node = (NonterminalToken)token;
-			var left = Visit(node.Tokens[0]);
+			var left = Visit(token.Children[0]);
 			if (left.Value == null)
 				return new Variable();
 			return new Variable(CalcMath.Factorial(left.Value));
 		}
 		#endregion
 
-		private static Variable VisitMiscFunc(Token token)
+		private static Variable VisitMiscFunc(CalcToken token)
 		{
-			var node = (NonterminalToken)token;
-			var left = Visit(node.Tokens[1]);
+			var left = Visit(token.Children[1]);
 			if (left.Value == null)
 				return new Variable();
-			switch ((TokenType)node.Tokens[0].Symbol.Id)
+			switch (token.Children[0].Type)
 			{
 				case TokenType.Abs:
 					return left.Abs();
@@ -576,18 +467,17 @@ namespace Calculator.Grammar
 						return ((Vector)left.Value).Length();
 					return new Variable();
 				default:
-					throw new DataException(string.Format("Unsupported token type {0}.", (TokenType)node.Tokens[0].Symbol.Id));
+					throw new DataException(string.Format("Unsupported token type {0}.", token.Children[0].Type));
 			}
 		}
-		private static Variable VisitTrig(Token token)
+		private static Variable VisitTrig(CalcToken token)
 		{
-			var node = (NonterminalToken) token;
-			var left = Visit(node.Tokens[1]);
+			var left = Visit(token.Children[1]);
 			if (left.Value == null)
 				return new Variable();
 			var degreeBefore = Program.Radians ? 1 : 0.0174532925199433;
 			var degreeAfter = !Program.Radians ? 57.2957795130823 : 1;
-			switch ((TokenType)node.Tokens[0].Symbol.Id)
+			switch (token.Children[0].Type)
 			{
 				case TokenType.Sin:
 					return left.Sin();
@@ -621,11 +511,10 @@ namespace Calculator.Grammar
 					throw new NotImplementedException();
 			}
 		}
-		private static Variable VisitRadDeg(Token token)
+		private static Variable VisitRadDeg(CalcToken token)
 		{
-			var node = (NonterminalToken) token;
-			var left = Visit(node.Tokens[1]);
-			switch ((TokenType)node.Tokens[0].Symbol.Id)
+			var left = Visit(token.Children[1]);
+			switch (token.Children[0].Type)
 			{
 				case TokenType.Rad:
 					return left * 0.0174532925199433;

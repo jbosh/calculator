@@ -89,6 +89,7 @@ namespace Calculator
 			TestFunction("ceiling{2.132;8.812} * 100", new Vector(300, 900));
 			TestFunction("atan{2.4}", null);
 			TestFunction("atan{1;1}", 45);
+			TestFunction("floor{~1;~1}", new Vector(-2, -2));
 			TestFunction("atan{-1;-1}", -135);
 			TestFunction("atan{1;0}", 90);
 

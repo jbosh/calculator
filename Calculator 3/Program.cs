@@ -120,6 +120,9 @@ namespace Calculator
 		[STAThread]
 		private static void Main(string[] args)
 		{
+			Statement.Initialize();
+			Grammar.CalcToken.Initialize();
+
 #if RUN_TESTS
 			Tests.RunTests();
 #endif
