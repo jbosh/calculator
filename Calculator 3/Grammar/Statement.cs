@@ -331,13 +331,7 @@ namespace Calculator.Grammar
 		}
 		private static Variable VisitNegation(CalcToken token)
 		{
-			if (token.Children[0].Type == TokenType.Minus)
-				throw new Exception();
-			return VisitLogicalNegation(token);
-		}
-		private static Variable VisitLogicalNegation(CalcToken token)
-		{
-			var right = Visit(token.Children[1]);
+			var right = Visit(token.Children[0]);
 			if(right.Value == null)
 				return new Variable();
 			return right.Negate();

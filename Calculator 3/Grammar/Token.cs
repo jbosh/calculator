@@ -127,6 +127,7 @@ namespace Calculator.Grammar
 				token.Children[i] = CompactTree(token.Children[i]);
 			}
 
+			//Remove braces and parenthesis
 			if (token.Children.Length == 3)
 			{
 				var left = token.Children[0].Text;
@@ -142,12 +143,14 @@ namespace Calculator.Grammar
 			{
 				switch (token.Type)
 				{
+					//Collapse unnecessary nodes that only contain children 
 					case TokenType.Expression:
 					case TokenType.Value:
 						return token.Children[0];
 				}
 				switch (token.Children[0].Type)
 				{
+					//Collapse vector children
 					case TokenType.ExpressionList:
 						token.Children = ParseExpressionList(token.Children[0].Children).ToArray();
 						break;
@@ -156,14 +159,12 @@ namespace Calculator.Grammar
 
 			if (token.Type == TokenType.Negation)
 			{
-				if (token.Children.Length == 2)
+				//Collapse negation types, minus needs to change though
+				if (token.Children[0].Type == TokenType.Minus)
 				{
-					if (token.Children[0].Type == TokenType.Minus)
-					{
-						token.Type = TokenType.Minus;
-						token.Children = new[] { token.Children[1] };
-					}
+					token.Type = TokenType.Minus;
 				}
+				token.Children = new[] { token.Children[1] };
 			}
 			return token;
 		}
