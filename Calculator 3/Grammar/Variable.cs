@@ -24,8 +24,10 @@ namespace Calculator.Grammar
 				a.Value = (long)Math.Round((double)a.Value);
 			if (b.Value is double)
 				b.Value = (long)Math.Round((double)b.Value);
-			if(a.Value is int || a.Value is long)
+			if (a.Value is int || a.Value is long)
 				return new Variable(a.Value & b.Value);
+			if (a.Value is ulong || b.Value is ulong)
+				return new Variable((ulong)a.Value & (ulong)b.Value);
 			if (a.Value == null || b.Value == null)
 				return new Variable();
 			return new Variable(a.Value & b.Value);
@@ -38,6 +40,8 @@ namespace Calculator.Grammar
 				b.Value = (long)Math.Round((double)b.Value);
 			if (a.Value is int || a.Value is long)
 				return new Variable(a.Value | b.Value);
+			if (a.Value is ulong || b.Value is ulong)
+				return new Variable((ulong)a.Value | (ulong)b.Value);
 			if(a.Value == null || b.Value == null)
 				return new Variable();
 			return new Variable(a.Value | b.Value);
@@ -49,10 +53,12 @@ namespace Calculator.Grammar
 			if (b.Value is double)
 				b.Value = (long)Math.Round((double)b.Value);
 			if (a.Value is int || a.Value is long)
-				return new Variable(a.Value | b.Value);
+				return new Variable(a.Value ^ b.Value);
+			if (a.Value is ulong || b.Value is ulong)
+				return new Variable((ulong)a.Value ^ (ulong)b.Value);
 			if (a.Value == null || b.Value == null)
 				return new Variable();
-			return new Variable(a.Value | b.Value);
+			return new Variable(a.Value ^ b.Value);
 		}
 		public Variable ShiftLeft(Variable count)
 		{
@@ -64,7 +70,7 @@ namespace Calculator.Grammar
 				count.Value = (int)count.Value;
 			if (Value is Vector || count.Value is Vector)
 				return new Variable(Vector.ShiftLeft(Value, count.Value));
-			if(Value is long || Value is int)
+			if (Value is long || Value is int || Value is ulong)
 				return new Variable(Value << (int)count.Value);
 			return new Variable();
 		}
@@ -78,7 +84,7 @@ namespace Calculator.Grammar
 				count.Value = (int)count.Value;
 			if (Value is Vector || count.Value is Vector)
 				return new Variable(Vector.ShiftRight(Value, count.Value));
-			if (Value is long || Value is int)
+			if (Value is long || Value is int || Value is ulong)
 				return new Variable(Value >> (int)count.Value);
 			return new Variable();
 		}
@@ -87,14 +93,20 @@ namespace Calculator.Grammar
 		#region Operators
 		public static Variable operator +(Variable a, Variable b)
 		{
+			if (a.Value is ulong || b.Value is ulong)
+				return new Variable((ulong)a.Value + (ulong)b.Value);
 			return new Variable(a.Value + b.Value);
 		}
 		public static Variable operator -(Variable a, Variable b)
 		{
+			if (a.Value is ulong || b.Value is ulong)
+				return new Variable((ulong)a.Value - (ulong)b.Value);
 			return new Variable(a.Value - b.Value);
 		}
 		public static Variable operator *(Variable a, Variable b)
 		{
+			if (a.Value is ulong || b.Value is ulong)
+				return new Variable((ulong)a.Value * (ulong)b.Value);
 			return new Variable(a.Value * b.Value);
 		}
 		public static Variable operator *(Variable a, double b)

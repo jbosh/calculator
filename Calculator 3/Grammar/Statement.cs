@@ -300,6 +300,9 @@ namespace Calculator.Grammar
 				long l;
 				if (long.TryParse(token.Text, out l))
 					return new Variable(l);
+				ulong u;
+				if (ulong.TryParse(token.Text, out u))
+					return new Variable(u);
 				var d = double.Parse(token.Text);
 				return new Variable(d);
 			}
