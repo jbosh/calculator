@@ -314,6 +314,9 @@ namespace Calculator
 					}
 					e.Handled = true;
 					break;
+				case Keys.F8:
+					NewWindow(new Regexr());
+					break;
 			}
 		}
 		public static string FormatOutput(object value, OutputFormat format, bool thousandsSeparator)

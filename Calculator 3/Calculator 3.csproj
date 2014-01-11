@@ -147,6 +147,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="Windows\Regexr.resx">
+      <DependentUpon>Regexr.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="app.config" />
     <None Include="Properties\app.manifest" />
     <None Include="Properties\Settings.settings">
@@ -180,6 +183,12 @@
     </Compile>
     <Compile Include="Windows\Options.designer.cs">
       <DependentUpon>Options.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\Regexr.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Windows\Regexr.Designer.cs">
+      <DependentUpon>Regexr.cs</DependentUpon>
     </Compile>
     <Compile Include="Windows\TextBoxAdvanced.cs">
       <SubType>Component</SubType>
@@ -229,32 +238,32 @@
   <ItemGroup>
     <PublishFile Include="antlr.runtime">
       <Visible>False</Visible>
+      <PublishState>Exclude</PublishState>
+      <IncludeHash>True</IncludeHash>
       <Group>
       </Group>
       <TargetPath>
       </TargetPath>
-      <PublishState>Exclude</PublishState>
-      <IncludeHash>True</IncludeHash>
       <FileType>Assembly</FileType>
     </PublishFile>
     <PublishFile Include="StringTemplate">
       <Visible>False</Visible>
+      <PublishState>Exclude</PublishState>
+      <IncludeHash>True</IncludeHash>
       <Group>
       </Group>
       <TargetPath>
       </TargetPath>
-      <PublishState>Exclude</PublishState>
-      <IncludeHash>True</IncludeHash>
       <FileType>Assembly</FileType>
     </PublishFile>
     <PublishFile Include="Tasks.txt">
       <Visible>False</Visible>
+      <PublishState>Exclude</PublishState>
+      <IncludeHash>True</IncludeHash>
       <Group>
       </Group>
       <TargetPath>
       </TargetPath>
-      <PublishState>Exclude</PublishState>
-      <IncludeHash>True</IncludeHash>
       <FileType>File</FileType>
     </PublishFile>
   </ItemGroup>
