@@ -90,6 +90,7 @@ namespace Calculator.Windows
 
 				var selectStart = txtSearch.SelectionStart;
 				var selectLength = txtSearch.SelectionLength;
+				txtSearch.BeginUpdate();
 				txtSearch.SelectAll();
 				txtSearch.SelectionBackColor = Color.White;
 				txtResults.Text = reg.Replace(txtSearch.Text, txtRegexReplace.Text);
@@ -99,6 +100,7 @@ namespace Calculator.Windows
 					txtSearch.SelectionBackColor = Color.SkyBlue;
 				}
 				txtSearch.Select(selectStart, selectLength);
+				txtSearch.EndUpdate();
 			}
 			catch (Exception)
 			{

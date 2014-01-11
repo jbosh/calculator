@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using System.Collections;
 using System.Collections.Generic;
@@ -157,13 +158,6 @@ namespace Calculator
 			}
 		}
 
-		enum WordType
-		{
-			Invalid,
-			Numbers,
-			Letters,
-		}
-
 		static Regex WordIdentifier = new Regex("([a-zA-Z0-9_$]+)", RegexOptions.Compiled);
 		private static int FindPreviousWord(int index, string sentence)
 		{
@@ -269,6 +263,28 @@ namespace Calculator
 						calc.ReadFile(filenames[0]);
 				}
 			}
+		}
+
+		[DllImport("user32.dll")]
+		private static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wp, IntPtr lp);
+		private const int WM_SETREDRAW = 0x0b;
+
+		/// <summary>
+		/// When beginning changing fonts and such, this disables drawing.
+		/// </summary>
+		public void BeginUpdate()
+		{
+			SendMessage(Handle, WM_SETREDRAW, (IntPtr)0, IntPtr.Zero);
+		}
+
+		/// <summary>
+		/// When finished changing fonts and such, this re-enables drawing. This will invalidate
+		/// the control.
+		/// </summary>
+		public void EndUpdate()
+		{
+			SendMessage(this.Handle, WM_SETREDRAW, (IntPtr)1, IntPtr.Zero);
+			Invalidate();
 		}
 	}
 }
