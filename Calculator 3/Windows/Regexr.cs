@@ -27,6 +27,25 @@ namespace Calculator.Windows
 			chkIgnoreCase.CheckedChanged += UpdateRegexs;
 			chkDotAll.CheckedChanged += UpdateRegexs;
 			chkMultiline.CheckedChanged += UpdateRegexs;
+
+			Resize += Regexr_Resize;
+		}
+
+		void Regexr_Resize(object sender, EventArgs e)
+		{
+			const int Border = 12;
+			txtRegex.Width = ClientSize.Width - Border * 2;
+			txtRegexReplace.Width = ClientSize.Width - Border * 2;
+			txtSearch.Width = ClientSize.Width - Border * 2;
+			txtResults.Width = ClientSize.Width - Border * 2;
+
+			var resultsTop = txtRegexReplace.Bottom + Border;
+			var resultsBottom = ClientSize.Height - Border;
+			var resultsHeight = resultsBottom - resultsTop - Border;
+			txtSearch.Top = resultsTop;
+			txtSearch.Height = resultsHeight / 2;
+			txtResults.Top = txtSearch.Bottom + Border;
+			txtResults.Height = ClientSize.Height - Border - txtResults.Top;
 		}
 
 		void Regexr_KeyDown(object sender, KeyEventArgs e)

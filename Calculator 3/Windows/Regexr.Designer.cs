@@ -29,25 +29,15 @@
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
-			this.txtRegex = new Calculator.TextBoxAdvanced();
 			this.chkIgnoreCase = new System.Windows.Forms.CheckBox();
 			this.chkDotAll = new System.Windows.Forms.CheckBox();
 			this.chkMultiline = new System.Windows.Forms.CheckBox();
 			this.toolTip = new System.Windows.Forms.ToolTip(this.components);
-			this.txtRegexReplace = new Calculator.TextBoxAdvanced();
-			this.txtSearch = new Calculator.TextBoxAdvanced();
 			this.txtResults = new Calculator.TextBoxAdvanced();
+			this.txtSearch = new Calculator.TextBoxAdvanced();
+			this.txtRegexReplace = new Calculator.TextBoxAdvanced();
+			this.txtRegex = new Calculator.TextBoxAdvanced();
 			this.SuspendLayout();
-			// 
-			// txtRegex
-			// 
-			this.txtRegex.AllowDrop = true;
-			this.txtRegex.CaretStart = 0;
-			this.txtRegex.Location = new System.Drawing.Point(12, 12);
-			this.txtRegex.Name = "txtRegex";
-			this.txtRegex.Size = new System.Drawing.Size(260, 20);
-			this.txtRegex.TabIndex = 0;
-			this.txtRegex.Text = "";
 			// 
 			// chkIgnoreCase
 			// 
@@ -83,6 +73,30 @@
         "inning and end of the string.");
 			this.chkMultiline.UseVisualStyleBackColor = true;
 			// 
+			// txtResults
+			// 
+			this.txtResults.AllowDrop = true;
+			this.txtResults.BackColor = System.Drawing.SystemColors.Window;
+			this.txtResults.CaretStart = 0;
+			this.txtResults.DetectUrls = false;
+			this.txtResults.Location = new System.Drawing.Point(12, 187);
+			this.txtResults.Name = "txtResults";
+			this.txtResults.ReadOnly = true;
+			this.txtResults.Size = new System.Drawing.Size(260, 94);
+			this.txtResults.TabIndex = 0;
+			this.txtResults.Text = "";
+			// 
+			// txtSearch
+			// 
+			this.txtSearch.AllowDrop = true;
+			this.txtSearch.CaretStart = 0;
+			this.txtSearch.DetectUrls = false;
+			this.txtSearch.Location = new System.Drawing.Point(12, 87);
+			this.txtSearch.Name = "txtSearch";
+			this.txtSearch.Size = new System.Drawing.Size(260, 94);
+			this.txtSearch.TabIndex = 2;
+			this.txtSearch.Text = "";
+			// 
 			// txtRegexReplace
 			// 
 			this.txtRegexReplace.AllowDrop = true;
@@ -90,30 +104,18 @@
 			this.txtRegexReplace.Location = new System.Drawing.Point(12, 61);
 			this.txtRegexReplace.Name = "txtRegexReplace";
 			this.txtRegexReplace.Size = new System.Drawing.Size(260, 20);
-			this.txtRegexReplace.TabIndex = 0;
+			this.txtRegexReplace.TabIndex = 1;
 			this.txtRegexReplace.Text = "";
 			// 
-			// txtSearch
+			// txtRegex
 			// 
-			this.txtSearch.AllowDrop = true;
-			this.txtSearch.CaretStart = 0;
-			this.txtSearch.Location = new System.Drawing.Point(12, 87);
-			this.txtSearch.Name = "txtSearch";
-			this.txtSearch.Size = new System.Drawing.Size(260, 94);
-			this.txtSearch.TabIndex = 0;
-			this.txtSearch.Text = "";
-			// 
-			// txtResults
-			// 
-			this.txtResults.AllowDrop = true;
-			this.txtResults.BackColor = System.Drawing.SystemColors.Window;
-			this.txtResults.CaretStart = 0;
-			this.txtResults.Location = new System.Drawing.Point(12, 187);
-			this.txtResults.Name = "txtResults";
-			this.txtResults.ReadOnly = true;
-			this.txtResults.Size = new System.Drawing.Size(260, 94);
-			this.txtResults.TabIndex = 0;
-			this.txtResults.Text = "";
+			this.txtRegex.AllowDrop = true;
+			this.txtRegex.CaretStart = 0;
+			this.txtRegex.Location = new System.Drawing.Point(12, 12);
+			this.txtRegex.Name = "txtRegex";
+			this.txtRegex.Size = new System.Drawing.Size(260, 20);
+			this.txtRegex.TabIndex = 0;
+			this.txtRegex.Text = "";
 			// 
 			// Regexr
 			// 
