@@ -161,6 +161,13 @@ namespace Calculator
 			TestFunction("sin({-180; -90; 180})", new Vector(0, -1, 0));
 			TestFunction("cos({-180; -90; 180})", new Vector(-1, 0, -1));
 
+			TestFunction("0xFFFFFFFFFFFFFFFF", -1);
+			TestFunction("18,446,744,073,709,551,615", -1);
+			TestFunction("18,446,744,073,709,551,615>>32", 0xFFFFFFFF);
+			TestFunction("18,446,744,073,709,551,615+1", 0);
+			TestFunction("18,446,744,073,709,551,615-1", 18446744073709551614);
+			TestFunction("18,446,744,073,709,551,615&0xFFFF", 0xFFFF);
+
 			Program.UseXor = true;
 			TestFunction("2^2", 0);
 			TestFunction("2^3", 1);
@@ -213,7 +220,12 @@ namespace Calculator
 			var output = stat.ProcessString(function);
 			if (output.Value is double)
 				output.Value = Math.Round(output.Value, 2);
-			if(output.Value != correct)
+			var failed = false;
+			if (output.Value is ulong || correct is ulong)
+				failed = (ulong)output.Value != (ulong)correct;
+			else
+				failed = output.Value != correct;
+			if (failed)
 				throw new ApplicationException(string.Format("Failed on \"{0}\". Answer: {1}.", function, output));
 		}
 		private static void TestCopyFunction(string input, string correct)
