@@ -346,6 +346,7 @@ namespace Calculator.Windows
 				txtQuestion.Size = new Size(427, 20);
 				txtQuestion.TabIndex = Index;
 				txtQuestion.TextChanged += (o, e) => txtQuestion_TextChanged();
+				txtQuestion.Multiline = false;
 				var font = new Font("Consolas", txtQuestion.Font.SizeInPoints);
 				if (font.Name != "Consolas")
 				{

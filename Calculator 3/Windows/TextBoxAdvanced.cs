@@ -55,6 +55,9 @@ namespace Calculator
 				case Keys.Control | Keys.Delete:
 					SendKeys.SendWait("^+{RIGHT}{BACKSPACE}");
 					return true;
+				case Keys.Control | Keys.A:
+					SelectAll();
+					return true;
 				case Keys.Control | Keys.Z:
 					if (undoStackIndex > 1)
 					{
