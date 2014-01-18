@@ -123,6 +123,7 @@ namespace Calculator.Windows
 					if (e.Control)
 					{
 						Push();
+						e.Handled = true;
 						return;
 					}
 					break;
@@ -131,6 +132,7 @@ namespace Calculator.Windows
 					if (e.Control)
 					{
 						Pop();
+						e.Handled = true;
 						return;
 					}
 					break;
