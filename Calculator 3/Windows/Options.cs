@@ -32,7 +32,7 @@ namespace Calculator.Windows
 				TopMost = Program.AlwaysOnTop;
 			chkOnTop.Checked = Program.AlwaysOnTop;
 			numRounding.Value = Program.Rounding;
-			btnTrig.Text = Program.Radians ? "Radians" : "Degrees";
+			cmbTrig.SelectedIndex = cmbTrig.Items.IndexOf(Program.Radians ? "Radians" : "Degrees");
 			chkThousands.Checked = Program.DefaultThousandsSeparator;
 			chkCopyPaste.Checked = Program.CopyPasteHelper;
 			chkUseXor.Checked = Program.UseXor;
@@ -67,19 +67,18 @@ namespace Calculator.Windows
 			Program.GlobalKeyDown(e);
 		}
 
-		private void btnTrig_Click(object sender, EventArgs e)
+		private void cmbTrig_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (Recalulating)
 				return;
-			if (btnTrig.Text == "Radians")
+			var item = cmbTrig.SelectedItem;
+			if (item == "Radians")
 			{
-				btnTrig.Text = "Degrees";
-				Program.Radians = false;
+				Program.Radians = true;
 			}
 			else
 			{
-				btnTrig.Text = "Radians";
-				Program.Radians = true;
+				Program.Radians = false;
 			}
 		}
 

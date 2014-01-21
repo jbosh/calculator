@@ -30,7 +30,6 @@
 		{
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Options));
 			this.chkOnTop = new System.Windows.Forms.CheckBox();
-			this.btnTrig = new System.Windows.Forms.Button();
 			this.numRounding = new System.Windows.Forms.NumericUpDown();
 			this.label1 = new System.Windows.Forms.Label();
 			this.radioStandard = new System.Windows.Forms.RadioButton();
@@ -42,6 +41,7 @@
 			this.radioBinary = new System.Windows.Forms.RadioButton();
 			this.chkCopyPaste = new System.Windows.Forms.CheckBox();
 			this.chkUseXor = new System.Windows.Forms.CheckBox();
+			this.cmbTrig = new System.Windows.Forms.ComboBox();
 			((System.ComponentModel.ISupportInitialize)(this.numRounding)).BeginInit();
 			this.SuspendLayout();
 			// 
@@ -55,16 +55,6 @@
 			this.chkOnTop.Text = "Windows always on top.";
 			this.chkOnTop.UseVisualStyleBackColor = true;
 			this.chkOnTop.CheckedChanged += new System.EventHandler(this.chkOnTop_CheckedChanged);
-			// 
-			// btnTrig
-			// 
-			this.btnTrig.Location = new System.Drawing.Point(92, 12);
-			this.btnTrig.Name = "btnTrig";
-			this.btnTrig.Size = new System.Drawing.Size(61, 25);
-			this.btnTrig.TabIndex = 2;
-			this.btnTrig.Text = "Radians";
-			this.btnTrig.UseVisualStyleBackColor = true;
-			this.btnTrig.Click += new System.EventHandler(this.btnTrig_Click);
 			// 
 			// numRounding
 			// 
@@ -184,11 +174,24 @@
 			this.chkUseXor.UseVisualStyleBackColor = true;
 			this.chkUseXor.CheckedChanged += new System.EventHandler(this.chkUseXor_CheckedChanged);
 			// 
+			// cmbTrig
+			// 
+			this.cmbTrig.FormattingEnabled = true;
+			this.cmbTrig.Items.AddRange(new object[] {
+            "Radians",
+            "Degrees"});
+			this.cmbTrig.Location = new System.Drawing.Point(79, 15);
+			this.cmbTrig.Name = "cmbTrig";
+			this.cmbTrig.Size = new System.Drawing.Size(73, 21);
+			this.cmbTrig.TabIndex = 14;
+			this.cmbTrig.SelectedIndexChanged += new System.EventHandler(this.cmbTrig_SelectedIndexChanged);
+			// 
 			// Options
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(164, 272);
+			this.Controls.Add(this.cmbTrig);
 			this.Controls.Add(this.chkUseXor);
 			this.Controls.Add(this.chkCopyPaste);
 			this.Controls.Add(this.radioBinary);
@@ -200,7 +203,6 @@
 			this.Controls.Add(this.radioStandard);
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.numRounding);
-			this.Controls.Add(this.btnTrig);
 			this.Controls.Add(this.chkOnTop);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -215,7 +217,6 @@
 		#endregion
 
 		private System.Windows.Forms.CheckBox chkOnTop;
-		private System.Windows.Forms.Button btnTrig;
 		private System.Windows.Forms.NumericUpDown numRounding;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.RadioButton radioStandard;
@@ -227,5 +228,6 @@
 		private System.Windows.Forms.RadioButton radioBinary;
 		private System.Windows.Forms.CheckBox chkCopyPaste;
 		private System.Windows.Forms.CheckBox chkUseXor;
+		private System.Windows.Forms.ComboBox cmbTrig;
 	}
 }
