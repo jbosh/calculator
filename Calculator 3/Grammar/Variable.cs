@@ -122,7 +122,7 @@ namespace Calculator.Grammar
 			// Because integer division doesn't work, must cast to double.
 			if(a.Value is Vector)
 				return new Variable(a.Value / (double)b.Value);
-			if (a.Value % b.Value == 0)
+			if (b.Value != 0 && a.Value % b.Value == 0)
 				return new Variable(a.Value / b.Value);
 			return new Variable(a.Value / (double)b.Value);
 		}

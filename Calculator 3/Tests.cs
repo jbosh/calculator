@@ -41,6 +41,8 @@ namespace Calculator
 			TestFunction("32412 | 2", 32414);
 			TestFunction("(2 + 0x3F) & 0xFFFFFFC0", 64);
 			TestFunction("(75 + 0x3F) & 0xFFFFFFC0", 128);
+			TestFunction("1/0", double.PositiveInfinity);
+			TestFunction("-1/0", double.NegativeInfinity);
 
 			TestFunction("-2 1 3 4 g", -235.2);
 			TestFunction("2^2", 4);
