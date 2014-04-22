@@ -84,6 +84,7 @@ namespace Calculator.Windows
 			if (TopMost != Program.AlwaysOnTop)
 				TopMost = Program.AlwaysOnTop;
 
+#if false
 			try
 			{
 				var reg = new Regex(txtRegex.Text, RegexOptions);
@@ -105,6 +106,7 @@ namespace Calculator.Windows
 			catch (Exception)
 			{
 			}
+#endif
 		}
 	}
 }

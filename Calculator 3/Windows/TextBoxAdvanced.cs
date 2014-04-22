@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 
 namespace Calculator
 {
-	public class TextBoxAdvanced : RichTextBox
+	public class TextBoxAdvanced : TextBox
 	{
 		public TextBoxAdvanced()
 		{

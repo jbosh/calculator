@@ -78,7 +78,6 @@
 			this.txtResults.AllowDrop = true;
 			this.txtResults.BackColor = System.Drawing.SystemColors.Window;
 			this.txtResults.CaretStart = 0;
-			this.txtResults.DetectUrls = false;
 			this.txtResults.Location = new System.Drawing.Point(12, 187);
 			this.txtResults.Name = "txtResults";
 			this.txtResults.ReadOnly = true;
@@ -90,7 +89,6 @@
 			// 
 			this.txtSearch.AllowDrop = true;
 			this.txtSearch.CaretStart = 0;
-			this.txtSearch.DetectUrls = false;
 			this.txtSearch.Location = new System.Drawing.Point(12, 87);
 			this.txtSearch.Name = "txtSearch";
 			this.txtSearch.Size = new System.Drawing.Size(260, 94);
