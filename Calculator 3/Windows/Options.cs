@@ -71,7 +71,7 @@ namespace Calculator.Windows
 		{
 			if (Recalulating)
 				return;
-			var item = cmbTrig.SelectedItem;
+			var item = (string)cmbTrig.SelectedItem;
 			if (item == "Radians")
 			{
 				Program.Radians = true;
