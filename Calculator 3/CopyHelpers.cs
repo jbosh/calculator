@@ -26,7 +26,9 @@ namespace Calculator
 			@"{ (-?\d*\.?[eE]?\d+) (-?\d*\.?[eE]?\d+) (-?\d*\.?[eE]?\d+) (-?\d*\.?[eE]?\d+) }",
 			"{$1; $2; $3; $4}",
 			@"^{(.+)}$",
-			"$1"
+			"$1",
+			@"[+-]\t\t(\[?[\w][\w\d\[\]]*\]?)\s+(.+)\t([\w][\w\d]+\s*\*)+",
+			"$1=$2",
 		};
 		private static string ProcessSimpleReplacements(string source)
 		{
