@@ -196,12 +196,16 @@ namespace Calculator.Grammar
 				source = source + new string(')', parenDepth);
 			if (parenDepth < 0)
 			{
+#if true //add implicit parenthesis at beginning
+				source = new string('(', Math.Abs(parenDepth)) + source;
+#else
 				while (parenDepth < 0)
 				{
 					var index = source.LastIndexOf(')');
 					source = source.Remove(index);
 					parenDepth++;
 				}
+#endif
 			}
 			#endregion
 			#region Process Implicit Multiplication

@@ -52,7 +52,6 @@ namespace Calculator
 			TestFunction("2+24-(4+(48/6)*6)2+24-(4+8*6)", -106);
 			TestFunction("(75/3+15)25", 1000);
 			TestFunction("10*3+7(8(8-9)+2*10)", 114);
-			TestFunction("(1/107+(35*35)/(2*-107))/-9.8)))+2", .58);
 			TestFunction("---107", -107);
 			TestFunction("-(35*35)", -1225);
 			TestFunction("3(3(3", 27);
@@ -170,6 +169,14 @@ namespace Calculator
 			TestFunction("18,446,744,073,709,551,615-1", 18446744073709551614);
 			TestFunction("18,446,744,073,709,551,615&0xFFFF", 0xFFFF);
 
+#if true
+			TestFunction("1<<14)+1024", 17408);
+			TestFunction("(1/107+(35*35)/(2*-107))/-9.8)))+2", 2.58);
+#else
+			TestFunction("1<<14)+1024", 16384);
+			TestFunction("(1/107+(35*35)/(2*-107))/-9.8)))+2", .58);
+#endif
+
 			Program.UseXor = true;
 			TestFunction("2^2", 0);
 			TestFunction("2^3", 1);
@@ -216,6 +223,7 @@ namespace Calculator
 			TestCopyFunction("+		A	{ -0.05659103 -0.40351867 0.05752944 0.00000000 }	vector float", "A={-0.05659103; -0.40351867; 0.05752944; 0.00000000}");
 			TestCopyFunction("{m_value=441759488 }", "m_value=441759488");
 			TestCopyFunction("+		m_cmdptr	0x00000002fe70b15c	uint32_t*", "m_cmdptr=0x00000002fe70b15c");
+			TestCopyFunction("m_value	0x00000000152820be	t_uint_address_base", "m_value=0x00000000152820be");
 		}
 		private static void TestFunction(string function, dynamic correct)
 		{
