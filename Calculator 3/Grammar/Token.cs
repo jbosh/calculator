@@ -43,6 +43,7 @@ namespace Calculator.Grammar
 		Hex,
 		Id,
 		Length,
+		Lerp,
 		Ln,
 		Log,
 		Normalize,

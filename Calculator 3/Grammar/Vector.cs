@@ -235,6 +235,39 @@ namespace Calculator.Grammar
 			return new Variable(Math.Sqrt(d));
 		}
 
+		public Variable Lerp()
+		{
+			if (Values == null)
+				return new Variable();
+			if (Values.Length != 3)
+				return Variable.Error;
+			if (Values.Any(v => v.Value == null))
+				return Variable.Error;
+
+			if (Values[2].Value is Vector)
+				return Variable.Error;
+
+			if (Values[0].Value is Vector)
+			{
+				if (!(Values[1].Value is Vector))
+					return Variable.Error;
+
+				//lerp (v0, v1, amt)
+			}
+			else
+			{
+				if (Values[1].Value is Vector)
+					return Variable.Error;
+
+				//lerp (d0, d1, amt)
+			}
+
+			dynamic a = Values[1].Value - Values[0].Value;
+			dynamic b = Values[2].Value * a;
+			dynamic c = Values[0].Value + b;
+			return new Variable(c);
+		}
+
 		public Variable Normalize()
 		{
 			var len = Length();

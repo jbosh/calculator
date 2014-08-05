@@ -65,6 +65,7 @@ namespace Calculator.Grammar
 			{TokenType.Dot, VisitMiscFunc},
 			{TokenType.Cross, VisitMiscFunc},
 			{TokenType.Length, VisitMiscFunc},
+			{TokenType.Lerp, VisitMiscFunc},
 			{TokenType.Normalize, VisitMiscFunc},
 			{TokenType.Round, VisitMiscFunc},
 			{TokenType.Floor, VisitMiscFunc},
@@ -250,6 +251,7 @@ namespace Calculator.Grammar
 				case "floor":
 				case "ceiling":
 				case "endian":
+				case "lerp":
 					return true;
 				default:
 					return false;
@@ -467,6 +469,10 @@ namespace Calculator.Grammar
 					if (left.Value is Vector)
 						return ((Vector)left.Value).Length();
 					return new Variable();
+				case TokenType.Lerp:
+					if (left.Value is Vector)
+						return ((Vector)left.Value).Lerp();
+					return Variable.Error;
 				default:
 					throw new DataException(string.Format("Unsupported token type {0}.", token.Children[0].Type));
 			}

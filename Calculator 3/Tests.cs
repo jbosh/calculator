@@ -140,6 +140,14 @@ namespace Calculator
 			TestFunction("endian(2193118208)", 0x0054B882);
 			TestFunction("endian{2193118208}", new Vector(0x0054B882));
 
+			TestFunction("lerp{1;2;0.5}", 1.5);
+			TestFunction("lerp{1;2;0.5;2}", null);
+			TestFunction("lerp{{1.0;2.0};{9.0;8.0};0.5}", new Vector(5.0, 5.0));
+			TestFunction("lerp{{1.0;2.0};{9.0;8.0};{0.5;1.0}}", null);
+			TestFunction("lerp{{1.0;2.0};{9.0;8.0};{0.5}}", null);
+			TestFunction("lerp{1.0;{9.0;8.0};{0.5}}", null);
+			TestFunction("lerp{1.0ab;2.0asdf};{9.0;8.0};0.5afd}", null);
+
 			TestFunction("{1;2}/2", new Vector(.5, 1));
 			TestFunction("2/{1;2}", new Vector(2, 1));
 			TestFunction("sqrt{1;4;9}", new Vector(1, 2, 3));
@@ -223,7 +231,7 @@ namespace Calculator
 			TestCopyFunction("+		A	{ -0.05659103 -0.40351867 0.05752944 0.00000000 }	vector float", "A={-0.05659103; -0.40351867; 0.05752944; 0.00000000}");
 			TestCopyFunction("{m_value=441759488 }", "m_value=441759488");
 			TestCopyFunction("+		m_cmdptr	0x00000002fe70b15c	uint32_t*", "m_cmdptr=0x00000002fe70b15c");
-			TestCopyFunction("m_value	0x00000000152820be	t_uint_address_base", "m_value=0x00000000152820be");
+			//TestCopyFunction("m_value	0x00000000152820be	t_uint_address_base", "m_value=0x00000000152820be");
 		}
 		private static void TestFunction(string function, dynamic correct)
 		{

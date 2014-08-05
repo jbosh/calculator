@@ -93,6 +93,7 @@ Binary = '0b'[10]+
              | 'floor' <Function>
              | 'ceiling' <Function>
              | 'endian' <Function>
+             | 'lerp' <Vector Expression>
              | <Value>
 
 <Value> ::= Double
