@@ -251,13 +251,23 @@ namespace Calculator.Windows
 		}
 		public void ReadFile(string path)
 		{
-			while (fields.Count != 1)
-				Pop();
 			var lines = File.ReadAllLines(path);
-			foreach (var line in lines)
+			if (fields.Count > lines.Length)
 			{
-				fields[0].Text = string.IsNullOrEmpty(line) ? "" : line;
-				Push(line);
+				while (fields.Count != lines.Length && fields.Count != 1)
+					Pop();
+			}
+			else
+			{
+				while (fields.Count != lines.Length)
+					Push();
+			}
+			
+			for(var i = 0; i < lines.Length; i++)
+			{
+				var line = lines[i];
+				var text = string.IsNullOrEmpty(line) ? "" : line;
+				fields[i].Text = text;
 			}
 		}
 		private void Push(string text = "")
