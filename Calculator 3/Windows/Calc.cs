@@ -122,7 +122,13 @@ namespace Calculator.Windows
 				case Keys.Add:
 					if (e.Control)
 					{
-						Push();
+						//select last field if we're not there already
+						if (!fields[fields.Count - 1].txtQuestion.Focused
+							&& fields[fields.Count - 1].txtQuestion.Text.Length == 0)
+							fields[fields.Count - 1].txtQuestion.Focus();
+						else
+							Push();
+
 						e.Handled = true;
 						return;
 					}
@@ -274,6 +280,7 @@ namespace Calculator.Windows
 		{
 			if (fields.Count >= 24)
 				return;
+
 			var field = new CalculatorField(fields[fields.Count - 1]);
 			field.txtQuestion.TextChanged += (o, e) => Recalculate(false);
 			fields.Add(field);
