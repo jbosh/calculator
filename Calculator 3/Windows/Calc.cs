@@ -317,6 +317,7 @@ namespace Calculator.Windows
 		{
 			public const int EqualsLabelSize = 13;
 			public const int AnswerLabelSize = 148;
+			public const int QuestionTextSize = 427;
 			public const int TotalLabelSize = AnswerLabelSize + EqualsLabelSize;
 			public readonly Statement statement;
 			public readonly int Index;
@@ -390,10 +391,15 @@ namespace Calculator.Windows
 
 			public void Resize(int width)
 			{
+#if true //resize answer
+				var answerLabelSize = width - TotalLabelSize;
+				lblAnswer.Width = answerLabelSize;
+#else //resize question
 				lblAnswer.Location = new Point(width - AnswerLabelSize, lblAnswer.Location.Y);
 				txtQuestion.Location = new Point(3, txtQuestion.Location.Y);
 				txtQuestion.Width = width - (AnswerLabelSize + EqualsLabelSize) - 7;
 				lblEquals.Location = new Point(width - (AnswerLabelSize + EqualsLabelSize), txtQuestion.Top + 4);
+#endif
 			}
 
 			public CalculatorField(CalculatorField previous) : this()
