@@ -49,6 +49,7 @@
 			// txtDescription
 			// 
 			this.txtDescription.Anchor = System.Windows.Forms.AnchorStyles.Left;
+			this.txtDescription.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.txtDescription.Location = new System.Drawing.Point(21, 5);
 			this.txtDescription.Name = "txtDescription";
 			this.txtDescription.Size = new System.Drawing.Size(121, 20);
@@ -59,6 +60,8 @@
 			// lblPattern
 			// 
 			this.lblPattern.Anchor = System.Windows.Forms.AnchorStyles.Left;
+			this.lblPattern.AutoEllipsis = true;
+			this.lblPattern.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.lblPattern.Location = new System.Drawing.Point(148, 4);
 			this.lblPattern.Name = "lblPattern";
 			this.lblPattern.Size = new System.Drawing.Size(131, 20);
@@ -69,6 +72,8 @@
 			// lblReplacement
 			// 
 			this.lblReplacement.Anchor = System.Windows.Forms.AnchorStyles.Left;
+			this.lblReplacement.AutoEllipsis = true;
+			this.lblReplacement.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.lblReplacement.Location = new System.Drawing.Point(285, 4);
 			this.lblReplacement.Name = "lblReplacement";
 			this.lblReplacement.Size = new System.Drawing.Size(134, 20);

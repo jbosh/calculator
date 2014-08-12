@@ -80,6 +80,7 @@
 			// 
 			// txtInput
 			// 
+			this.txtInput.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.txtInput.Location = new System.Drawing.Point(88, 6);
 			this.txtInput.Name = "txtInput";
 			this.txtInput.Size = new System.Drawing.Size(241, 20);
@@ -88,6 +89,7 @@
 			// 
 			// txtPattern
 			// 
+			this.txtPattern.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.txtPattern.Location = new System.Drawing.Point(88, 32);
 			this.txtPattern.Name = "txtPattern";
 			this.txtPattern.Size = new System.Drawing.Size(241, 20);
@@ -96,6 +98,7 @@
 			// 
 			// txtReplacement
 			// 
+			this.txtReplacement.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.txtReplacement.Location = new System.Drawing.Point(88, 58);
 			this.txtReplacement.Name = "txtReplacement";
 			this.txtReplacement.Size = new System.Drawing.Size(241, 20);
@@ -105,6 +108,7 @@
 			// txtResult
 			// 
 			this.txtResult.Enabled = false;
+			this.txtResult.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.txtResult.Location = new System.Drawing.Point(88, 84);
 			this.txtResult.Name = "txtResult";
 			this.txtResult.Size = new System.Drawing.Size(241, 20);

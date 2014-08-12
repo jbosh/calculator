@@ -45,10 +45,13 @@ namespace Calculator.Windows
 
 		private void UpdateResults()
 		{
+			var enabledBefore = Helper.Enabled;
+			Helper.Enabled = true;
 			Helper.Pattern = txtPattern.Text;
 			Helper.Replacement = txtReplacement.Text;
 
 			txtResult.Text = CopyHelpers.ProcessReplacement(txtInput.Text, Helper);
+			Helper.Enabled = enabledBefore;
 		}
 	}
 }
