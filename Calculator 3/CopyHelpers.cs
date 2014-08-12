@@ -14,6 +14,13 @@ namespace Calculator
 		public string Pattern;
 		public string Replacement;
 
+		public CopyHelper(){}
+		public CopyHelper(string description, string pattern, string replacement)
+		{
+			Description = description;
+			Pattern = pattern;
+			Replacement = replacement;
+		}
 		public bool IsValid()
 		{
 			return !string.IsNullOrEmpty(Pattern);
@@ -21,7 +28,10 @@ namespace Calculator
 	}
 	public static class CopyHelpers
 	{
-		public static List<CopyHelper> Replacements = new List<CopyHelper>();
+		public static List<CopyHelper> Replacements = new List<CopyHelper>
+		{
+			new CopyHelper("VS Watch Window", @"^\+?\t\t([^\t]+)\t([^\t]+)\t[^\t]+$", "$1=$2"),
+		};
 
 		public static string Process(string source)
 		{
