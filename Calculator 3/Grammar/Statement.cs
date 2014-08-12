@@ -21,7 +21,7 @@ namespace Calculator.Grammar
 		private static readonly Regex RegBinary
 			= new Regex(@"0b[10]+", RegexOptions.Compiled);
 		private static readonly Regex RegFloat
-			= new Regex(@"[\d\.]+E[-\d\.]+", RegexOptions.Compiled);
+			= new Regex(@"[\d\.]+[Ee][-\d\.]+", RegexOptions.Compiled);
 		public string VariableName { get; private set; }
 		public bool Error { get; private set; }
 
@@ -293,9 +293,10 @@ namespace Calculator.Grammar
 		}
 		private static Variable VisitDouble(CalcToken token)
 		{
-			if (token.Text.Contains("E"))
+			if (token.Text.Contains("E") || token.Text.Contains("e"))
 			{
-				var split = token.Text.Split('E');
+				char splittingE = token.Text.Contains("E") ? 'E' : 'e';
+				var split = token.Text.Split(splittingE);
 				var b = double.Parse(split[0]);
 				var e = double.Parse(split[1]);
 				var d = b * Math.Pow(10, e);

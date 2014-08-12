@@ -38,6 +38,30 @@ Double = {Digit}+ '.' {Digit}*
     | {Digit}+ '.' {Digit}* 'E' '-' {Digit}+
     | {Digit}+ '.' {Digit}* 'E' '-' '.' {Digit}+
     | {Digit}+ '.' {Digit}* 'E' '-' {Digit}+ '.' {Digit}*
+	
+	| {Digit}+ 'e' {Digit}+
+    | {Digit}+ 'e' '.' {Digit}+
+    | {Digit}+ 'e' {Digit}+ '.' {Digit}*
+
+    | '.' {Digit}+ 'e' {Digit}+
+    | '.' {Digit}+ 'e' '.' {Digit}+
+    | '.' {Digit}+ 'e' {Digit}+ '.' {Digit}*
+
+    | {Digit}+ '.' {Digit}* 'e' {Digit}+
+    | {Digit}+ '.' {Digit}* 'e' '.' {Digit}+
+    | {Digit}+ '.' {Digit}* 'e' {Digit}+ '.' {Digit}*
+
+    | {Digit}+ 'e' '-' {Digit}+
+    | {Digit}+ 'e' '-' '.' {Digit}+
+    | {Digit}+ 'e' '-' {Digit}+ '.' {Digit}*
+
+    | '.' {Digit}+ 'e' '-' {Digit}+
+    | '.' {Digit}+ 'e' '-' '.' {Digit}+
+    | '.' {Digit}+ 'e' '-' {Digit}+ '.' {Digit}*
+
+    | {Digit}+ '.' {Digit}* 'e' '-' {Digit}+
+    | {Digit}+ '.' {Digit}* 'e' '-' '.' {Digit}+
+    | {Digit}+ '.' {Digit}* 'e' '-' {Digit}+ '.' {Digit}*
 Hex = '0x'[ABCDEFabcdef0123456789]+
 Binary = '0b'[10]+
 
