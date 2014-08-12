@@ -222,6 +222,9 @@ namespace Calculator
 							case "workingDir":
 								WorkingDirectory = reader.ReadElementContentAsString();
 								break;
+							case "copyPasteHelperData":
+								CopyHelpers.ReadFromXML(reader);
+								break;
 							case "copyPasteHelper":
 								CopyPasteHelper = reader.ReadElementContentAsBoolean();
 								break;
@@ -259,6 +262,11 @@ namespace Calculator
 				writer.WriteElementString("workingDir", WorkingDirectory);
 				writer.WriteElementString("copyPasteHelper", CopyPasteHelper.ToString().ToLower());
 				writer.WriteElementString("useXor", UseXor.ToString().ToLower());
+
+				writer.WriteStartElement("copyPasteHelperData");
+				CopyHelpers.SaveToXML(writer);
+				writer.WriteEndElement();
+
 				writer.WriteEndElement();
 			}
 		}

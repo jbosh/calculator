@@ -54,6 +54,13 @@ namespace Calculator.Windows
 				var defaultRow = new CopyHelperRow();
 				ClientSize = new Size(defaultRow.Width, defaultRow.Height * Rows.Count);
 			}
+
+			CopyHelpers.Replacements.Clear();
+			for(var i = 0; i < Rows.Count - 1; i++)
+			{
+				var row = Rows[i];
+				CopyHelpers.Replacements.Add(row.Helper);
+			}
 		}
 
 		public void Recalculate(bool global)

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Xml;
 
 namespace Calculator
 {
@@ -58,6 +59,57 @@ namespace Calculator
 				}
 			}
 			return destination;
+		}
+
+		public static void SaveToXML(XmlWriter writer)
+		{
+			foreach (var helper in Replacements)
+			{
+				writer.WriteStartElement("helper");
+				writer.WriteElementString("enabled", helper.Enabled.ToString().ToLower());
+				writer.WriteElementString("description", helper.Description);
+				writer.WriteElementString("pattern", helper.Pattern);
+				writer.WriteElementString("replacement", helper.Replacement);
+				writer.WriteEndElement();
+			}
+		}
+
+		public static void ReadFromXML(XmlReader reader)
+		{
+			while (reader.Read())
+			{
+				if (reader.NodeType == XmlNodeType.EndElement && reader.Name == "copyPastHelperData")
+					break;
+				if (reader.NodeType != XmlNodeType.Element)
+					continue;
+				if (reader.Name != "helper")
+					throw new Exception();
+
+				var helper = new CopyHelper();
+				while (reader.Read())
+				{
+					if (reader.NodeType == XmlNodeType.EndElement && reader.Name == "helper")
+						break;
+					if (reader.NodeType != XmlNodeType.Element)
+						continue;
+					switch (reader.Name)
+					{
+						case "enabled":
+							helper.Enabled = reader.ReadElementContentAsBoolean();
+							break;
+						case "description":
+							helper.Description = reader.ReadElementContentAsString();
+							break;
+						case "pattern":
+							helper.Pattern = reader.ReadElementContentAsString();
+							break;
+						case "replacement":
+							helper.Replacement = reader.ReadElementContentAsString();
+							break;
+					}
+				}
+				Replacements.Add(helper);
+			}
 		}
 	}
 }
