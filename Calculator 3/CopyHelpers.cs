@@ -6,44 +6,58 @@ using System.Text.RegularExpressions;
 
 namespace Calculator
 {
+	public class CopyHelper
+	{
+		public bool Enabled = true;
+		public string Description;
+		public string Pattern;
+		public string Replacement;
+
+		public bool IsValid()
+		{
+			return !string.IsNullOrEmpty(Pattern);
+		}
+	}
 	public static class CopyHelpers
 	{
-		
+		public static List<CopyHelper> Replacements = new List<CopyHelper>();
+
 		public static string Process(string source)
 		{
 			var destination = source;
-			destination = ProcessSimpleReplacements(destination);
+			destination = ProcessReplacements(destination);
 			destination = destination.Trim();
 			return destination;
 		}
-		#region Simple Replacements
-		private static string[] Replacements = new[]
+
+		public static string ProcessReplacement(string source, CopyHelper replacement)
 		{
-			@"[+-]\t\t(\[?[\w][\w\d\[\]]*\]?)\s+{(.+)}\t([\w][\w\d]+\s*)+",
-			"$1={$2}",
-			@"{ [xX]=(-?\d*\.?[eE]?\d+) [yY]=(-?\d*\.?[eE]?\d+) [zZ]=(-?\d*\.?[eE]?\d+) \.\.\. }",
-			"{$1; $2; $3}",
-			@"{ (-?\d*\.?[eE]?\d+) (-?\d*\.?[eE]?\d+) (-?\d*\.?[eE]?\d+) (-?\d*\.?[eE]?\d+) }",
-			"{$1; $2; $3; $4}",
-			@"^{(.+)}$",
-			"$1",
-			@"[+-]\t\t(\[?[\w][\w\d\[\]]*\]?)\s+(.+)\t([\w][\w\d]+\s*\*)+",
-			"$1=$2",
-		};
-		private static string ProcessSimpleReplacements(string source)
+			try
+			{
+				if (!replacement.Enabled)
+					return source;
+				var destination = Regex.Replace(source, replacement.Pattern, replacement.Replacement);
+				return destination;
+			}
+			catch //don't care, regex failed
+			{
+				return source;
+			}
+		}
+
+		private static string ProcessReplacements(string source)
 		{
 			var destination = source;
 			var destinationBefore = "";
 			while (destination != destinationBefore)
 			{
 				destinationBefore = destination;
-				for (var i = 0; i < Replacements.Length; i += 2)
+				foreach(var replacement in Replacements)
 				{
-					destination = Regex.Replace(destination, Replacements[i + 0], Replacements[i + 1]);
+					destination = ProcessReplacement(destination, replacement);
 				}
 			}
 			return destination;
 		}
-		#endregion
 	}
 }

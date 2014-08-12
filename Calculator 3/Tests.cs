@@ -233,12 +233,6 @@ namespace Calculator
 			TestFunction("dot{pos;r}", null);
 			TestFunction("normalize{n}", null);
 			Memory.Pop();
-
-			TestCopyFunction("+		normal	{ -0.13749852 -0.98042428 0.13977858 0.13977858 }	vector float", "normal={-0.13749852; -0.98042428; 0.13977858; 0.13977858}");
-			TestCopyFunction("+		A	{ -0.05659103 -0.40351867 0.05752944 0.00000000 }	vector float", "A={-0.05659103; -0.40351867; 0.05752944; 0.00000000}");
-			TestCopyFunction("{m_value=441759488 }", "m_value=441759488");
-			TestCopyFunction("+		m_cmdptr	0x00000002fe70b15c	uint32_t*", "m_cmdptr=0x00000002fe70b15c");
-			//TestCopyFunction("m_value	0x00000000152820be	t_uint_address_base", "m_value=0x00000000152820be");
 		}
 		private static void TestFunction(string function, dynamic correct)
 		{

@@ -29,7 +29,7 @@ namespace Calculator
 		private static bool alwaysOnTop;
 		private static bool antialias;
 		private static OutputFormat defaultFormat;
-		private static Form HelpForm, OptionsForm;
+		private static Form HelpForm, OptionsForm, CopyHelpersForm;
 		private static bool radians;
 		private static int rounding;
 		private static bool defaultThousandsSeparator;
@@ -311,6 +311,19 @@ namespace Calculator
 					{
 						OptionsForm.Close();
 						OptionsForm = null;
+					}
+					e.Handled = true;
+					break;
+				case Keys.F3:
+					if (CopyHelpersForm == null)
+					{
+						CopyHelpersForm = NewWindow(new CopyHelpersList());
+						CopyHelpersForm.FormClosing += (o, sender) => CopyHelpersForm = null;
+					}
+					else
+					{
+						CopyHelpersForm.Close();
+						CopyHelpersForm = null;
 					}
 					e.Handled = true;
 					break;
