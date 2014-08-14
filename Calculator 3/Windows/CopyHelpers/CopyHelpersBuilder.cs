@@ -15,7 +15,10 @@ namespace Calculator.Windows
 		public CopyHelpersBuilder()
 		{
 			InitializeComponent();
+			KeyPreview = true;
+			KeyDown += CopyHelpersBuilder_KeyDown;
 		}
+
 		public CopyHelpersBuilder(CopyHelper helper)
 		{
 			InitializeComponent();
@@ -26,6 +29,20 @@ namespace Calculator.Windows
 			var replacement = helper.Replacement;
 			txtPattern.Text = pattern;
 			txtReplacement.Text = replacement;
+
+			KeyPreview = true;
+			KeyDown += CopyHelpersBuilder_KeyDown;
+		}
+
+		void CopyHelpersBuilder_KeyDown(object sender, KeyEventArgs e)
+		{
+			switch (e.KeyCode)
+			{
+				case Keys.Escape:
+					Close();
+					break;
+			}
+			Program.GlobalKeyDown(e);
 		}
 
 		private void txtPattern_TextChanged(object sender, EventArgs e)

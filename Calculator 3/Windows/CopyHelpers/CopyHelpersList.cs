@@ -25,6 +25,20 @@ namespace Calculator.Windows
 
 			var defaultRow = new CopyHelperRow();
 			ClientSize = new Size(defaultRow.Width, defaultRow.Height * Rows.Count);
+
+			KeyPreview = true;
+			KeyDown += CopyHelpersList_KeyDown;
+		}
+
+		void CopyHelpersList_KeyDown(object sender, KeyEventArgs e)
+		{
+			switch (e.KeyCode)
+			{
+				case Keys.Escape:
+					Close();
+					break;
+			}
+			Program.GlobalKeyDown(e);
 		}
 
 		void AddRowControl(CopyHelper helper)
