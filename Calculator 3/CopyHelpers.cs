@@ -86,6 +86,7 @@ namespace Calculator
 
 		public static void ReadFromXML(XmlReader reader)
 		{
+			Replacements.Clear();
 			while (reader.Read())
 			{
 				if (reader.NodeType == XmlNodeType.EndElement && reader.Name == "copyPastHelperData")
