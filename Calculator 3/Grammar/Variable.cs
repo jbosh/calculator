@@ -221,36 +221,36 @@ namespace Calculator.Grammar
 		{
 			if (Value is Vector)
 				return ((Vector) Value).Endian();
-			if (Value is double)
-			{
-				var bytes = BitConverter.GetBytes((double) Value);
-				Array.Reverse(bytes);
-				return new Variable(BitConverter.ToDouble(bytes, 0));
-			}
-			else
-			{
-				var v = Math.Abs(Value);
-				byte[] bytes;
-				if (v < ushort.MaxValue)
-				{
-					bytes = BitConverter.GetBytes((ushort) Value);
-					Array.Reverse(bytes);
-					return new Variable((long) BitConverter.ToInt16(bytes, 0));
-				}
-				
-				if (v < uint.MaxValue)
-				{
-					bytes = BitConverter.GetBytes((uint) Value);
-					Array.Reverse(bytes);
-					return new Variable((long) BitConverter.ToInt32(bytes, 0));
-				}
-				
-				{
-					bytes = BitConverter.GetBytes((ulong) Value);
-					Array.Reverse(bytes);
-					return new Variable((long) BitConverter.ToInt64(bytes, 0));
-				}
-			}
+            if (Value is double)
+            {
+                var bytes = BitConverter.GetBytes((double)Value);
+                Array.Reverse(bytes);
+                return new Variable(BitConverter.ToDouble(bytes, 0));
+            }
+            else
+            {
+                var v = Math.Abs(Value);
+                byte[] bytes;
+                if (v < ushort.MaxValue)
+                {
+                    bytes = BitConverter.GetBytes((ushort)Value);
+                    Array.Reverse(bytes);
+                    return new Variable((long)(ushort)BitConverter.ToInt16(bytes, 0));
+                }
+
+                if (v < uint.MaxValue)
+                {
+                    bytes = BitConverter.GetBytes((uint)Value);
+                    Array.Reverse(bytes);
+                    return new Variable((long)(uint)BitConverter.ToInt32(bytes, 0));
+                }
+
+                {
+                    bytes = BitConverter.GetBytes((ulong)Value);
+                    Array.Reverse(bytes);
+                    return new Variable((long)(ulong)BitConverter.ToInt64(bytes, 0));
+                }
+            }
 		}
 		#endregion
 

@@ -141,7 +141,7 @@ namespace Calculator
 			TestFunction("π*(0b010<<2)", 25.13);
 			TestFunction("{0b121;0xABC}", null);
 			TestFunction("{0b101;0xABC}", new Vector(5, 2748));
-			TestFunction("endian(0xFF0000FF)", -16776961);
+			TestFunction("endian(0xFF0000FF)", 0xFF0000FF);
 			TestFunction("endian(0xFF00)", 0x00FF);
 			TestFunction("endian(0x82B85400)", 0x0054B882);
 			TestFunction("endian(2193118208)", 0x0054B882);
@@ -183,6 +183,8 @@ namespace Calculator
 			TestFunction("18,446,744,073,709,551,615+1", 0);
 			TestFunction("18,446,744,073,709,551,615-1", 18446744073709551614);
 			TestFunction("18,446,744,073,709,551,615&0xFFFF", 0xFFFF);
+
+            TestFunction("endian(23290)", 0xfa5a);
 
 #if true
 			TestFunction("1<<14)+1024", 17408);
