@@ -4,6 +4,8 @@ using System.Windows.Forms;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using System.Linq;
+using System.Drawing;
 
 namespace Calculator
 {
@@ -75,6 +77,12 @@ namespace Calculator
 						Text = data.Value;
 						SelectionStart = data.CaretStart;
 					}
+					return true;
+				case Keys.Control | Keys.OemCloseBrackets:
+					FindMatchingBrace(false);
+					return true;
+				case Keys.Shift | Keys.Control | Keys.OemCloseBrackets:
+					FindMatchingBrace(true);
 					return true;
 			}
 
@@ -159,6 +167,98 @@ namespace Calculator
 					}
 					break;
 			}
+		}
+
+		char[] ValidBraceMatchingCharacters = new[] { '[', ']', '(', ')', '{', '}' };
+		private void FindMatchingBrace(bool shift)
+		{
+			var charLeft = '\0';
+			var charRight = '\0';
+			var caretLeft = SelectionStart - 1;
+			var caretRight = SelectionStart;
+			if (caretLeft >= 0 && Text.Length >= 1)
+				charLeft = Text[caretLeft];
+			if (caretRight < Text.Length)
+				charRight = Text[caretRight];
+
+			var c = '\0';
+			var caret = 0;
+			if (ValidBraceMatchingCharacters.Contains(charLeft))
+			{
+				c = charLeft;
+				caret = caretLeft;
+				var success = FindMatchingBrace(c, caret, shift);
+				if (success)
+					return;
+			}
+			if (ValidBraceMatchingCharacters.Contains(charRight))
+			{
+				c = charRight;
+				caret = caretRight;
+				FindMatchingBrace(c, caret, shift);
+			}
+		}
+		private bool FindMatchingBrace(char c, int caret, bool shift)
+		{
+			if (c == 0)
+				return false;
+
+			var idx = Array.IndexOf(ValidBraceMatchingCharacters, c);
+			var pushChar = ValidBraceMatchingCharacters[idx & ~1];
+			var popChar = ValidBraceMatchingCharacters[idx | 1];
+
+			var leftBrace = -1;
+			var rightBrace = -1;
+			var searchIndex = -1;
+			var newCaretIdx = -1;
+			var stack = new Stack<int>();
+			for (var i = 0; i < Text.Length; i++)
+			{
+				if (Text[i] == pushChar)
+				{
+					if (i == caret)
+					{
+						searchIndex = stack.Count;
+						leftBrace = i;
+					}
+					stack.Push(i);
+				}
+				else if (Text[i] == popChar)
+				{
+					if (i == caret)
+					{
+						if (stack.Count == 0)
+							return false; //no matching brace
+						newCaretIdx = stack.Pop();
+						leftBrace = newCaretIdx;
+						rightBrace = i;
+						break;
+					}
+					stack.Pop();
+					if (searchIndex == stack.Count)
+					{
+						newCaretIdx = i + 1;
+						rightBrace = newCaretIdx;
+						break;
+					}
+				}
+			}
+
+			if (newCaretIdx != -1)
+			{
+				if (shift)
+				{
+					SelectionStart = leftBrace;
+					SelectionLength = rightBrace - leftBrace + 1;
+				}
+				else
+				{
+					SelectionLength = 0;
+					SelectionStart = newCaretIdx;
+				}
+				return true;
+			}
+			return false;
 		}
 
 		static Regex WordIdentifier = new Regex("([a-zA-Z0-9_$]+)", RegexOptions.Compiled);
