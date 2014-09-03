@@ -234,6 +234,8 @@ namespace Calculator
 						rightBrace = i;
 						break;
 					}
+					if (stack.Count == 0)
+						return false; //invalid set of characters
 					stack.Pop();
 					if (searchIndex == stack.Count)
 					{
