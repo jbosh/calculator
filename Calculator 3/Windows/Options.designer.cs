@@ -60,7 +60,7 @@
 			// 
 			this.numRounding.Location = new System.Drawing.Point(68, 89);
 			this.numRounding.Maximum = new decimal(new int[] {
-            15,
+            64,
             0,
             0,
             0});

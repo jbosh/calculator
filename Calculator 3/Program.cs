@@ -396,7 +396,7 @@ namespace Calculator
 				case OutputFormat.Standard:
 				default:
 					if (Rounding != -1)
-						value = Math.Round(value, Rounding);
+						value = Math.Round(value, Math.Min(Rounding, 15));
 					if (thousandsSeparator && !value.ToString().Contains("E"))
 						return value.ToString("#,0." + new string('#', 50));
 					return value.ToString();
@@ -415,7 +415,7 @@ namespace Calculator
 					}
 				
 				case OutputFormat.Binary:
-					var top = Rounding == -1 ? 15 : Rounding;
+					var top = Rounding == -1 ? 32 : Rounding;
 					var builder = new StringBuilder();
 					for (var i = top; i >= 0; i--)
 					{
