@@ -186,13 +186,9 @@ namespace Calculator
 
             TestFunction("endian(23290)", 0xfa5a);
 
-#if true
 			TestFunction("1<<14)+1024", 17408);
 			TestFunction("(1/107+(35*35)/(2*-107))/-9.8)))+2", 2.58);
-#else
-			TestFunction("1<<14)+1024", 16384);
-			TestFunction("(1/107+(35*35)/(2*-107))/-9.8)))+2", .58);
-#endif
+			TestFunction("shadow=7.13)*8*32*2", 3650.56);
 
 			Program.UseXor = true;
 			TestFunction("2^2", 0);

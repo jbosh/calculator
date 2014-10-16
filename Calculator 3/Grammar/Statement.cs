@@ -115,13 +115,14 @@ namespace Calculator.Grammar
 				return Variable.Error;
 
 			Text = source;
-			var preprocess = Preprocess(source);
-			var split = preprocess.Split('=');
+			var split = source.Split('=');
 			if (split.Length == 2)
 			{
 				VariableName = split[0].Trim();
-				preprocess = split[1];
+				source = split[1];
 			}
+			var preprocess = Preprocess(source);
+			
 
 			root = CalcToken.Parse(preprocess);
 			var variable = default(Variable);
@@ -197,16 +198,7 @@ namespace Calculator.Grammar
 				source = source + new string(')', parenDepth);
 			if (parenDepth < 0)
 			{
-#if true //add implicit parenthesis at beginning
 				source = new string('(', Math.Abs(parenDepth)) + source;
-#else
-				while (parenDepth < 0)
-				{
-					var index = source.LastIndexOf(')');
-					source = source.Remove(index);
-					parenDepth++;
-				}
-#endif
 			}
 			#endregion
 			#region Process Implicit Multiplication
