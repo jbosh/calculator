@@ -182,6 +182,32 @@ namespace Calculator.Windows
 						SaveFile();
 					}
 					break;
+				case Keys.C:
+					if (e.Control && e.Shift)
+					{
+						e.Handled = true;
+						CopyAllLines();
+					}
+					break;
+				case Keys.V:
+					if (e.Control && e.Shift)
+					{
+						var index = -1;
+						for(var i = 0; i < fields.Count; i++)
+						{
+							if(fields[i].txtQuestion == ActiveControl)
+							{
+								index = i;
+								break;
+							}
+						}
+						if (index != -1)
+						{
+							e.Handled = true;
+							PasteAllLines(index);
+						}
+					}
+					break;
 			}
 			if (!e.Handled)
 				Program.GlobalKeyDown(e);
@@ -223,6 +249,30 @@ namespace Calculator.Windows
 				for (int i = 0; i < fields.Count; i++)
 					file.WriteLine(fields[i].Text);
 			}
+		}
+		private void PasteAllLines(int fieldIndex)
+		{
+			if(!Clipboard.ContainsText())
+				return;
+			var lines = Clipboard.GetText(TextDataFormat.Text)
+				.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
+				.Select(l => l.Trim())
+				.Select(l => Program.CopyPasteHelper ? CopyHelpers.Process(l) : l)
+				.ToArray();
+
+			while (fieldIndex + lines.Length > fields.Count)
+				Push();
+
+			for (var i = 0; i < lines.Length; i++)
+			{
+				var field = fields[i + fieldIndex];
+				field.Text = lines[i];
+			}
+		}
+		private void CopyAllLines()
+		{
+			var text = string.Join(Environment.NewLine, fields.Select(f => f.Text));
+			Clipboard.SetText(text);
 		}
 		private void OpenFile()
 		{

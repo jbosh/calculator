@@ -91,13 +91,19 @@ namespace Calculator
 
 		protected override void WndProc(ref Message m)
 		{
+			var restoreClipboard = default(string);
 			switch (m.Msg)
 			{
 				case 0x302: //WM_PASTE
 					if (!Clipboard.ContainsText())
 						break;
-					if(Program.CopyPasteHelper)
+					restoreClipboard = Clipboard.GetText();
+					if (Program.CopyPasteHelper)
 						Clipboard.SetText(CopyHelpers.Process(Clipboard.GetText()));
+					goto default;
+				case 0x0102: //WM_CHAR
+					if (m.WParam.ToInt32() == 0x16) //fancy pants paste (ctrl + shift + v), lparam is likely 0x002f0001
+						break;
 					goto default;
 				case 199: //EM_UNDO
 					//intercept so that we can do it
@@ -105,6 +111,10 @@ namespace Calculator
 				default:
 					base.WndProc(ref m);
 					break;
+			}
+			if (restoreClipboard != null)
+			{
+				Clipboard.SetText(restoreClipboard);
 			}
 		}
 
