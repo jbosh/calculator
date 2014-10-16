@@ -267,6 +267,7 @@ namespace Calculator.Windows
 			{
 				var field = fields[i + fieldIndex];
 				field.Text = lines[i];
+				field.txtQuestion.InterceptNextPaste = true;
 			}
 		}
 		private void CopyAllLines()

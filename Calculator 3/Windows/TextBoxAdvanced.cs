@@ -11,6 +11,9 @@ namespace Calculator
 {
 	public class TextBoxAdvanced : TextBox
 	{
+		public bool InterceptNextPaste { get; set; }
+		public int CaretStart { get; set; }
+
 		public TextBoxAdvanced()
 		{
 			CaretStart = SelectionStart;
@@ -26,8 +29,6 @@ namespace Calculator
 			undoStack.Add(new UndoData(0, ""));
 			undoStackIndex = undoStack.Count;
 		}
-
-		public int CaretStart { get; set; }
 
 		private void TextBoxAdvanced_MouseDown(object sender, MouseEventArgs e)
 		{
@@ -97,13 +98,19 @@ namespace Calculator
 				case 0x302: //WM_PASTE
 					if (!Clipboard.ContainsText())
 						break;
+					if (InterceptNextPaste)
+					{
+						InterceptNextPaste = false;
+						break;
+					}
+
 					restoreClipboard = Clipboard.GetText();
 					if (Program.CopyPasteHelper)
-						Clipboard.SetText(CopyHelpers.Process(Clipboard.GetText()));
-					goto default;
-				case 0x0102: //WM_CHAR
-					if (m.WParam.ToInt32() == 0x16) //fancy pants paste (ctrl + shift + v), lparam is likely 0x002f0001
-						break;
+					{
+						var text = CopyHelpers.Process(Clipboard.GetText());
+						if (string.IsNullOrEmpty(text)) //not gonna paste nothing
+							break;
+					}
 					goto default;
 				case 199: //EM_UNDO
 					//intercept so that we can do it
