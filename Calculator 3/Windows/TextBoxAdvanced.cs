@@ -92,36 +92,40 @@ namespace Calculator
 
 		protected override void WndProc(ref Message m)
 		{
-			var restoreClipboard = default(string);
 			switch (m.Msg)
 			{
 				case 0x302: //WM_PASTE
-					if (!Clipboard.ContainsText())
-						break;
-					if (InterceptNextPaste)
 					{
-						InterceptNextPaste = false;
-						break;
-					}
-
-					restoreClipboard = Clipboard.GetText();
-					if (Program.CopyPasteHelper)
-					{
-						var text = CopyHelpers.Process(Clipboard.GetText());
-						if (string.IsNullOrEmpty(text)) //not gonna paste nothing
+						if (!Clipboard.ContainsText())
 							break;
+						if (InterceptNextPaste)
+						{
+							InterceptNextPaste = false;
+							break;
+						}
+
+						var restoreClipboard = Clipboard.GetText();
+						if (Program.CopyPasteHelper)
+						{
+							var text = CopyHelpers.Process(Clipboard.GetText());
+							if (string.IsNullOrEmpty(text)) //not gonna paste nothing
+								break;
+
+							Clipboard.SetText(text);
+						}
+
+						//Actually pump in the clipboard text because I don't want to implement paste
+						base.WndProc(ref m);
+
+						Clipboard.SetText(restoreClipboard);
 					}
-					goto default;
+					break;
 				case 199: //EM_UNDO
 					//intercept so that we can do it
 					break;
 				default:
 					base.WndProc(ref m);
 					break;
-			}
-			if (restoreClipboard != null)
-			{
-				Clipboard.SetText(restoreClipboard);
 			}
 		}
 
