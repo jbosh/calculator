@@ -55,29 +55,6 @@ namespace Calculator.Grammar
 			{TokenType.Factorial, VisitFactorial},
 
 			{TokenType.Function, VisitFunc},
-			{TokenType.Sin, VisitTrig},
-			{TokenType.Cos, VisitTrig},
-			{TokenType.Tan, VisitTrig},
-			{TokenType.Asin, VisitTrig},
-			{TokenType.Acos, VisitTrig},
-			{TokenType.Atan, VisitTrig},
-			{TokenType.Abs, VisitMiscFunc},
-			{TokenType.Dot, VisitMiscFunc},
-			{TokenType.Cross, VisitMiscFunc},
-			{TokenType.Length, VisitMiscFunc},
-			{TokenType.Lerp, VisitMiscFunc},
-			{TokenType.Normalize, VisitMiscFunc},
-			{TokenType.Round, VisitMiscFunc},
-			{TokenType.Floor, VisitMiscFunc},
-			{TokenType.Ceiling, VisitMiscFunc},
-			{TokenType.Endian, VisitMiscFunc},
-
-			{TokenType.Sqrt, VisitMiscFunc},
-			{TokenType.Ln, VisitMiscFunc},
-			{TokenType.Log, VisitMiscFunc},
-			{TokenType.Rad, VisitRadDeg},
-			{TokenType.Deg, VisitRadDeg},
-
 			};
 		}
 		public void Reset()
@@ -266,9 +243,36 @@ namespace Calculator.Grammar
 		}
 		private static Variable VisitFunc(CalcToken token)
 		{
-			if (Dispatch.ContainsKey(token.Children[0].Type))
-				return Dispatch[token.Children[0].Type](token);
-			return Variable.Error;
+			if (token.Children[0].Type != TokenType.Id)
+				throw new NotImplementedException();
+			switch (token.Children[0].Text)
+			{
+				case "abs":
+				case "sqrt":
+				case "ln":
+				case "log":
+				case "round":
+				case "ceiling":
+				case "endian":
+				case "floor":
+				case "dot":
+				case "cross":
+				case "normalize":
+				case "length":
+				case "lerp":
+					return VisitMiscFunc(token);
+				case "sin":
+				case "cos":
+				case "tan":
+				case "asin":
+				case "acos":
+				case "atan":
+					return VisitTrig(token);
+				case "rad":
+				case "deg":
+					return VisitRadDeg(token);
+			}
+			throw new NotImplementedException();
 		}
 
 		#region Basic Parsing
@@ -428,46 +432,46 @@ namespace Calculator.Grammar
 			var left = Visit(token.Children[1]);
 			if (left.Value == null)
 				return new Variable();
-			switch (token.Children[0].Type)
+			switch (token.Children[0].Text)
 			{
-				case TokenType.Abs:
+				case "abs":
 					return left.Abs();
-				case TokenType.Sqrt:
+				case "sqrt":
 					return left.Sqrt();
-				case TokenType.Ln:
+				case "ln":
 					return left.Ln();
-				case TokenType.Log:
+				case "log":
 					return left.Log();
-				case TokenType.Round:
+				case "round":
 					return left.Round();
-				case TokenType.Ceiling:
+				case "ceiling":
 					return left.Ceiling();
-				case TokenType.Endian:
+				case "endian":
 					return left.Endian();
-				case TokenType.Floor:
+				case "floor":
 					return left.Floor();
-				case TokenType.Dot:
+				case "dot":
 					if(left.Value is Vector)
 						return ((Vector)left.Value).Dot();
 					return new Variable();
-				case TokenType.Cross:
+				case "cross":
 					if (left.Value is Vector)
 						return ((Vector)left.Value).Cross();
 					return new Variable();
-				case TokenType.Normalize:
+				case "normalize":
 					if (left.Value is Vector)
 						return ((Vector)left.Value).Normalize();
 					return new Variable();
-				case TokenType.Length:
+				case "length":
 					if (left.Value is Vector)
 						return ((Vector)left.Value).Length();
 					return new Variable();
-				case TokenType.Lerp:
+				case "lerp":
 					if (left.Value is Vector)
 						return ((Vector)left.Value).Lerp();
 					return Variable.Error;
 				default:
-					throw new DataException(string.Format("Unsupported token type {0}.", token.Children[0].Type));
+					throw new DataException(string.Format("Unsupported token type {0}.", token.Children[0].Text));
 			}
 		}
 		private static Variable VisitTrig(CalcToken token)
@@ -477,23 +481,23 @@ namespace Calculator.Grammar
 				return new Variable();
 			var degreeBefore = Program.Radians ? 1 : 0.0174532925199433;
 			var degreeAfter = !Program.Radians ? 57.2957795130823 : 1;
-			switch (token.Children[0].Type)
+			switch (token.Children[0].Text)
 			{
-				case TokenType.Sin:
+				case "sin":
 					return left.Sin();
-				case TokenType.Cos:
+				case "cos":
 					return left.Cos();
-				case TokenType.Tan:
+				case "tan":
 					return left.Tan();
-				case TokenType.Asin:
+				case "asin":
 					if (left.Value is Vector)
 						return new Variable();
 					return new Variable(degreeAfter * Math.Asin(left.Value));
-				case TokenType.Acos:
+				case "acos":
 					if (left.Value is Vector)
 						return new Variable();
 					return new Variable(degreeAfter * Math.Acos(left.Value));
-				case TokenType.Atan:
+				case "atan":
 					if (left.Value is Vector && left.Value.Count == 2)
 					{
 						var y = left.Value[0].Value;
@@ -514,11 +518,11 @@ namespace Calculator.Grammar
 		private static Variable VisitRadDeg(CalcToken token)
 		{
 			var left = Visit(token.Children[1]);
-			switch (token.Children[0].Type)
+			switch (token.Children[0].Text)
 			{
-				case TokenType.Rad:
+				case "rad":
 					return left * 0.0174532925199433;
-				case TokenType.Deg:
+				case "deg":
 					return left * 57.2957795130823;
 				default:
 					throw new NotImplementedException();

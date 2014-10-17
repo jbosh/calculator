@@ -38,8 +38,8 @@ Double = {Digit}+ '.' {Digit}*
     | {Digit}+ '.' {Digit}* 'E' '-' {Digit}+
     | {Digit}+ '.' {Digit}* 'E' '-' '.' {Digit}+
     | {Digit}+ '.' {Digit}* 'E' '-' {Digit}+ '.' {Digit}*
-	
-	| {Digit}+ 'e' {Digit}+
+    
+    | {Digit}+ 'e' {Digit}+
     | {Digit}+ 'e' '.' {Digit}+
     | {Digit}+ 'e' {Digit}+ '.' {Digit}*
 
@@ -97,27 +97,7 @@ Binary = '0b'[10]+
 <Factorial> ::= <Factorial> '!'
               | <Function>
 
-<Function> ::= 'sin' <Function>
-             | 'cos' <Function>
-             | 'tan' <Function>
-             | 'atan' <Function>
-             | 'acos' <Function>
-             | 'asin' <Function>
-             | 'abs' <Function>
-             | 'deg' <Function>
-             | 'rad' <Function>
-             | 'ln' <Function>
-             | 'log' <Function>
-             | 'sqrt' <Function>
-             | 'cross' <Vector Expression>
-             | 'dot' <Vector Expression>
-             | 'normalize' <Function>
-             | 'length' <Function>
-             | 'round' <Function>
-             | 'floor' <Function>
-             | 'ceiling' <Function>
-             | 'endian' <Function>
-             | 'lerp' <Vector Expression>
+<Function> ::= ID <Function>
              | <Value>
 
 <Value> ::= Double

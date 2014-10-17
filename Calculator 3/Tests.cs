@@ -77,6 +77,7 @@ namespace Calculator
 			TestFunction("3! * 2!", 12);
 			TestFunction("3!! * 2!", 1440);
 
+			TestFunction("sqrt 4", 2);
 			TestFunction("10 sin 30 + cos(58+2)", 5.5);
 			TestFunction("acos cos 30", 30);
 			TestFunction("(2ln(e) + sqrt(9)*3)c", 3297717038);
