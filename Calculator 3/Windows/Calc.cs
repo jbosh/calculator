@@ -188,19 +188,23 @@ namespace Calculator.Windows
 						e.Handled = true;
 						CopyAllLines();
 					}
+					else if (e.Control)
+					{
+						var index = FindActiveField();
+						if (index != -1)
+						{
+							var field = fields[index];
+							if (field.txtQuestion.SelectionLength == 0)
+							{
+								Clipboard.SetText(field.lblAnswer.Text);
+							}
+						}
+					}
 					break;
 				case Keys.V:
 					if (e.Control && e.Shift)
 					{
-						var index = -1;
-						for(var i = 0; i < fields.Count; i++)
-						{
-							if(fields[i].txtQuestion == ActiveControl)
-							{
-								index = i;
-								break;
-							}
-						}
+						var index = FindActiveField();
 						if (index != -1)
 						{
 							e.Handled = true;
@@ -211,6 +215,20 @@ namespace Calculator.Windows
 			}
 			if (!e.Handled)
 				Program.GlobalKeyDown(e);
+		}
+
+		private int FindActiveField()
+		{
+			var index = -1;
+			for (var i = 0; i < fields.Count; i++)
+			{
+				if (fields[i].txtQuestion == ActiveControl)
+				{
+					index = i;
+					break;
+				}
+			}
+			return index;
 		}
 
 		private void SaveFile()
