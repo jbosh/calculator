@@ -1,9 +1,10 @@
 ﻿<?xml version="1.0" encoding='UTF-8'?>
 <calculator version="3.1.0.0">
-	<alwaysOnTop>true</alwaysOnTop>
-	<inRadians>false</inRadians>
-	<thousandsSeparator>false</thousandsSeparator>
-	<rounding>-1</rounding>
-	<outputFormat>standard</outputFormat><!--Can be hex, scientific, or standard.-->
-	<antiAlias>true</antiAlias>
+  <alwaysOnTop>true</alwaysOnTop>
+  <inRadians>false</inRadians>
+  <thousandsSeparator>false</thousandsSeparator>
+  <rounding>-1</rounding>
+  <binaryRounding>16</binaryRounding>
+  <outputFormat>standard</outputFormat><!--Can be hex, scientific, or standard.-->
+  <antiAlias>true</antiAlias>
 </calculator>

@@ -32,6 +32,7 @@ namespace Calculator
 		private static Form HelpForm, OptionsForm, CopyHelpersForm;
 		private static bool radians;
 		private static int rounding;
+		private static int binaryRounding;
 		private static bool defaultThousandsSeparator;
 		private static bool copyPasteHelper;
 		private static bool useXor;
@@ -82,6 +83,15 @@ namespace Calculator
 				RecalculateWindows(false);
 			}
 		}
+		public static int BinaryRounding
+		{
+			get { return binaryRounding; }
+			set
+			{
+				binaryRounding = value;
+				RecalculateWindows(false);
+			}
+		}
 		public static bool CopyPasteHelper
 		{
 			get { return copyPasteHelper; }
@@ -120,6 +130,8 @@ namespace Calculator
 		[STAThread]
 		private static void Main(string[] args)
 		{
+			Application.EnableVisualStyles();
+
 			Statement.Initialize();
 			Grammar.CalcToken.Initialize();
 
@@ -196,6 +208,9 @@ namespace Calculator
 							case "rounding":
 								Rounding = reader.ReadElementContentAsInt();
 								break;
+							case "binaryRounding":
+								BinaryRounding = reader.ReadElementContentAsInt();
+								break;
 							case "outputFormat":
 								switch (reader.ReadElementContentAsString().ToLower())
 								{
@@ -257,6 +272,7 @@ namespace Calculator
 				writer.WriteElementString("antiAlias", Antialiasing.ToString().ToLower());
 
 				writer.WriteElementString("rounding", Rounding.ToString());
+				writer.WriteElementString("binaryRounding", BinaryRounding.ToString());
 				writer.WriteComment("outputFormat can be hex, scientific, binary, or standard.");
 				writer.WriteElementString("outputFormat", DefaultFormat.ToString());
 				writer.WriteElementString("workingDir", WorkingDirectory);
@@ -415,7 +431,7 @@ namespace Calculator
 					}
 				
 				case OutputFormat.Binary:
-					var top = Rounding == -1 ? 32 : Rounding;
+					var top = BinaryRounding == -1 ? 32 : BinaryRounding;
 					var builder = new StringBuilder();
 					for (var i = top; i >= 0; i--)
 					{

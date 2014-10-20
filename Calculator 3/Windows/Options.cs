@@ -94,6 +94,11 @@ namespace Calculator.Windows
 			Program.Rounding = (int)numRounding.Value;
 		}
 
+		private void numBinaryRounding_ValueChanged(object sender, EventArgs e)
+		{
+			Program.BinaryRounding = (int)numBinaryRounding.Value;
+		}
+
 		private bool ClickRadioButton(RadioButton btn)
 		{
 			if (Recalulating)
