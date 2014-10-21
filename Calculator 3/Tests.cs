@@ -191,6 +191,55 @@ namespace Calculator
 			TestFunction("(1/107+(35*35)/(2*-107))/-9.8)))+2", 2.58);
 			TestFunction("shadow=7.13)*8*32*2", 3650.56);
 
+			TestFunction("1?2:3", 2);
+			TestFunction("0?2:3", 3);
+			TestFunction("0?{0;1}:{1;2}", new Vector(1, 2));
+			TestFunction("0.0?{0;1}:{1;2}", new Vector(1, 2));
+			TestFunction("1.2?{0;1}:{1;2}", new Vector(0, 1));
+
+			TestFunction("1==2", 0);
+			TestFunction("1==1", 1);
+			TestFunction("1=={1;1}", null);
+			TestFunction("1=={1;2}", null);
+
+			TestFunction("1!=2", 1);
+			TestFunction("1!=1", 0);
+			TestFunction("1!={1;1}", null);
+			TestFunction("1!={1;2}", null);
+
+			TestFunction("1<2", 1);
+			TestFunction("1>2", 0);
+			TestFunction("1>=2", 0);
+			TestFunction("1>=1", 1);
+			TestFunction("1<0", 0);
+			TestFunction("1<{2;2}", null);
+			TestFunction("2<={2;2}", null);
+			TestFunction("2<={2.0;2.0}", null);
+
+			TestFunction("{0;2}!={0;1}", 1);
+			TestFunction("{1;2}!={1;2}", 0);
+			TestFunction("{0;2}=={0;1}", 0);
+			TestFunction("{1;2}=={1;2}", 1);
+			TestFunction("{1;2}<{1;2}", null);
+			TestFunction("{1;2}<={1;2}", null);
+			TestFunction("{1;2}>{1;2}", null);
+			TestFunction("{1;2}>={1;2}", null);
+			TestFunction("{1;4.1}>={3;7.0}", null);
+			TestFunction("{1;4.1}<{3;7.0}", null);
+
+#if false //for when simd functions exist
+			TestFunction("{0;2}!={0;1}", new Vector(0, ~0L));
+			TestFunction("{1;2}!={1;2}", new Vector(0, 0));
+			TestFunction("{0;2}=={0;1}", new Vector(~0L, 0));
+			TestFunction("{1;2}=={1;2}", new Vector(~0L, ~0L));
+			TestFunction("{1;2}<{1;2}", new Vector(0, 0));
+			TestFunction("{1;2}<={1;2}", new Vector(~0L, ~0L));
+			TestFunction("{1;2}>{1;2}", new Vector(0, 0));
+			TestFunction("{1;2}>={1;2}", new Vector(~0L, ~0L));
+			TestFunction("{1;4.1}>={3;7.0}", new Vector(0, 0));
+			TestFunction("{1;4.1}<{3;7.0}", new Vector(~0L, ~0L));
+#endif
+
 			Program.UseXor = true;
 			TestFunction("2^2", 0);
 			TestFunction("2^3", 1);

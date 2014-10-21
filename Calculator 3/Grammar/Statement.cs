@@ -22,6 +22,8 @@ namespace Calculator.Grammar
 			= new Regex(@"0b[10]+", RegexOptions.Compiled);
 		private static readonly Regex RegFloat
 			= new Regex(@"[\d\.]+[Ee][-\d\.]+", RegexOptions.Compiled);
+		private static readonly Regex RegEqualOperator
+			= new Regex(@"[^<>=!](=)[^<>=!]", RegexOptions.Compiled);
 		public string VariableName { get; private set; }
 		public bool Error { get; private set; }
 
@@ -51,10 +53,12 @@ namespace Calculator.Grammar
 			{TokenType.LogicalExpression, VisitInteger},
 			{TokenType.OpExpression, VisitOp},
 			{TokenType.Expression, VisitOp},
+			{TokenType.CompareExpression, VisitOp},
 			{TokenType.Pow, VisitPow},
 			{TokenType.Factorial, VisitFactorial},
 
 			{TokenType.Function, VisitFunc},
+			{TokenType.TernaryExpression, VisitTernary},
 			};
 		}
 		public void Reset()
@@ -92,14 +96,17 @@ namespace Calculator.Grammar
 				return Variable.Error;
 
 			Text = source;
-			var split = source.Split('=');
-			if (split.Length == 2)
 			{
-				VariableName = split[0].Trim();
-				source = split[1];
+				var match = RegEqualOperator.Match(source);
+				if (match.Success)
+				{
+					var index = match.Groups[1].Index;
+					VariableName = source.Remove(index).Trim();
+					source = source.Substring(index + 1).Trim();
+				}
 			}
+
 			var preprocess = Preprocess(source);
-			
 
 			root = CalcToken.Parse(preprocess);
 			var variable = default(Variable);
@@ -383,6 +390,18 @@ namespace Calculator.Grammar
 					return left / right;
 				case TokenType.Mod:
 					return left % right;
+				case TokenType.CompareEquals:
+					return Variable.CompareEquals(left, right);
+				case TokenType.NotEqual:
+					return Variable.CompareNotEquals(left, right);
+				case TokenType.LessThan:
+					return Variable.CompareLessThan(left, right);
+				case TokenType.LessEqual:
+					return Variable.CompareLessEqual(left, right);
+				case TokenType.GreaterThan:
+					return Variable.CompareGreaterThan(left, right);
+				case TokenType.GreaterEqual:
+					return Variable.CompareGreaterEqual(left, right);
 				default:
 					throw new DataException(string.Format("Data does not operator of type {0}. Please use Mult, Plus, Minus, Divide, ...", token.Children[1].Type));
 			}
@@ -424,6 +443,22 @@ namespace Calculator.Grammar
 			if (left.Value == null)
 				return new Variable();
 			return new Variable(CalcMath.Factorial(left.Value));
+		}
+		private static Variable VisitTernary(CalcToken token)
+		{
+			var boolean = Visit(token.Children[0]);
+			var leftExpression = Visit(token.Children[2]);
+			var rightExpression = Visit(token.Children[4]);
+
+			if (boolean.Value == null)
+				return new Variable();
+
+			if (boolean.Value is double)
+				return boolean.Value != 0.0 ? leftExpression : rightExpression;
+			if (boolean.Value is long)
+				return boolean.Value != 0 ? leftExpression : rightExpression;
+
+			throw new Exception();
 		}
 		#endregion
 

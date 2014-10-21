@@ -30,6 +30,12 @@ namespace Calculator.Grammar
 				.Select(arg => new Variable(arg))
 				.ToArray();
 		}
+		public Vector(params long[] args)
+		{
+			Values = args
+				.Select(arg => new Variable(arg))
+				.ToArray();
+		}
 		public Vector(params Variable[] args)
 		{
 			Values = args.ToArray();
@@ -40,6 +46,12 @@ namespace Calculator.Grammar
 			for (var i = 0; i < values.Length; i++)
 				values[i] = v;
 			return new Vector(values);
+		}
+		private static void MakeTwoVectors(Variable a, Variable b, out Vector aVec, out Vector bVec)
+		{
+			var count = a.Value is Vector ? ((Vector)a.Value).Count : ((Vector)b.Value).Count;
+			aVec = a.Value is Vector ? a.Value : MakeVector(count, a);
+			bVec = b.Value is Vector ? b.Value : MakeVector(count, b);
 		}
 		private static Vector PerformOp(Vector a, Vector b, Func<Variable, Variable, Variable> func)
 		{
@@ -353,7 +365,52 @@ namespace Calculator.Grammar
 			return PerformOp(v0 => v0.Tan());
 		}
 
+		#region Comparison Operators
+		public static Variable CompareEquals(Vector a, Vector b)
+		{
+			return CompareUsingOperator(a, b, Variable.CompareEquals);
+		}
 
+		public static Variable CompareNotEquals(Vector a, Vector b)
+		{
+			return CompareUsingOperator(a, b, Variable.CompareNotEquals);
+		}
+
+		public static Variable CompareLessThan(Vector a, Vector b)
+		{
+			return CompareUsingOperator(a, b, Variable.CompareLessThan);
+		}
+
+		public static Variable CompareLessEqual(Vector a, Vector b)
+		{
+			return CompareUsingOperator(a, b, Variable.CompareLessEqual);
+		}
+
+		public static Variable CompareGreaterThan(Vector a, Vector b)
+		{
+			return CompareUsingOperator(a, b, Variable.CompareGreaterThan);
+		}
+
+		public static Variable CompareGreaterEqual(Vector a, Vector b)
+		{
+			return CompareUsingOperator(a, b, Variable.CompareGreaterEqual);
+		}
+		#endregion
+
+		private static Variable CompareUsingOperator(Vector a, Vector b, Func<Variable, Variable, Variable> comparison)
+		{
+			if (a.Count != b.Count)
+				return new Variable();
+
+			var output = new Variable[a.Count];
+			for (var i = 0; i < a.Count; i++)
+			{
+				var variable = comparison(a[i], b[i]);
+				output[i] = new Variable(variable.Value == 1 ? ~0L : 0);
+			}
+			var vec = new Vector(output);
+			return new Variable(vec);
+		}
 		public static bool operator == (Vector a, Vector b)
 		{
 			if (a.Count != b.Count)
@@ -361,9 +418,14 @@ namespace Calculator.Grammar
 
 			for (var i = 0; i < a.Count; i++)
 			{
-				if(a[i].Value is double)
+				if (a[i].Value is long && b[i].Value is long)
 				{
-					if (Math.Round(a[i].Value, 2) != Math.Round(b[i].Value, 2))
+					if (a[i] != b[i])
+						return false;
+				}
+				else if (a[i].Value is double || b[i].Value is double)
+				{
+					if (Math.Round((double)a[i].Value, 2) != Math.Round((double)b[i].Value, 2))
 						return false;
 				}
 				else if (a[i] != b[i])

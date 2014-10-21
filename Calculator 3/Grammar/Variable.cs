@@ -9,6 +9,8 @@ namespace Calculator.Grammar
 		public dynamic Value;
 		public Variable(dynamic value = null, string name = null)
 		{
+			if (value is bool)
+				value = value ? 1 : 0;
 			Value = value;
 			Name = name;
 		}
@@ -278,6 +280,103 @@ namespace Calculator.Grammar
 			var hash = (Name != null ? Name.GetHashCode() : 0) * 397;
 			hash %= Value != null ? (int) Value.GetHashCode() : 0;
 			return hash;
+		}
+		#endregion
+
+		#region Comparison Operations
+		public static Variable CompareEquals (Variable a, Variable b)
+		{
+			if (a.Value == null || b.Value == null)
+				return new Variable();
+			if (a.Value is double && b.Value is double)
+				return new Variable(Math.Round((double)a.Value, 2) == Math.Round((double)b.Value, 2));
+			if (a.Value is long && b.Value is long)
+				return new Variable((long)a.Value == (long)b.Value);
+			if (a.Value is Vector && b.Value is Vector)
+				return new Variable((Vector)a.Value == (Vector)b.Value ? 1 : 0);
+			if (a.Value is Vector || b.Value is Vector)
+				return new Variable();
+			if (a.Value is double || b.Value is double)
+				return new Variable(Math.Round((double)a.Value, 2) == Math.Round((double)b.Value, 2));
+
+			return new Variable();
+		}
+		public static Variable CompareNotEquals(Variable a, Variable b)
+		{
+			if (a.Value == null || b.Value == null)
+				return new Variable();
+			if (a.Value is double && b.Value is double)
+				return new Variable(Math.Round((double)a.Value, 2) == Math.Round((double)b.Value, 2));
+			if (a.Value is long && b.Value is long)
+				return new Variable((long)a.Value != (long)b.Value);
+			if (a.Value is Vector && b.Value is Vector)
+				return new Variable((Vector)a.Value != (Vector)b.Value ? 1 : 0);
+			if (a.Value is Vector || b.Value is Vector)
+				return new Variable();
+			if (a.Value is double || b.Value is double)
+				return new Variable((double)a.Value != (double)b.Value);
+
+			return new Variable();
+		}
+		public static Variable CompareLessThan(Variable a, Variable b)
+		{
+			if (a.Value == null || b.Value == null)
+				return new Variable();
+			if (a.Value is double && b.Value is double)
+				return new Variable((double)a.Value < b.Value);
+			if (a.Value is long && b.Value is long)
+				return new Variable((long)a.Value < (long)b.Value);
+			if (a.Value is Vector || b.Value is Vector)
+				return new Variable();
+			if (a.Value is double || b.Value is double)
+				return new Variable((double)a.Value < (double)b.Value);
+
+			return new Variable();
+		}
+		public static Variable CompareLessEqual(Variable a, Variable b)
+		{
+			if (a.Value == null || b.Value == null)
+				return new Variable();
+			if (a.Value is double && b.Value is double)
+				return new Variable((double)a.Value <= b.Value);
+			if (a.Value is long && b.Value is long)
+				return new Variable((long)a.Value <= (long)b.Value);
+			if (a.Value is Vector || b.Value is Vector)
+				return new Variable();
+			if (a.Value is double || b.Value is double)
+				return new Variable((double)a.Value <= (double)b.Value);
+
+			return new Variable();
+		}
+		public static Variable CompareGreaterThan(Variable a, Variable b)
+		{
+			if (a.Value == null || b.Value == null)
+				return new Variable();
+			if (a.Value is double && b.Value is double)
+				return new Variable((double)a.Value > b.Value);
+			if (a.Value is long && b.Value is long)
+				return new Variable((long)a.Value > (long)b.Value);
+			if (a.Value is Vector || b.Value is Vector)
+				return new Variable();
+			if (a.Value is double || b.Value is double)
+				return new Variable((double)a.Value > (double)b.Value);
+
+			throw new Exception();
+		}
+		public static Variable CompareGreaterEqual(Variable a, Variable b)
+		{
+			if (a.Value == null || b.Value == null)
+				return new Variable();
+			if (a.Value is double && b.Value is double)
+				return new Variable((double)a.Value >= b.Value);
+			if (a.Value is long && b.Value is long)
+				return new Variable((long)a.Value >= (long)b.Value);
+			if (a.Value is Vector || b.Value is Vector)
+				return new Variable();
+			if (a.Value is double || b.Value is double)
+				return new Variable((double)a.Value >= (double)b.Value);
+
+			throw new Exception();
 		}
 		#endregion
 

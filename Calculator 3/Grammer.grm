@@ -66,13 +66,24 @@ Hex = '0x'[ABCDEFabcdef0123456789]+
 Binary = '0b'[10]+
 
 ! ------------------------------------------------- Rules
-<Statement> ::= <Logical Expression>
-              | Id '=' <Logical Expression>
+<Statement> ::= <Ternary Expression>
+              | Id '=' <Ternary Expression>
 
-<Logical Expression> ::= <Logical Expression> '&' <Shift Expression>
-                       | <Logical Expression> '|' <Shift Expression>
+<Ternary Expression> ::= <Logical Expression> '?' <Ternary Expression> ':' <Ternary Expression>
+                       | <Logical Expression>
+
+<Logical Expression> ::= <Logical Expression> '&' <Compare Expression>
+                       | <Logical Expression> '|' <Compare Expression>
+                       | <Compare Expression>
+
+<Compare expression> ::= <Compare Expression> '<' <Shift Expression>
+                       | <Compare Expression> '<=' <Shift Expression>
+                       | <Compare Expression> '>' <Shift Expression>
+                       | <Compare Expression> '>=' <Shift Expression>
+                       | <Compare Expression> '==' <Shift Expression>
+                       | <Compare Expression> '!=' <Shift Expression>
                        | <Shift Expression>
-
+                                             
 <Shift Expression> ::= <Shift Expression> '<<' <Expression> 
                      | <Shift Expression> '>>' <Expression>
                      | <Expression>
