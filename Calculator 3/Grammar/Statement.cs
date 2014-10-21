@@ -228,6 +228,8 @@ namespace Calculator.Grammar
 				case "ceiling":
 				case "endian":
 				case "lerp":
+				case "vget_lane":
+				case "vset_lane":
 					return true;
 				default:
 					return false;
@@ -278,6 +280,9 @@ namespace Calculator.Grammar
 				case "rad":
 				case "deg":
 					return VisitRadDeg(token);
+				case "vget_lane":
+				case "vset_lane":
+					return VisitVectorFunc(token);
 			}
 			throw new NotImplementedException();
 		}
@@ -509,6 +514,51 @@ namespace Calculator.Grammar
 					throw new DataException(string.Format("Unsupported token type {0}.", token.Children[0].Text));
 			}
 		}
+
+		private static Variable VisitVectorFunc(CalcToken token)
+		{
+			var left = Visit(token.Children[1]);
+			if (left.Value == null)
+				return new Variable();
+			if (!(left.Value is Vector))
+				return new Variable();
+
+			if (!(left.Value is Vector))
+				return new Variable();
+			var arguments = (Vector)left.Value;
+
+			if (arguments.Count < 2)
+				return new Variable();
+			if(!(arguments[0].Value is Vector))
+				return new Variable();
+			if (arguments[1].Value is Vector)
+				return new Variable();
+
+			var vector = (Vector)arguments[0].Value;
+			var index = (int)arguments[1].Value;
+			if (index > vector.Count)
+				return new Variable();
+			switch (token.Children[0].Text)
+			{
+				case "vget_lane":
+					{
+						if (arguments.Count != 2)
+							return new Variable();
+						return vector[index];
+					}
+				case "vset_lane":
+					{
+						if (arguments.Count != 3)
+							return new Variable();
+						var value = arguments[2];
+						vector[index] = value;
+						return new Variable(vector);
+					}
+				default:
+					throw new DataException(string.Format("Unsupported token type {0}.", token.Children[0].Text));
+			}
+		}
+		
 		private static Variable VisitTrig(CalcToken token)
 		{
 			var left = Visit(token.Children[1]);

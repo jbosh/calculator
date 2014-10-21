@@ -240,6 +240,20 @@ namespace Calculator
 			TestFunction("{1;4.1}<{3;7.0}", new Vector(~0L, ~0L));
 #endif
 
+			TestFunction("vget_lane{{0;1};0}", 0);
+			TestFunction("vget_lane{{3;2;1;0};2}", 1);
+			TestFunction("vget_lane{{{0;1};2;1;0};0}", new Vector(0, 1));
+
+			TestFunction("vset_lane{{0;1};0}", null);
+			TestFunction("vset_lane{{0;1};0;2}", new Vector(2, 1));
+			TestFunction("vset_lane{{3;2;1;0};2;3}", new Vector(3, 2, 3, 0));
+			TestFunction("vset_lane{{{0;1};2;1;0};0;1}", new Vector(1, 2, 1, 0));
+
+			TestFunction("vset_lane{0;0;1}", null);
+			TestFunction("vget_lane{0;0;1}", null);
+			TestFunction("vget_lane{{3;2;1;0};20;1}", null);
+			TestFunction("vset_lane{{3;2;1;0};20;1}", null);
+
 			Program.UseXor = true;
 			TestFunction("2^2", 0);
 			TestFunction("2^3", 1);
