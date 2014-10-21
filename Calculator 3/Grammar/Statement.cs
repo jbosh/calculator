@@ -205,7 +205,8 @@ namespace Calculator.Grammar
 		[DebuggerStepThrough]
 		private static bool IsFunc(string token)
 		{
-			switch(token.Trim())
+			var name = token.Trim();
+			switch(name)
 			{
 				case "deg":
 				case "acos":
@@ -231,9 +232,11 @@ namespace Calculator.Grammar
 				case "vget_lane":
 				case "vset_lane":
 					return true;
-				default:
-					return false;
 			}
+
+			if (Scripts.FuncExists(name))
+				return true;
+			return false;
 		}
 		private static Variable Visit(CalcToken token)
 		{
@@ -284,6 +287,15 @@ namespace Calculator.Grammar
 				case "vset_lane":
 					return VisitVectorFunc(token);
 			}
+
+			if (Scripts.FuncExists(token.Children[0].Text))
+			{
+				var left = Visit(token.Children[1]);
+				if (left == null)
+					return new Variable();
+				return Scripts.ExecuteFunc(token.Children[0].Text, left);
+			}
+
 			throw new NotImplementedException();
 		}
 

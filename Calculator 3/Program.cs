@@ -134,6 +134,7 @@ namespace Calculator
 
 			Statement.Initialize();
 			Grammar.CalcToken.Initialize();
+			Scripts.LoadScripts(Path.Combine(Environment.CurrentDirectory, "scripts"));
 
 #if RUN_TESTS
 			Tests.RunTests();

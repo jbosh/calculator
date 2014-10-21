@@ -119,6 +119,7 @@
     <Compile Include="Extensions.cs" />
     <Compile Include="Grammar\CalcMath.cs" />
     <Compile Include="Grammar\MemoryManager.cs" />
+    <Compile Include="Grammar\Scripts.cs" />
     <Compile Include="Grammar\Statement.cs" />
     <Compile Include="Grammar\Token.cs" />
     <Compile Include="Grammar\Variable.cs" />
