@@ -12,6 +12,8 @@ namespace Calculator.Grammar
 		public static void LoadScripts(string directory)
 		{
 			Functions.Clear();
+            if (!Directory.Exists(directory))
+                return;
 			foreach (var file in Directory.GetFiles(directory))
 			{
 				var name = Path.GetFileNameWithoutExtension(file);
