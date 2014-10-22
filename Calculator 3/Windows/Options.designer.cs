@@ -86,7 +86,7 @@
 			// 
 			this.numRounding.Location = new System.Drawing.Point(79, 19);
 			this.numRounding.Maximum = new decimal(new int[] {
-            64,
+            16,
             0,
             0,
             0});
@@ -104,7 +104,7 @@
 			// 
 			this.numBinaryRounding.Location = new System.Drawing.Point(79, 45);
 			this.numBinaryRounding.Maximum = new decimal(new int[] {
-            64,
+            32,
             0,
             0,
             0});

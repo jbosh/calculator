@@ -31,7 +31,8 @@ namespace Calculator.Windows
 			if (TopMost != Program.AlwaysOnTop)
 				TopMost = Program.AlwaysOnTop;
 			chkOnTop.Checked = Program.AlwaysOnTop;
-			numRounding.Value = Program.Rounding;
+			numRounding.Value = Math.Min(numRounding.Maximum, Math.Max(numRounding.Minimum, Program.Rounding));
+			numBinaryRounding.Value = Math.Min(numBinaryRounding.Maximum, Math.Max(numBinaryRounding.Minimum, Program.BinaryRounding));
 			cmbTrig.SelectedIndex = cmbTrig.Items.IndexOf(Program.Radians ? "Radians" : "Degrees");
 			chkThousands.Checked = Program.DefaultThousandsSeparator;
 			chkCopyPaste.Checked = Program.CopyPasteHelper;
