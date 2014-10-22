@@ -489,7 +489,8 @@ namespace Calculator.Windows
 				if (global)
 					statement.Reset();
 				var parse = statement.ProcessString(txtQuestion.Text);
-				lblAnswer.Text = Program.FormatOutput(parse, Format, ThousandsSeparator);
+				var format = statement.Format == OutputFormat.Invalid ? Format : statement.Format;
+				lblAnswer.Text = Program.FormatOutput(parse, format, ThousandsSeparator);
 			}
 			private void txtQuestion_TextChanged()
 			{

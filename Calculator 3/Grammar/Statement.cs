@@ -26,15 +26,16 @@ namespace Calculator.Grammar
 			= new Regex(@"[^<>=!](=)[^<>=!]", RegexOptions.Compiled);
 		public string VariableName { get; private set; }
 		public bool Error { get; private set; }
-
-		public string Text
-		{
-			get; private set;
-		}
+        public string Text { get; private set; }
+		public OutputFormat Format { get; private set; }
 
 		private static Dictionary<TokenType, Func<CalcToken, Variable>> Dispatch;
 		public static MemoryManager Memory;
 		private CalcToken root;
+		public Statement()
+		{
+			Format = OutputFormat.Invalid;
+		}
 		public static void Initialize()
 		{
 			Dispatch = new Dictionary<TokenType, Func<CalcToken, Variable>>
@@ -106,8 +107,30 @@ namespace Calculator.Grammar
 				}
 			}
 
-			var preprocess = Preprocess(source);
+			Format = OutputFormat.Invalid;
+			if (source.EndsWith(",x"))
+			{
+				Format = OutputFormat.Hex;
+				source = source.Remove(source.Length - 2);
+			}
+			else if (source.EndsWith(",b"))
+			{
+				Format = OutputFormat.Binary;
+				source = source.Remove(source.Length - 2);
+			}
+			else if (source.EndsWith(",e"))
+			{
+				Format = OutputFormat.Scientific;
+				source = source.Remove(source.Length - 2);
+			}
+			else if (source.EndsWith(",s"))
+			{
+				Format = OutputFormat.Standard;
+				source = source.Remove(source.Length - 2);
+			}
 
+			var preprocess = Preprocess(source);
+				
 			root = CalcToken.Parse(preprocess);
 			var variable = default(Variable);
 			if (root == null)

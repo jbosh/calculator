@@ -15,7 +15,7 @@ using Help=Calculator.Windows.Help;
 
 namespace Calculator
 {
-	internal enum OutputFormat
+	public enum OutputFormat
 	{
 		Standard = 0,
 		Hex,
@@ -23,6 +23,7 @@ namespace Calculator
 		Binary,
 
 		Count,
+		Invalid,
 	}
 	internal static class Program
 	{
