@@ -135,7 +135,7 @@ namespace Calculator
 
 			Statement.Initialize();
 			Grammar.CalcToken.Initialize();
-			Scripts.LoadScripts(Path.Combine(Environment.CurrentDirectory, "scripts"));
+			Scripts.LoadScripts(ScriptsFolder);
 
 #if RUN_TESTS
 			Tests.RunTests();
@@ -182,6 +182,7 @@ namespace Calculator
 		}
 		private static string SettingsFolder { get { return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Calculator"); } }
 		private static string SettingsFile { get { return Path.Combine(SettingsFolder, "Calculator.xml"); } }
+		private static string ScriptsFolder { get { return Path.Combine(SettingsFolder, "scripts"); } }
 		private static void LoadSettings()
 		{
 			if (!File.Exists(SettingsFile))
