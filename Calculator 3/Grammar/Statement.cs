@@ -498,7 +498,7 @@ namespace Calculator.Grammar
 			if (boolean.Value is long)
 				return boolean.Value != 0 ? leftExpression : rightExpression;
 
-			throw new Exception();
+			return new Variable();
 		}
 		#endregion
 
@@ -571,7 +571,7 @@ namespace Calculator.Grammar
 
 			var vector = (Vector)arguments[0].Value;
 			var index = (int)arguments[1].Value;
-			if (index > vector.Count)
+			if (index >= vector.Count || index < 0)
 				return new Variable();
 			switch (token.Children[0].Text)
 			{

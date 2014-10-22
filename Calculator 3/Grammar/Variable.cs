@@ -10,7 +10,7 @@ namespace Calculator.Grammar
 		public Variable(dynamic value = null, string name = null)
 		{
 			if (value is bool)
-				value = value ? 1 : 0;
+				value = value ? 1L : 0L;
 			Value = value;
 			Name = name;
 		}

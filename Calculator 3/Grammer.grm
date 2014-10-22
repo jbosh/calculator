@@ -10,7 +10,7 @@
 ![{Letter}|{Printable Extended}][{Digit}{Letter}|{Printable Extended}]*
 !{ReadableUnicode} = {&0100 .. &D7FF} + {&DC00 .. &FFF0}
 {ReadableUnicode} = {&0200 .. &0400} + {&2603}
-Id = ({Letter}|{Printable Extended}|{ReadableUnicode})({Digit}|{Letter}|{Printable Extended}|{ReadableUnicode}|_)*
+Id = ({Letter}|{Printable Extended}|{ReadableUnicode}|_)({Digit}|{Letter}|{Printable Extended}|{ReadableUnicode}|_)*
 Double = {Digit}+ '.' {Digit}*
     | '.' {Digit}+  
     | {Digit}+
@@ -120,7 +120,7 @@ Binary = '0b'[10]+
 
 <Vector Expression> ::= '{' <Expression List> '}'
 
-<Expression List> ::= <Expression List> ';' <Logical Expression>
-                    | <Logical Expression>
+<Expression List> ::= <Expression List> ';' <Ternary Expression>
+                    | <Ternary Expression>
 
 

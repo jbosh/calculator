@@ -196,6 +196,7 @@ namespace Calculator
 			TestFunction("0?{0;1}:{1;2}", new Vector(1, 2));
 			TestFunction("0.0?{0;1}:{1;2}", new Vector(1, 2));
 			TestFunction("1.2?{0;1}:{1;2}", new Vector(0, 1));
+			TestFunction("{0}?1:3", null);
 
 			TestFunction("1==2", 0);
 			TestFunction("1==1", 1);
@@ -248,6 +249,8 @@ namespace Calculator
 			TestFunction("vset_lane{{0;1};0;2}", new Vector(2, 1));
 			TestFunction("vset_lane{{3;2;1;0};2;3}", new Vector(3, 2, 3, 0));
 			TestFunction("vset_lane{{{0;1};2;1;0};0;1}", new Vector(1, 2, 1, 0));
+			TestFunction("vset_lane{{0}; 0; 3 > 4 ? 1 : 0}", new Vector(0));
+			TestFunction("vset_lane{{0}; 0; 3 > 4 ? 0 : 1}", new Vector(1));
 
 			TestFunction("vset_lane{0;0;1}", null);
 			TestFunction("vget_lane{0;0;1}", null);
@@ -294,6 +297,8 @@ namespace Calculator
 			TestFunction("a_b + 2", 4);
 			TestFunction("dot{pos;r}", null);
 			TestFunction("normalize{n}", null);
+			TestFunction("_x = 2", 2);
+			TestFunction("_x", 2);
 			Memory.Pop();
 		}
 		private static void TestFunction(string function, dynamic correct)
