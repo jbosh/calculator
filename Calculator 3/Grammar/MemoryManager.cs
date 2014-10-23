@@ -57,6 +57,7 @@ namespace Calculator.Grammar
 			SetVariable("kb", 1024);
 			SetVariable("mb", 1024 * 1024);
 			SetVariable("gb", 1024 * 1024 * 1024);
+			SetVariable("k", 1000);
 		}
 	}
 }
