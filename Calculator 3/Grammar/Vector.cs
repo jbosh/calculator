@@ -7,12 +7,16 @@ namespace Calculator.Grammar
 {
 	public struct Vector
 	{
-		private readonly Variable [] Values;
-		public int Count { get { return Values != null ? Values.Length : 0; } }
+		private readonly Variable[] Values;
+		public int Count { get { return Values.Length; } }
 		public Variable this[int index]
 		{
 			get { return Values[index]; }
 			set { Values[index] = value; }
+		}
+		public Vector(string error)
+		{
+			Values = new[] { Variable.Error(error) };
 		}
 		public Vector(params Vector[] args)
 		{
@@ -56,7 +60,7 @@ namespace Calculator.Grammar
 		private static Vector PerformOp(Vector a, Vector b, Func<Variable, Variable, Variable> func)
 		{
 			if (a.Count != b.Count)
-				return new Vector();
+				return new Vector("Vector count mismatch");
 			var output = new Vector(a.Values);
 			for (var i = 0; i < output.Count; i++)
 				output[i] = func(a[i], b[i]);
@@ -190,36 +194,34 @@ namespace Calculator.Grammar
 		public Variable Dot()
 		{
 			if (Values.Length != 2)
-				return Variable.Error;
+				return Variable.Error("Dot arg count");
 			if (Values[0].Value is Vector && Values[1].Value is Vector)
 			{
 				var a = (Vector) Values[0].Value;
 				var b = (Vector) Values[1].Value;
 				if (a.Count != b.Count)
-					return Variable.Error;
+					return Variable.Error("Dot vector lengths");
 				var d = 0.0;
 				for (var i = 0; i < a.Count; i++)
 					d += a[i].Value * b[i].Value;
 				return new Variable(d);
 			}
-			if (Values[0].Value == null || Values[1].Value == null)
-				return Variable.Error;
+			if (Values[0].Errored || Values[1].Errored)
+				return Variable.ErroredVariable(Values[0], Values[1]);
 			return new Variable(Values[0].Value * Values[1].Value);
 		}
 
 		public Variable Cross()
 		{
 			if (Values.Length != 2)
-				return Variable.Error;
-			if (Values[0].Value == null)
-				return Variable.Error;
-			if (Values[1].Value == null)
-				return Variable.Error;
+				return Variable.Error("Cross arg count");
+			if (Values[0].Errored || Values[1].Errored)
+				return Variable.ErroredVariable(Values[0], Values[1]);
 
 			var a = (Vector)Values[0].Value;
 			var b = (Vector)Values[1].Value;
 			if (a.Count != b.Count)
-				return Variable.Error;
+				return Variable.Error("Cross vector lengths");
 			if (a.Count == 3)
 			{
 				var x = a[1] * b[2] - a[2] * b[1];
@@ -232,15 +234,17 @@ namespace Calculator.Grammar
 				var z = a[0] * b[1] - a[1] * b[0];
 				return z;
 			}
-			return Variable.Error;
+			return Variable.Error("Cross vector lengths");
 		}
 
 		public Variable Length()
 		{
-			if(Values == null)
-				return Variable.Error;
+			if (Values == null)
+				throw new Exception();
+			if (Values.Any(v => v.Errored))
+				return Values.First(v => v.Errored);
 			if (Values.Any(v => v.Value is Vector))
-				return Variable.Error;
+				return Variable.Error("Length vector of vectors");
 			var d = 0.0;
 			for (var i = 0; i < Count; i++)
 				d += Values[i].Value * Values[i].Value;
@@ -250,26 +254,26 @@ namespace Calculator.Grammar
 		public Variable Lerp()
 		{
 			if (Values == null)
-				return Variable.Error;
+				throw new Exception();
 			if (Values.Length != 3)
-				return Variable.Error;
-			if (Values.Any(v => v.Value == null))
-				return Variable.Error;
+				return Variable.Error("Lerp arg count");
+			if (Values.Any(v => v.Errored))
+				return Values.First(v => v.Errored);
 
 			if (Values[2].Value is Vector)
-				return Variable.Error;
+				return Variable.Error("Lerp amt is vector");
 
 			if (Values[0].Value is Vector)
 			{
 				if (!(Values[1].Value is Vector))
-					return Variable.Error;
+					return Variable.Error("Lerp v0 is vector");
 
 				//lerp (v0, v1, amt)
 			}
 			else
 			{
 				if (Values[1].Value is Vector)
-					return Variable.Error;
+					return Variable.Error("Lerp v1 is vector");
 
 				//lerp (d0, d1, amt)
 			}
@@ -283,8 +287,8 @@ namespace Calculator.Grammar
 		public Variable Normalize()
 		{
 			var len = Length();
-			if(len.Value == null)
-				return Variable.Error;
+			if(len.Errored)
+				return len;
 			return new Variable(this / len.Value);
 		}
 		private Variable PerformOp(Func<Variable, Variable> func)
@@ -292,8 +296,8 @@ namespace Calculator.Grammar
 			var output = new Vector(Values);
 			for (var i = 0; i < output.Count; i++)
 			{
-				if (Values[i].Value == null)
-					return Variable.Error;
+				if (Values[i].Errored)
+					return Values[i];
 				output[i] = func(Values[i]);
 			}
 			return new Variable(output);
@@ -332,20 +336,20 @@ namespace Calculator.Grammar
 		}
 		public Variable Xor(double d)
 		{
-			return Variable.Error;
+			return Variable.Error("xor double");
 		}
 		public Variable Xor(long d)
 		{
 			if (Values.Any(v0 => v0.Value is double))
-				return Variable.Error;
+				return Variable.Error("xor double");
 			return PerformOp(v0 => new Variable(v0.Value ^ d));
 		}
 		public Variable Xor(Vector d)
 		{
 			if (Values.Any(v0 => v0.Value is double))
-				return Variable.Error;
+				return Variable.Error("xor double");
 			if (d.Values.Any(v0 => v0.Value is double))
-				return Variable.Error;
+				return Variable.Error("xor double");
 			return new Variable(PerformOp(this, d, (v0, v1) => new Variable(v0.Value ^ v1.Value)));
 		}
 		public Variable Negate()
@@ -400,7 +404,7 @@ namespace Calculator.Grammar
 		private static Variable CompareUsingOperator(Vector a, Vector b, Func<Variable, Variable, Variable> comparison)
 		{
 			if (a.Count != b.Count)
-				return Variable.Error;
+				return Variable.Error("Vector length mismatch");
 
 			var output = new Variable[a.Count];
 			for (var i = 0; i < a.Count; i++)

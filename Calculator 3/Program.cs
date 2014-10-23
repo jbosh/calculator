@@ -28,7 +28,7 @@ namespace Calculator
 	internal static class Program
 	{
 		private static bool alwaysOnTop;
-		private static bool antialias;
+		private static bool antialias = true;
 		private static OutputFormat defaultFormat;
 		private static Form HelpForm, OptionsForm, CopyHelpersForm;
 		private static bool radians;
@@ -37,6 +37,7 @@ namespace Calculator
 		private static bool defaultThousandsSeparator;
 		private static bool copyPasteHelper;
 		private static bool useXor;
+		private static bool errorAsNan;
 		private static List<ICalculator> Window = new List<ICalculator>();
 		private static int SleepMilliseconds{ get; set; }
 		public static bool Radians
@@ -72,6 +73,15 @@ namespace Calculator
 			set
 			{
 				antialias = value;
+				RecalculateWindows(false);
+			}
+		}
+		public static bool ErrorsAsNan
+		{
+			get { return errorAsNan; }
+			set
+			{
+				errorAsNan = value;
 				RecalculateWindows(false);
 			}
 		}
@@ -234,6 +244,9 @@ namespace Calculator
 										break;
 								}
 								break;
+							case "errorsAsNan":
+								ErrorsAsNan = reader.ReadElementContentAsBoolean();
+								break;
 							case "antiAlias":
 								Antialiasing = reader.ReadElementContentAsBoolean();
 								break;
@@ -273,6 +286,7 @@ namespace Calculator
 				writer.WriteElementString("inRadans", Radians.ToString().ToLower());
 				writer.WriteElementString("thousandsSeparator", DefaultThousandsSeparator.ToString().ToLower());
 				writer.WriteElementString("antiAlias", Antialiasing.ToString().ToLower());
+				writer.WriteElementString("errorsAsNan", ErrorsAsNan.ToString().ToLower());
 
 				writer.WriteElementString("rounding", Rounding.ToString());
 				writer.WriteElementString("binaryRounding", BinaryRounding.ToString());

@@ -25,7 +25,7 @@ namespace Calculator.Windows
 			Lock.WaitOne();
 
 			Recalulating = true;
-			chkAntialias.Checked = Program.Antialiasing;
+			chkErrors.Checked = Program.ErrorsAsNan;
 			//This is a required check so that windows will not keep
 			//tromping on each other when TopMost is true.
 			if (TopMost != Program.AlwaysOnTop)
@@ -155,11 +155,11 @@ namespace Calculator.Windows
 			Program.DefaultThousandsSeparator = chkThousands.Checked;
 		}
 
-		private void chkAntialias_CheckedChanged(object sender, EventArgs e)
+		private void chkErrors_CheckedChanged(object sender, EventArgs e)
 		{
 			if (Recalulating)
 				return;
-			Program.Antialiasing = chkAntialias.Checked;
+			Program.ErrorsAsNan = chkErrors.Checked;
 		}
 
 		private void chkCopyPaste_CheckedChanged(object sender, EventArgs e)

@@ -36,13 +36,13 @@ namespace Calculator.Grammar
 		public static Variable ExecuteFunc(string functionText, Variable parameter)
 		{
 			if (FunctionStack.Contains(functionText))
-				return Variable.Error;
+				return Variable.Error("Inf Recursion");
 
 			FunctionStack.Push(functionText);
 			Statement.Memory.Push();
 			Statement.Memory.SetVariable("value", parameter);
 			var lines = Functions[functionText];
-			var output = Variable.Error;
+			var output = Variable.Error("Empty script");
 			foreach (var line in lines)
 			{
 				var stat = new Statement();

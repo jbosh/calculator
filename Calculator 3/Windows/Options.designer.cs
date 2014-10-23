@@ -40,7 +40,7 @@
 			this.radioHex = new System.Windows.Forms.RadioButton();
 			this.chkThousands = new System.Windows.Forms.CheckBox();
 			this.label2 = new System.Windows.Forms.Label();
-			this.chkAntialias = new System.Windows.Forms.CheckBox();
+			this.chkErrors = new System.Windows.Forms.CheckBox();
 			this.radioBinary = new System.Windows.Forms.RadioButton();
 			this.chkCopyPaste = new System.Windows.Forms.CheckBox();
 			this.chkUseXor = new System.Windows.Forms.CheckBox();
@@ -178,16 +178,16 @@
 			this.label2.TabIndex = 9;
 			this.label2.Text = "Calculate In:";
 			// 
-			// chkAntialias
+			// chkErrors
 			// 
-			this.chkAntialias.AutoSize = true;
-			this.chkAntialias.Location = new System.Drawing.Point(12, 66);
-			this.chkAntialias.Name = "chkAntialias";
-			this.chkAntialias.Size = new System.Drawing.Size(79, 17);
-			this.chkAntialias.TabIndex = 10;
-			this.chkAntialias.Text = "Antialiasing";
-			this.chkAntialias.UseVisualStyleBackColor = true;
-			this.chkAntialias.CheckedChanged += new System.EventHandler(this.chkAntialias_CheckedChanged);
+			this.chkErrors.AutoSize = true;
+			this.chkErrors.Location = new System.Drawing.Point(12, 66);
+			this.chkErrors.Name = "chkErrors";
+			this.chkErrors.Size = new System.Drawing.Size(92, 17);
+			this.chkErrors.TabIndex = 10;
+			this.chkErrors.Text = "Errors as NaN";
+			this.chkErrors.UseVisualStyleBackColor = true;
+			this.chkErrors.CheckedChanged += new System.EventHandler(this.chkErrors_CheckedChanged);
 			// 
 			// radioBinary
 			// 
@@ -243,7 +243,7 @@
 			this.Controls.Add(this.chkUseXor);
 			this.Controls.Add(this.chkCopyPaste);
 			this.Controls.Add(this.radioBinary);
-			this.Controls.Add(this.chkAntialias);
+			this.Controls.Add(this.chkErrors);
 			this.Controls.Add(this.label2);
 			this.Controls.Add(this.chkThousands);
 			this.Controls.Add(this.radioHex);
@@ -271,7 +271,7 @@
 		private System.Windows.Forms.RadioButton radioHex;
 		private System.Windows.Forms.CheckBox chkThousands;
 		private System.Windows.Forms.Label label2;
-		private System.Windows.Forms.CheckBox chkAntialias;
+		private System.Windows.Forms.CheckBox chkErrors;
 		private System.Windows.Forms.RadioButton radioBinary;
 		private System.Windows.Forms.CheckBox chkCopyPaste;
 		private System.Windows.Forms.CheckBox chkUseXor;

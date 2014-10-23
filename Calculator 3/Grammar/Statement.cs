@@ -71,7 +71,7 @@ namespace Calculator.Grammar
 			ErrorText = null;
 			VariableName = null;
 			if (string.IsNullOrWhiteSpace(source))
-				return Variable.Error;
+				return Variable.Error("Empty string");
 
 			Text = source;
 			{
@@ -114,14 +114,13 @@ namespace Calculator.Grammar
 				variable.Value = null;
 			else
 				variable = Visit(root);
-			if (variable.Value != null)
+			if (!variable.Errored)
 			{
 				if (!string.IsNullOrEmpty(VariableName))
 					Memory.SetVariable(VariableName, variable);
-				return variable;
 			}
 
-			return Variable.Error;
+			return variable;
 		}
 		private static string Preprocess(string source)
 		{
@@ -246,7 +245,7 @@ namespace Calculator.Grammar
 		{
 			if (Dispatch.ContainsKey(token.Type))
 				return Dispatch[token.Type](token);
-			return Variable.Error;
+			return Variable.Error(string.Format("{0} not found", token));
 		}
 		/// <summary>
 		/// Default for visiting an unknown token.
@@ -295,8 +294,8 @@ namespace Calculator.Grammar
 			if (Scripts.FuncExists(token.Children[0].Text))
 			{
 				var left = Visit(token.Children[1]);
-				if (left == null)
-					return Variable.Error;
+				if (left.Errored)
+					return left;
 				return Scripts.ExecuteFunc(token.Children[0].Text, left);
 			}
 
@@ -366,8 +365,8 @@ namespace Calculator.Grammar
 		private static Variable VisitNegation(CalcToken token)
 		{
 			var right = Visit(token.Children[0]);
-			if(right.Value == null)
-				return Variable.Error;
+			if (right.Errored)
+				return right;
 			return right.Negate();
 		}
 		#endregion
@@ -388,7 +387,7 @@ namespace Calculator.Grammar
 				case TokenType.LogicalAnd:
 					return left & right;
 				default:
-					return Variable.Error;
+					throw new Exception();
 			}
 		}
 		private static Variable VisitOp(CalcToken token)
@@ -396,8 +395,8 @@ namespace Calculator.Grammar
 			var left = Visit(token.Children[0]);
 			var right = Visit(token.Children[2]);
 
-			if (left.Value == null || right.Value == null)
-				return Variable.Error;
+			if (left.Errored || right.Errored)
+				return Variable.ErroredVariable(left, right);
 
 			switch (token.Children[1].Type)
 			{
@@ -431,8 +430,8 @@ namespace Calculator.Grammar
 		{
 			var left = Visit(token.Children[0]);
 			var right = Visit(token.Children[2]);
-			if (left.Value == null || right.Value == null)
-				return Variable.Error;
+			if (left.Errored || right.Errored)
+				return Variable.ErroredVariable(left, right);
 			if (right.Value is Vector)
 			{
 				if (Program.UseXor)
@@ -450,7 +449,7 @@ namespace Calculator.Grammar
 			if (Program.UseXor && token.Children[1].Type != TokenType.AlwaysPow)
 			{
 				if (left.Value is double || right.Value is double)
-					return Variable.Error;
+					return Variable.Error("xor double");
 				return new Variable(left.Value ^ right.Value);
 			}
 			else
@@ -461,8 +460,8 @@ namespace Calculator.Grammar
 		private static Variable VisitFactorial(CalcToken token)
 		{
 			var left = Visit(token.Children[0]);
-			if (left.Value == null)
-				return Variable.Error;
+			if (left.Errored)
+				return left;
 			return new Variable(CalcMath.Factorial(left.Value));
 		}
 		private static Variable VisitTernary(CalcToken token)
@@ -471,23 +470,23 @@ namespace Calculator.Grammar
 			var leftExpression = Visit(token.Children[2]);
 			var rightExpression = Visit(token.Children[4]);
 
-			if (boolean.Value == null)
-				return Variable.Error;
+			if (boolean.Errored)
+				return boolean;
 
 			if (boolean.Value is double)
 				return boolean.Value != 0.0 ? leftExpression : rightExpression;
 			if (boolean.Value is long)
 				return boolean.Value != 0 ? leftExpression : rightExpression;
 
-			return Variable.Error;
+			return Variable.Error("ternary bool is vector");
 		}
 		#endregion
 
 		private static Variable VisitMiscFunc(CalcToken token)
 		{
 			var left = Visit(token.Children[1]);
-			if (left.Value == null)
-				return Variable.Error;
+			if (left.Errored)
+				return left;
 			switch (token.Children[0].Text)
 			{
 				case "abs":
@@ -509,23 +508,23 @@ namespace Calculator.Grammar
 				case "dot":
 					if(left.Value is Vector)
 						return ((Vector)left.Value).Dot();
-					return Variable.Error;
+					return Variable.Error("Dot on non vector");
 				case "cross":
 					if (left.Value is Vector)
 						return ((Vector)left.Value).Cross();
-					return Variable.Error;
+					return Variable.Error("Cross on non vector");
 				case "normalize":
 					if (left.Value is Vector)
 						return ((Vector)left.Value).Normalize();
-					return Variable.Error;
+					return Variable.Error("Normalize on non vector");
 				case "length":
 					if (left.Value is Vector)
 						return ((Vector)left.Value).Length();
-					return Variable.Error;
+					return Variable.Error("Length on non vector");
 				case "lerp":
 					if (left.Value is Vector)
 						return ((Vector)left.Value).Lerp();
-					return Variable.Error;
+					return Variable.Error("Lerp on non vector");
 				default:
 					throw new DataException(string.Format("Unsupported token type {0}.", token.Children[0].Text));
 			}
@@ -534,38 +533,36 @@ namespace Calculator.Grammar
 		private static Variable VisitVectorFunc(CalcToken token)
 		{
 			var left = Visit(token.Children[1]);
-			if (left.Value == null)
-				return Variable.Error;
-			if (!(left.Value is Vector))
-				return Variable.Error;
+			if (left.Errored)
+				return left;
 
 			if (!(left.Value is Vector))
-				return Variable.Error;
+				return Variable.Error("lane func on non vector");
 			var arguments = (Vector)left.Value;
 
 			if (arguments.Count < 2)
-				return Variable.Error;
+				return Variable.Error("lane func arg count");
 			if(!(arguments[0].Value is Vector))
-				return Variable.Error;
+				return Variable.Error("lane func arg on non vector");
 			if (arguments[1].Value is Vector)
-				return Variable.Error;
+				return Variable.Error("lane func idx is vector");
 
 			var vector = (Vector)arguments[0].Value;
 			var index = (int)arguments[1].Value;
 			if (index >= vector.Count || index < 0)
-				return Variable.Error;
+				return Variable.Error("lane func idx invalid");
 			switch (token.Children[0].Text)
 			{
 				case "vget_lane":
 					{
 						if (arguments.Count != 2)
-							return Variable.Error;
+							return Variable.Error("vget_lane arg count");
 						return vector[index];
 					}
 				case "vset_lane":
 					{
 						if (arguments.Count != 3)
-							return Variable.Error;
+							return Variable.Error("vset_lane arg count");
 						var value = arguments[2];
 						vector[index] = value;
 						return new Variable(vector);
@@ -578,8 +575,8 @@ namespace Calculator.Grammar
 		private static Variable VisitTrig(CalcToken token)
 		{
 			var left = Visit(token.Children[1]);
-			if (left.Value == null)
-				return Variable.Error;
+			if (left.Errored)
+				return left;
 			var degreeBefore = Program.Radians ? 1 : 0.0174532925199433;
 			var degreeAfter = !Program.Radians ? 57.2957795130823 : 1;
 			switch (token.Children[0].Text)
@@ -592,25 +589,26 @@ namespace Calculator.Grammar
 					return left.Tan();
 				case "asin":
 					if (left.Value is Vector)
-						return Variable.Error;
+						return Variable.Error("asin on vector");
 					return new Variable(degreeAfter * Math.Asin(left.Value));
 				case "acos":
 					if (left.Value is Vector)
-						return Variable.Error;
+						return Variable.Error("acos on vector");
 					return new Variable(degreeAfter * Math.Acos(left.Value));
 				case "atan":
 					if (left.Value is Vector && left.Value.Count == 2)
 					{
+						if (left.Value[0].Errored || left.Value[1].Errored)
+							return Variable.ErroredVariable(left.Value[0], left.Value[1]);
+
 						var y = left.Value[0].Value;
 						var x = left.Value[1].Value;
-						if (x == null || y == null)
-							return Variable.Error;
 						if (x is Vector || y is Vector)
-							return Variable.Error;
+							return Variable.Error("atan on vector");
 						return new Variable(degreeAfter * Math.Atan2((double)y, (double)x));
 					}
 					if (left.Value is Vector)
-						return Variable.Error;
+						return Variable.Error("atan on vector");
 					return new Variable(degreeAfter * Math.Atan(left.Value));
 				default:
 					throw new NotImplementedException();
