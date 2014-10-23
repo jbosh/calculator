@@ -299,7 +299,7 @@ namespace Calculator.Grammar
 				return Scripts.ExecuteFunc(token.Children[0].Text, left);
 			}
 
-			throw new NotImplementedException();
+			return Variable.Error(string.Format("{0} not found", token.Children[0].Text));
 		}
 
 		#region Basic Parsing

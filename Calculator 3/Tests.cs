@@ -175,6 +175,8 @@ namespace Calculator
 			TestFunction("r&5", null);
 			TestFunction("0x80000000 >> (r&63)", null);
 
+			TestFunction("p3.1/3476", null);
+
 			TestFunction("sin({-180; -90; 180})", new Vector(0, -1, 0));
 			TestFunction("cos({-180; -90; 180})", new Vector(-1, 0, -1));
 
