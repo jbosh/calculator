@@ -36,13 +36,13 @@ namespace Calculator.Grammar
 		public static Variable ExecuteFunc(string functionText, Variable parameter)
 		{
 			if (FunctionStack.Contains(functionText))
-				return new Variable();
+				return Variable.Error;
 
 			FunctionStack.Push(functionText);
 			Statement.Memory.Push();
 			Statement.Memory.SetVariable("value", parameter);
 			var lines = Functions[functionText];
-			var output = new Variable();
+			var output = Variable.Error;
 			foreach (var line in lines)
 			{
 				var stat = new Statement();

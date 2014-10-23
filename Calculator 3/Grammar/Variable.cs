@@ -31,7 +31,7 @@ namespace Calculator.Grammar
 			if (a.Value is ulong || b.Value is ulong)
 				return new Variable((ulong)a.Value & (ulong)b.Value);
 			if (a.Value == null || b.Value == null)
-				return new Variable();
+				return Variable.Error;
 			return new Variable(a.Value & b.Value);
 		}
 		public static Variable operator |(Variable a, Variable b)
@@ -45,7 +45,7 @@ namespace Calculator.Grammar
 			if (a.Value is ulong || b.Value is ulong)
 				return new Variable((ulong)a.Value | (ulong)b.Value);
 			if(a.Value == null || b.Value == null)
-				return new Variable();
+				return Variable.Error;
 			return new Variable(a.Value | b.Value);
 		}
 		public static Variable operator ^(Variable a, Variable b)
@@ -59,13 +59,13 @@ namespace Calculator.Grammar
 			if (a.Value is ulong || b.Value is ulong)
 				return new Variable((ulong)a.Value ^ (ulong)b.Value);
 			if (a.Value == null || b.Value == null)
-				return new Variable();
+				return Variable.Error;
 			return new Variable(a.Value ^ b.Value);
 		}
 		public Variable ShiftLeft(Variable count)
 		{
 			if (count.Value == null || Value == null)
-				return new Variable();
+				return Variable.Error;
 			if (Value is double)
 				Value = (long)Math.Round((double)Value);
 			if (count.Value is double)
@@ -74,12 +74,12 @@ namespace Calculator.Grammar
 				return new Variable(Vector.ShiftLeft(Value, count.Value));
 			if (Value is long || Value is int || Value is ulong)
 				return new Variable(Value << (int)count.Value);
-			return new Variable();
+			return Variable.Error;
 		}
 		public Variable ShiftRight(Variable count)
 		{
 			if(count.Value == null || Value == null)
-				return new Variable();
+				return Variable.Error;
 			if (Value is double)
 				Value = (long)Math.Round((double)Value);
 			if (count.Value is double)
@@ -88,7 +88,7 @@ namespace Calculator.Grammar
 				return new Variable(Vector.ShiftRight(Value, count.Value));
 			if (Value is long || Value is int || Value is ulong)
 				return new Variable(Value >> (int)count.Value);
-			return new Variable();
+			return Variable.Error;
 		}
 		#endregion
 
@@ -118,7 +118,7 @@ namespace Calculator.Grammar
 		public static Variable operator /(Variable a, Variable b)
 		{
 			if(b.Value == null)
-				return new Variable();
+				return Variable.Error;
 			if (b.Value is Vector)
 				return new Variable(a.Value / b.Value);
 			// Because integer division doesn't work, must cast to double.
@@ -287,7 +287,7 @@ namespace Calculator.Grammar
 		public static Variable CompareEquals (Variable a, Variable b)
 		{
 			if (a.Value == null || b.Value == null)
-				return new Variable();
+				return Variable.Error;
 			if (a.Value is double && b.Value is double)
 				return new Variable(Math.Round((double)a.Value, 2) == Math.Round((double)b.Value, 2));
 			if (a.Value is long && b.Value is long)
@@ -295,16 +295,16 @@ namespace Calculator.Grammar
 			if (a.Value is Vector && b.Value is Vector)
 				return new Variable((Vector)a.Value == (Vector)b.Value ? 1 : 0);
 			if (a.Value is Vector || b.Value is Vector)
-				return new Variable();
+				return Variable.Error;
 			if (a.Value is double || b.Value is double)
 				return new Variable(Math.Round((double)a.Value, 2) == Math.Round((double)b.Value, 2));
 
-			return new Variable();
+			return Variable.Error;
 		}
 		public static Variable CompareNotEquals(Variable a, Variable b)
 		{
 			if (a.Value == null || b.Value == null)
-				return new Variable();
+				return Variable.Error;
 			if (a.Value is double && b.Value is double)
 				return new Variable(Math.Round((double)a.Value, 2) == Math.Round((double)b.Value, 2));
 			if (a.Value is long && b.Value is long)
@@ -312,52 +312,52 @@ namespace Calculator.Grammar
 			if (a.Value is Vector && b.Value is Vector)
 				return new Variable((Vector)a.Value != (Vector)b.Value ? 1 : 0);
 			if (a.Value is Vector || b.Value is Vector)
-				return new Variable();
+				return Variable.Error;
 			if (a.Value is double || b.Value is double)
 				return new Variable((double)a.Value != (double)b.Value);
 
-			return new Variable();
+			return Variable.Error;
 		}
 		public static Variable CompareLessThan(Variable a, Variable b)
 		{
 			if (a.Value == null || b.Value == null)
-				return new Variable();
+				return Variable.Error;
 			if (a.Value is double && b.Value is double)
 				return new Variable((double)a.Value < b.Value);
 			if (a.Value is long && b.Value is long)
 				return new Variable((long)a.Value < (long)b.Value);
 			if (a.Value is Vector || b.Value is Vector)
-				return new Variable();
+				return Variable.Error;
 			if (a.Value is double || b.Value is double)
 				return new Variable((double)a.Value < (double)b.Value);
 
-			return new Variable();
+			return Variable.Error;
 		}
 		public static Variable CompareLessEqual(Variable a, Variable b)
 		{
 			if (a.Value == null || b.Value == null)
-				return new Variable();
+				return Variable.Error;
 			if (a.Value is double && b.Value is double)
 				return new Variable((double)a.Value <= b.Value);
 			if (a.Value is long && b.Value is long)
 				return new Variable((long)a.Value <= (long)b.Value);
 			if (a.Value is Vector || b.Value is Vector)
-				return new Variable();
+				return Variable.Error;
 			if (a.Value is double || b.Value is double)
 				return new Variable((double)a.Value <= (double)b.Value);
 
-			return new Variable();
+			return Variable.Error;
 		}
 		public static Variable CompareGreaterThan(Variable a, Variable b)
 		{
 			if (a.Value == null || b.Value == null)
-				return new Variable();
+				return Variable.Error;
 			if (a.Value is double && b.Value is double)
 				return new Variable((double)a.Value > b.Value);
 			if (a.Value is long && b.Value is long)
 				return new Variable((long)a.Value > (long)b.Value);
 			if (a.Value is Vector || b.Value is Vector)
-				return new Variable();
+				return Variable.Error;
 			if (a.Value is double || b.Value is double)
 				return new Variable((double)a.Value > (double)b.Value);
 
@@ -366,13 +366,13 @@ namespace Calculator.Grammar
 		public static Variable CompareGreaterEqual(Variable a, Variable b)
 		{
 			if (a.Value == null || b.Value == null)
-				return new Variable();
+				return Variable.Error;
 			if (a.Value is double && b.Value is double)
 				return new Variable((double)a.Value >= b.Value);
 			if (a.Value is long && b.Value is long)
 				return new Variable((long)a.Value >= (long)b.Value);
 			if (a.Value is Vector || b.Value is Vector)
-				return new Variable();
+				return Variable.Error;
 			if (a.Value is double || b.Value is double)
 				return new Variable((double)a.Value >= (double)b.Value);
 

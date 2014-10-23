@@ -203,7 +203,7 @@ namespace Calculator.Grammar
 				return new Variable(d);
 			}
 			if (Values[0].Value == null || Values[1].Value == null)
-				return new Variable();
+				return Variable.Error;
 			return new Variable(Values[0].Value * Values[1].Value);
 		}
 
@@ -238,9 +238,9 @@ namespace Calculator.Grammar
 		public Variable Length()
 		{
 			if(Values == null)
-				return new Variable();
+				return Variable.Error;
 			if (Values.Any(v => v.Value is Vector))
-				return new Variable();
+				return Variable.Error;
 			var d = 0.0;
 			for (var i = 0; i < Count; i++)
 				d += Values[i].Value * Values[i].Value;
@@ -250,7 +250,7 @@ namespace Calculator.Grammar
 		public Variable Lerp()
 		{
 			if (Values == null)
-				return new Variable();
+				return Variable.Error;
 			if (Values.Length != 3)
 				return Variable.Error;
 			if (Values.Any(v => v.Value == null))
@@ -284,7 +284,7 @@ namespace Calculator.Grammar
 		{
 			var len = Length();
 			if(len.Value == null)
-				return new Variable();
+				return Variable.Error;
 			return new Variable(this / len.Value);
 		}
 		private Variable PerformOp(Func<Variable, Variable> func)
@@ -293,7 +293,7 @@ namespace Calculator.Grammar
 			for (var i = 0; i < output.Count; i++)
 			{
 				if (Values[i].Value == null)
-					return new Variable();
+					return Variable.Error;
 				output[i] = func(Values[i]);
 			}
 			return new Variable(output);
@@ -332,20 +332,20 @@ namespace Calculator.Grammar
 		}
 		public Variable Xor(double d)
 		{
-			return new Variable();
+			return Variable.Error;
 		}
 		public Variable Xor(long d)
 		{
 			if (Values.Any(v0 => v0.Value is double))
-				return new Variable();
+				return Variable.Error;
 			return PerformOp(v0 => new Variable(v0.Value ^ d));
 		}
 		public Variable Xor(Vector d)
 		{
 			if (Values.Any(v0 => v0.Value is double))
-				return new Variable();
+				return Variable.Error;
 			if (d.Values.Any(v0 => v0.Value is double))
-				return new Variable();
+				return Variable.Error;
 			return new Variable(PerformOp(this, d, (v0, v1) => new Variable(v0.Value ^ v1.Value)));
 		}
 		public Variable Negate()
@@ -400,7 +400,7 @@ namespace Calculator.Grammar
 		private static Variable CompareUsingOperator(Vector a, Vector b, Func<Variable, Variable, Variable> comparison)
 		{
 			if (a.Count != b.Count)
-				return new Variable();
+				return Variable.Error;
 
 			var output = new Variable[a.Count];
 			for (var i = 0; i < a.Count; i++)

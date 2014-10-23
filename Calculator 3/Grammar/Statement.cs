@@ -27,6 +27,8 @@ namespace Calculator.Grammar
 		public string VariableName { get; private set; }
         public string Text { get; private set; }
 		public OutputFormat Format { get; private set; }
+		public string ErrorText { get; set; }
+		public bool Error { get { return ErrorText != null; } }
 
 		private static Dictionary<TokenType, Func<CalcToken, Variable>> Dispatch;
 		public static MemoryManager Memory;
@@ -66,6 +68,7 @@ namespace Calculator.Grammar
 		/// <returns></returns>
 		public Variable ProcessString(string source)
 		{
+			ErrorText = null;
 			VariableName = null;
 			if (string.IsNullOrWhiteSpace(source))
 				return Variable.Error;
@@ -293,7 +296,7 @@ namespace Calculator.Grammar
 			{
 				var left = Visit(token.Children[1]);
 				if (left == null)
-					return new Variable();
+					return Variable.Error;
 				return Scripts.ExecuteFunc(token.Children[0].Text, left);
 			}
 
@@ -364,7 +367,7 @@ namespace Calculator.Grammar
 		{
 			var right = Visit(token.Children[0]);
 			if(right.Value == null)
-				return new Variable();
+				return Variable.Error;
 			return right.Negate();
 		}
 		#endregion
@@ -394,7 +397,7 @@ namespace Calculator.Grammar
 			var right = Visit(token.Children[2]);
 
 			if (left.Value == null || right.Value == null)
-				return new Variable();
+				return Variable.Error;
 
 			switch (token.Children[1].Type)
 			{
@@ -429,7 +432,7 @@ namespace Calculator.Grammar
 			var left = Visit(token.Children[0]);
 			var right = Visit(token.Children[2]);
 			if (left.Value == null || right.Value == null)
-				return new Variable();
+				return Variable.Error;
 			if (right.Value is Vector)
 			{
 				if (Program.UseXor)
@@ -447,7 +450,7 @@ namespace Calculator.Grammar
 			if (Program.UseXor && token.Children[1].Type != TokenType.AlwaysPow)
 			{
 				if (left.Value is double || right.Value is double)
-					return new Variable();
+					return Variable.Error;
 				return new Variable(left.Value ^ right.Value);
 			}
 			else
@@ -459,7 +462,7 @@ namespace Calculator.Grammar
 		{
 			var left = Visit(token.Children[0]);
 			if (left.Value == null)
-				return new Variable();
+				return Variable.Error;
 			return new Variable(CalcMath.Factorial(left.Value));
 		}
 		private static Variable VisitTernary(CalcToken token)
@@ -469,14 +472,14 @@ namespace Calculator.Grammar
 			var rightExpression = Visit(token.Children[4]);
 
 			if (boolean.Value == null)
-				return new Variable();
+				return Variable.Error;
 
 			if (boolean.Value is double)
 				return boolean.Value != 0.0 ? leftExpression : rightExpression;
 			if (boolean.Value is long)
 				return boolean.Value != 0 ? leftExpression : rightExpression;
 
-			return new Variable();
+			return Variable.Error;
 		}
 		#endregion
 
@@ -484,7 +487,7 @@ namespace Calculator.Grammar
 		{
 			var left = Visit(token.Children[1]);
 			if (left.Value == null)
-				return new Variable();
+				return Variable.Error;
 			switch (token.Children[0].Text)
 			{
 				case "abs":
@@ -506,19 +509,19 @@ namespace Calculator.Grammar
 				case "dot":
 					if(left.Value is Vector)
 						return ((Vector)left.Value).Dot();
-					return new Variable();
+					return Variable.Error;
 				case "cross":
 					if (left.Value is Vector)
 						return ((Vector)left.Value).Cross();
-					return new Variable();
+					return Variable.Error;
 				case "normalize":
 					if (left.Value is Vector)
 						return ((Vector)left.Value).Normalize();
-					return new Variable();
+					return Variable.Error;
 				case "length":
 					if (left.Value is Vector)
 						return ((Vector)left.Value).Length();
-					return new Variable();
+					return Variable.Error;
 				case "lerp":
 					if (left.Value is Vector)
 						return ((Vector)left.Value).Lerp();
@@ -532,37 +535,37 @@ namespace Calculator.Grammar
 		{
 			var left = Visit(token.Children[1]);
 			if (left.Value == null)
-				return new Variable();
+				return Variable.Error;
 			if (!(left.Value is Vector))
-				return new Variable();
+				return Variable.Error;
 
 			if (!(left.Value is Vector))
-				return new Variable();
+				return Variable.Error;
 			var arguments = (Vector)left.Value;
 
 			if (arguments.Count < 2)
-				return new Variable();
+				return Variable.Error;
 			if(!(arguments[0].Value is Vector))
-				return new Variable();
+				return Variable.Error;
 			if (arguments[1].Value is Vector)
-				return new Variable();
+				return Variable.Error;
 
 			var vector = (Vector)arguments[0].Value;
 			var index = (int)arguments[1].Value;
 			if (index >= vector.Count || index < 0)
-				return new Variable();
+				return Variable.Error;
 			switch (token.Children[0].Text)
 			{
 				case "vget_lane":
 					{
 						if (arguments.Count != 2)
-							return new Variable();
+							return Variable.Error;
 						return vector[index];
 					}
 				case "vset_lane":
 					{
 						if (arguments.Count != 3)
-							return new Variable();
+							return Variable.Error;
 						var value = arguments[2];
 						vector[index] = value;
 						return new Variable(vector);
@@ -576,7 +579,7 @@ namespace Calculator.Grammar
 		{
 			var left = Visit(token.Children[1]);
 			if (left.Value == null)
-				return new Variable();
+				return Variable.Error;
 			var degreeBefore = Program.Radians ? 1 : 0.0174532925199433;
 			var degreeAfter = !Program.Radians ? 57.2957795130823 : 1;
 			switch (token.Children[0].Text)
@@ -589,11 +592,11 @@ namespace Calculator.Grammar
 					return left.Tan();
 				case "asin":
 					if (left.Value is Vector)
-						return new Variable();
+						return Variable.Error;
 					return new Variable(degreeAfter * Math.Asin(left.Value));
 				case "acos":
 					if (left.Value is Vector)
-						return new Variable();
+						return Variable.Error;
 					return new Variable(degreeAfter * Math.Acos(left.Value));
 				case "atan":
 					if (left.Value is Vector && left.Value.Count == 2)
@@ -601,13 +604,13 @@ namespace Calculator.Grammar
 						var y = left.Value[0].Value;
 						var x = left.Value[1].Value;
 						if (x == null || y == null)
-							return new Variable();
+							return Variable.Error;
 						if (x is Vector || y is Vector)
-							return new Variable();
+							return Variable.Error;
 						return new Variable(degreeAfter * Math.Atan2((double)y, (double)x));
 					}
 					if (left.Value is Vector)
-						return new Variable();
+						return Variable.Error;
 					return new Variable(degreeAfter * Math.Atan(left.Value));
 				default:
 					throw new NotImplementedException();
