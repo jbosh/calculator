@@ -27,8 +27,6 @@ namespace Calculator.Grammar
 		public string VariableName { get; private set; }
         public string Text { get; private set; }
 		public OutputFormat Format { get; private set; }
-		public string ErrorText { get; set; }
-		public bool Error { get { return ErrorText != null; } }
 
 		private static Dictionary<TokenType, Func<CalcToken, Variable>> Dispatch;
 		public static MemoryManager Memory;
@@ -68,7 +66,6 @@ namespace Calculator.Grammar
 		/// <returns></returns>
 		public Variable ProcessString(string source)
 		{
-			ErrorText = null;
 			VariableName = null;
 			if (string.IsNullOrWhiteSpace(source))
 				return Variable.Error("Empty string");
@@ -111,7 +108,7 @@ namespace Calculator.Grammar
 			root = CalcToken.Parse(preprocess);
 			var variable = default(Variable);
 			if (root == null)
-				variable.Value = null;
+				variable = Variable.Error("Parse error");
 			else
 				variable = Visit(root);
 			if (!variable.Errored)
@@ -396,7 +393,7 @@ namespace Calculator.Grammar
 			var right = Visit(token.Children[2]);
 
 			if (left.Errored || right.Errored)
-				return Variable.ErroredVariable(left, right);
+				return Variable.SelectError(left, right);
 
 			switch (token.Children[1].Type)
 			{
@@ -431,7 +428,7 @@ namespace Calculator.Grammar
 			var left = Visit(token.Children[0]);
 			var right = Visit(token.Children[2]);
 			if (left.Errored || right.Errored)
-				return Variable.ErroredVariable(left, right);
+				return Variable.SelectError(left, right);
 			if (right.Value is Vector)
 			{
 				if (Program.UseXor)
@@ -599,7 +596,7 @@ namespace Calculator.Grammar
 					if (left.Value is Vector && left.Value.Count == 2)
 					{
 						if (left.Value[0].Errored || left.Value[1].Errored)
-							return Variable.ErroredVariable(left.Value[0], left.Value[1]);
+							return Variable.SelectError(left.Value[0], left.Value[1]);
 
 						var y = left.Value[0].Value;
 						var x = left.Value[1].Value;

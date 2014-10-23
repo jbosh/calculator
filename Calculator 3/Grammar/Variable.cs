@@ -23,7 +23,7 @@ namespace Calculator.Grammar
 			variable.ErrorText = text;
 			return variable;
 		}
-		public static Variable ErroredVariable(Variable a, Variable b)
+		public static Variable SelectError(Variable a, Variable b)
 		{
 			if (a.Errored)
 				return a;
@@ -42,7 +42,7 @@ namespace Calculator.Grammar
 			if (a.Value is ulong || b.Value is ulong)
 				return new Variable((ulong)a.Value & (ulong)b.Value);
 			if (a.Errored || b.Errored)
-				return Variable.ErroredVariable(a, b);
+				return Variable.SelectError(a, b);
 			return new Variable(a.Value & b.Value);
 		}
 		public static Variable operator |(Variable a, Variable b)
@@ -56,7 +56,7 @@ namespace Calculator.Grammar
 			if (a.Value is ulong || b.Value is ulong)
 				return new Variable((ulong)a.Value | (ulong)b.Value);
 			if(a.Errored || b.Errored)
-				return Variable.ErroredVariable(a, b);
+				return Variable.SelectError(a, b);
 			return new Variable(a.Value | b.Value);
 		}
 		public static Variable operator ^(Variable a, Variable b)
@@ -70,13 +70,13 @@ namespace Calculator.Grammar
 			if (a.Value is ulong || b.Value is ulong)
 				return new Variable((ulong)a.Value ^ (ulong)b.Value);
 			if (a.Errored || b.Errored)
-				return Variable.ErroredVariable(a, b);
+				return Variable.SelectError(a, b);
 			return new Variable(a.Value ^ b.Value);
 		}
 		public Variable ShiftLeft(Variable count)
 		{
 			if (count.Errored || Errored)
-				return Variable.ErroredVariable(count, this);
+				return Variable.SelectError(count, this);
 			if (Value is double)
 				Value = (long)Math.Round((double)Value);
 			if (count.Value is double)
@@ -90,7 +90,7 @@ namespace Calculator.Grammar
 		public Variable ShiftRight(Variable count)
 		{
 			if (count.Errored || Errored)
-				return Variable.ErroredVariable(count, this);
+				return Variable.SelectError(count, this);
 			if (Value is double)
 				Value = (long)Math.Round((double)Value);
 			if (count.Value is double)
@@ -298,7 +298,7 @@ namespace Calculator.Grammar
 		public static Variable CompareEquals (Variable a, Variable b)
 		{
 			if (a.Errored || b.Errored)
-				return Variable.ErroredVariable(a, b);
+				return Variable.SelectError(a, b);
 			if (a.Value is double && b.Value is double)
 				return new Variable(Math.Round((double)a.Value, 2) == Math.Round((double)b.Value, 2));
 			if (a.Value is long && b.Value is long)
@@ -315,7 +315,7 @@ namespace Calculator.Grammar
 		public static Variable CompareNotEquals(Variable a, Variable b)
 		{
 			if (a.Errored || b.Errored)
-				return Variable.ErroredVariable(a, b);
+				return Variable.SelectError(a, b);
 			if (a.Value is double && b.Value is double)
 				return new Variable(Math.Round((double)a.Value, 2) == Math.Round((double)b.Value, 2));
 			if (a.Value is long && b.Value is long)
@@ -332,7 +332,7 @@ namespace Calculator.Grammar
 		public static Variable CompareLessThan(Variable a, Variable b)
 		{
 			if (a.Errored || b.Errored)
-				return Variable.ErroredVariable(a, b);
+				return Variable.SelectError(a, b);
 			if (a.Value is double && b.Value is double)
 				return new Variable((double)a.Value < b.Value);
 			if (a.Value is long && b.Value is long)
@@ -347,7 +347,7 @@ namespace Calculator.Grammar
 		public static Variable CompareLessEqual(Variable a, Variable b)
 		{
 			if (a.Errored || b.Errored)
-				return Variable.ErroredVariable(a, b);
+				return Variable.SelectError(a, b);
 			if (a.Value is double && b.Value is double)
 				return new Variable((double)a.Value <= b.Value);
 			if (a.Value is long && b.Value is long)
@@ -362,7 +362,7 @@ namespace Calculator.Grammar
 		public static Variable CompareGreaterThan(Variable a, Variable b)
 		{
 			if (a.Errored || b.Errored)
-				return Variable.ErroredVariable(a, b);
+				return Variable.SelectError(a, b);
 			if (a.Value is double && b.Value is double)
 				return new Variable((double)a.Value > b.Value);
 			if (a.Value is long && b.Value is long)
@@ -377,7 +377,7 @@ namespace Calculator.Grammar
 		public static Variable CompareGreaterEqual(Variable a, Variable b)
 		{
 			if (a.Errored || b.Errored)
-				return Variable.ErroredVariable(a, b);
+				return Variable.SelectError(a, b);
 			if (a.Value is double && b.Value is double)
 				return new Variable((double)a.Value >= b.Value);
 			if (a.Value is long && b.Value is long)

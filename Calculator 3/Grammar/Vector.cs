@@ -207,7 +207,7 @@ namespace Calculator.Grammar
 				return new Variable(d);
 			}
 			if (Values[0].Errored || Values[1].Errored)
-				return Variable.ErroredVariable(Values[0], Values[1]);
+				return Variable.SelectError(Values[0], Values[1]);
 			return new Variable(Values[0].Value * Values[1].Value);
 		}
 
@@ -216,7 +216,7 @@ namespace Calculator.Grammar
 			if (Values.Length != 2)
 				return Variable.Error("Cross arg count");
 			if (Values[0].Errored || Values[1].Errored)
-				return Variable.ErroredVariable(Values[0], Values[1]);
+				return Variable.SelectError(Values[0], Values[1]);
 
 			var a = (Vector)Values[0].Value;
 			var b = (Vector)Values[1].Value;
