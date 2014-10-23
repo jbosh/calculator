@@ -35,7 +35,7 @@ namespace Calculator.Grammar
 			for (int i = Memory.Count - 1; i >= 0; i--)
 				if (Memory[i].ContainsKey(name))
 					return Memory[i][name];
-			return Variable.Error("Undefined Var");
+			return Variable.Error(string.Format("{0} not found", name));
 		}
 		public void Push()
 		{
