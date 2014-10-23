@@ -451,6 +451,7 @@ namespace Calculator.Windows
 				lblEquals.TabIndex = 0;
 				lblEquals.Text = "=";
 				lblEquals.TabStop = false;
+				lblAnswer.Font = font;
 
 				Format = Program.DefaultFormat;
 				ThousandsSeparator = Program.DefaultThousandsSeparator;
