@@ -9,6 +9,7 @@ namespace Calculator.Grammar
 	public static class Scripts
 	{
 		private static Dictionary<string, string[]> Functions = new Dictionary<string, string[]>();
+		private static Stack<string> FunctionStack = new Stack<string>();
 		public static void LoadScripts(string directory)
 		{
 			Functions.Clear();
@@ -34,6 +35,10 @@ namespace Calculator.Grammar
 
 		public static Variable ExecuteFunc(string functionText, Variable parameter)
 		{
+			if (FunctionStack.Contains(functionText))
+				return new Variable();
+
+			FunctionStack.Push(functionText);
 			Statement.Memory.Push();
 			Statement.Memory.SetVariable("value", parameter);
 			var lines = Functions[functionText];
@@ -45,6 +50,7 @@ namespace Calculator.Grammar
 			}
 			Statement.Memory.Pop();
 
+			FunctionStack.Pop();
 			return output;
 		}
 	}
