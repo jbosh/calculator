@@ -13,7 +13,7 @@ namespace Calculator.Grammar
 	public class Statement
 	{
 		private static readonly Regex RegSpaces
-			= new Regex(@"[^a-zA-Z\d\.][\d\.]+([_a-zA-Z]+)", RegexOptions.Compiled);
+			= new Regex(@"[^a-zA-Z\d\.]([\d\.]+)([_a-zA-Z]+)", RegexOptions.Compiled);
 		private static readonly Regex RegMulti
 			= new Regex(@"([\d\w\)]+)( +)([\d\w\(\{]+)", RegexOptions.Compiled);
 		private static readonly Regex RegHex
@@ -32,10 +32,6 @@ namespace Calculator.Grammar
 		private static Dictionary<TokenType, Func<CalcToken, Variable>> Dispatch;
 		public static MemoryManager Memory;
 		private CalcToken root;
-		public Statement()
-		{
-			Format = OutputFormat.Invalid;
-		}
 		public static void Initialize()
 		{
 			Dispatch = new Dictionary<TokenType, Func<CalcToken, Variable>>
@@ -64,6 +60,7 @@ namespace Calculator.Grammar
 		}
 		public void Reset()
 		{
+			Format = OutputFormat.Invalid;
 			root = null;
 			Text = null;
 		}
@@ -177,15 +174,31 @@ namespace Calculator.Grammar
 					match = RegSpaces.Match(source, i);
 					if(!match.Success)
 						break;
-					if (RegFloat.IsMatch(source, match.Index + 1) 
+					if (RegFloat.IsMatch(source, match.Index + 1)
 						|| RegHex.IsMatch(source, match.Index + 1)
 						|| RegBinary.IsMatch(source, match.Index + 1))
+					{
 						i = match.Index + match.Length;
+					}
 					else
 					{
 						builder.Remove(0, builder.Length);
 						builder.Append(source);
-						builder.Insert(match.Groups[1].Index, ' ');
+
+						var indexOffset = 0;
+						if (IsFunc(match.Groups[2].Value))
+						{
+							builder.Insert(match.Groups[2].Index + indexOffset, ' ');
+						}
+						else
+						{
+							builder.Insert(match.Groups[1].Index, '(');
+							indexOffset++;
+							builder.Insert(match.Groups[2].Index + indexOffset, ' ');
+							indexOffset++;
+							builder.Insert(match.Index + match.Length + indexOffset, ')');
+							indexOffset++;
+						}
 						source = builder.ToString();
 					}
 				}
