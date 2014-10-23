@@ -486,8 +486,6 @@ namespace Calculator.Windows
 			#endregion
 			public void Calculate(bool global)
 			{
-				if (global)
-					statement.Reset();
 				var parse = statement.ProcessString(txtQuestion.Text);
 				var format = statement.Format == OutputFormat.Invalid ? Format : statement.Format;
 				lblAnswer.Text = Program.FormatOutput(parse, format, ThousandsSeparator);

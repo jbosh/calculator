@@ -25,7 +25,6 @@ namespace Calculator.Grammar
 		private static readonly Regex RegEqualOperator
 			= new Regex(@"[^<>=!](=)[^<>=!]", RegexOptions.Compiled);
 		public string VariableName { get; private set; }
-		public bool Error { get; private set; }
         public string Text { get; private set; }
 		public OutputFormat Format { get; private set; }
 
@@ -58,12 +57,6 @@ namespace Calculator.Grammar
 			{TokenType.TernaryExpression, VisitTernary},
 			};
 		}
-		public void Reset()
-		{
-			Format = OutputFormat.Invalid;
-			root = null;
-			Text = null;
-		}
 		/// <summary>
 		/// Processes a given string, either executing
 		/// the existing tree or updating it if source
@@ -73,23 +66,7 @@ namespace Calculator.Grammar
 		/// <returns></returns>
 		public Variable ProcessString(string source)
 		{
-			if (Text == source && !Error)
-			{
-				try
-				{
-					var returnValue = Execute();
-					if (returnValue.Value == null)
-						Error = true;
-					else
-						return returnValue;
-				}
-				catch
-				{
-					Error = true;
-				}
-			}
 			VariableName = null;
-			Error = true;
 			if (string.IsNullOrWhiteSpace(source))
 				return Variable.Error;
 
@@ -138,22 +115,10 @@ namespace Calculator.Grammar
 			{
 				if (!string.IsNullOrEmpty(VariableName))
 					Memory.SetVariable(VariableName, variable);
-				Error = false;
 				return variable;
 			}
 
 			return Variable.Error;
-		}
-		public Variable Execute()
-		{
-			if(Error)
-				return new Variable();
-			var output = Visit(root);
-			if (!string.IsNullOrEmpty(VariableName))
-				Memory.SetVariable(VariableName, output);
-			if (output.Value == null)
-				Error = true;
-			return output;
 		}
 		private static string Preprocess(string source)
 		{

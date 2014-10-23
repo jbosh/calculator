@@ -114,7 +114,7 @@ namespace Calculator.Windows
 				int j = 0;
 				foreach (var stat in parent.Statements)
 				{
-					var variable = stat.Execute();
+					var variable = stat.ProcessString(stat.Text);
 					if (variable.Value == null)
 					{
 						lines[j][0].Y = float.NaN;
