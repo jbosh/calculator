@@ -63,7 +63,12 @@ namespace Calculator.Grammar
 				return new Vector("Vector count mismatch");
 			var output = new Vector(a.Values);
 			for (var i = 0; i < output.Count; i++)
-				output[i] = func(a[i], b[i]);
+			{
+				if (a[i].Errored || b[i].Errored)
+					output[i] = Variable.SelectError(a[i], b[i]);
+				else
+					output[i] = func(a[i], b[i]);
+			}
 			return output;
 		}
 		#region Add
@@ -297,14 +302,19 @@ namespace Calculator.Grammar
 			for (var i = 0; i < output.Count; i++)
 			{
 				if (Values[i].Errored)
-					return Values[i];
-				output[i] = func(Values[i]);
+					output[i] = Values[i];
+				else
+					output[i] = func(Values[i]);
 			}
 			return new Variable(output);
 		}
 		public Variable Round()
 		{
 			return PerformOp(v0 => v0.Round());
+		}
+		public Variable Round(int decimals)
+		{
+			return PerformOp(v0 => v0.Round(decimals));
 		}
 		public Variable Ceiling()
 		{
@@ -429,7 +439,7 @@ namespace Calculator.Grammar
 				}
 				else if (a[i].Value is double || b[i].Value is double)
 				{
-					if (Math.Round((double)a[i].Value, 2) != Math.Round((double)b[i].Value, 2))
+					if (Math.Abs((double)a[i].Value - (double)b[i].Value) > 0.001)
 						return false;
 				}
 				else if (a[i] != b[i])

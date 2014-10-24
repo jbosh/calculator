@@ -163,7 +163,7 @@ namespace Calculator
 			TestFunction("1 - sqrt{1;4;9}", new Vector(0, -1, -2));
 			TestFunction("{2;4}^2", new Vector(4, 16));
 			TestFunction("~r+1", null);
-			TestFunction("~{r}+1", null);
+			TestFunction("~{r}+1", new Vector(new Variable(null)));
 			TestFunction("~({1;1;1;1}|{1;1;0;0})", new Vector(-2, -2, -2, -2));
 			TestFunction("{1;1;1;1}&{1;1;0;0}", new Vector(1, 1, 0, 0));
 			TestFunction("~(r|r)", null);
@@ -314,10 +314,14 @@ namespace Calculator
 		{
 			var stat = new Statement();
 			var output = stat.ProcessString(function);
-			if (output.Value is double)
-				output.Value = Math.Round(output.Value, 2);
+
+			if (output.Value is Vector)
+				output.Value = ((Vector)output.Value).Round(2).Value;
+
 			var failed = false;
-			if (output.Value is ulong || correct is ulong)
+			if (output.Value is double)
+				failed = Math.Abs(output.Value - correct) > 0.01;
+			else if (output.Value is ulong || correct is ulong)
 				failed = (ulong)output.Value != (ulong)correct;
 			else
 				failed = output.Value != correct;

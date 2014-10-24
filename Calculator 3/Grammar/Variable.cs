@@ -180,6 +180,17 @@ namespace Calculator.Grammar
 				return new Variable(amtLong);
 			return new Variable(amt);
 		}
+		public Variable Round(int decimals)
+		{
+			if (Errored)
+				return this;
+			if (Value is Vector)
+				return ((Vector)Value).Round(decimals);
+			if (Value is long || Value is ulong)
+				return new Variable(Value);
+			var amt = Math.Round((double)Value, decimals);
+			return new Variable(amt);
+		}
 		public Variable Ceiling()
 		{
 			if (Value is Vector)
@@ -299,8 +310,6 @@ namespace Calculator.Grammar
 		{
 			if (a.Errored || b.Errored)
 				return Variable.SelectError(a, b);
-			if (a.Value is double && b.Value is double)
-				return new Variable(Math.Round((double)a.Value, 2) == Math.Round((double)b.Value, 2));
 			if (a.Value is long && b.Value is long)
 				return new Variable((long)a.Value == (long)b.Value);
 			if (a.Value is Vector && b.Value is Vector)
@@ -308,7 +317,7 @@ namespace Calculator.Grammar
 			if (a.Value is Vector || b.Value is Vector)
 				return Variable.Error("== types");
 			if (a.Value is double || b.Value is double)
-				return new Variable(Math.Round((double)a.Value, 2) == Math.Round((double)b.Value, 2));
+				return new Variable((double)a.Value == (double)b.Value);
 
 			throw new Exception();
 		}
@@ -316,8 +325,6 @@ namespace Calculator.Grammar
 		{
 			if (a.Errored || b.Errored)
 				return Variable.SelectError(a, b);
-			if (a.Value is double && b.Value is double)
-				return new Variable(Math.Round((double)a.Value, 2) == Math.Round((double)b.Value, 2));
 			if (a.Value is long && b.Value is long)
 				return new Variable((long)a.Value != (long)b.Value);
 			if (a.Value is Vector && b.Value is Vector)
@@ -333,8 +340,6 @@ namespace Calculator.Grammar
 		{
 			if (a.Errored || b.Errored)
 				return Variable.SelectError(a, b);
-			if (a.Value is double && b.Value is double)
-				return new Variable((double)a.Value < b.Value);
 			if (a.Value is long && b.Value is long)
 				return new Variable((long)a.Value < (long)b.Value);
 			if (a.Value is Vector || b.Value is Vector)
