@@ -260,6 +260,12 @@ namespace Calculator
 			TestFunction("vget_lane{{3;2;1;0};20;1}", null);
 			TestFunction("vset_lane{{3;2;1;0};20;1}", null);
 
+			Scripts.AddScript("_recursion", new[] { "value <= 1 ? 1 : _recursion(value - 1) + value" });
+			TestFunction("_recursion(12)", 78);
+			TestFunction("_recursion(128.0)", 8256);
+			TestFunction("_recursion(129)", null);
+			Scripts.RemoveScript("_factorial");
+
 			Program.UseXor = true;
 			TestFunction("2^2", 0);
 			TestFunction("2^3", 1);

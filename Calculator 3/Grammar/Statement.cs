@@ -464,18 +464,22 @@ namespace Calculator.Grammar
 		private static Variable VisitTernary(CalcToken token)
 		{
 			var boolean = Visit(token.Children[0]);
-			var leftExpression = Visit(token.Children[2]);
-			var rightExpression = Visit(token.Children[4]);
+			var leftToken = token.Children[2];
+			var rightToken = token.Children[4];
 
 			if (boolean.Errored)
 				return boolean;
 
+			CalcToken visitedToken = null;
 			if (boolean.Value is double)
-				return boolean.Value != 0.0 ? leftExpression : rightExpression;
-			if (boolean.Value is long)
-				return boolean.Value != 0 ? leftExpression : rightExpression;
+				visitedToken = boolean.Value != 0.0 ? leftToken : rightToken;
+			else if (boolean.Value is long)
+				visitedToken = boolean.Value != 0 ? leftToken : rightToken;
 
-			return Variable.Error("ternary bool is vector");
+			if(visitedToken == null)
+				return Variable.Error("ternary bool is vector");
+
+			return Visit(visitedToken);
 		}
 		#endregion
 

@@ -28,6 +28,16 @@ namespace Calculator.Grammar
 				Functions.Add(name, lines);
 			}
 		}
+#if RUN_TESTS
+		public static void AddScript(string name, string[] lines)
+		{
+			Functions.Add(name, lines);
+		}
+		public static void RemoveScript(string name)
+		{
+			Functions.Remove(name);
+		}
+#endif
 		public static bool FuncExists(string name)
 		{
 			return Functions.ContainsKey(name);
@@ -35,8 +45,8 @@ namespace Calculator.Grammar
 
 		public static Variable ExecuteFunc(string functionText, Variable parameter)
 		{
-			if (FunctionStack.Contains(functionText))
-				return Variable.Error("Inf Recursion");
+			if (FunctionStack.Count == 128)
+				return Variable.Error("Recursed too many levels");
 
 			FunctionStack.Push(functionText);
 			Statement.Memory.Push();
