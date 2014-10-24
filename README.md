@@ -13,11 +13,11 @@ The [wiki](https://github.com/jbosh/calculator/wiki) has more features.
 
 ## Usage
 Just type into the calculator and an answer shows up on the right.<br/>
-Ctrl+'+' adds new rows.<br/>
+Ctrl + '+' adds new rows.<br/>
 More features and info are on the [wiki](https://github.com/jbosh/calculator/wiki). There's so much you can do, go on and have a look.
 
 ### Example:
-![Example.png](https://s3-us-west-2.amazonaws.com/jbosh-net/public/calc/Example.png)
+![Example.png](https://raw.githubusercontent.com/jbosh/calculator_wiki/master/Example.png)
 
 As you can see, the answers show up on the right as you type on the left.
 
