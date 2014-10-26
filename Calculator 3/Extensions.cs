@@ -14,5 +14,10 @@ namespace Calculator
 			var ret = new string(arr);
 			return ret;
 		}
+
+		public static bool ContainsIndex(this System.Text.RegularExpressions.Match match, int index)
+		{
+			return index >= match.Index && index - match.Index < match.Length;
+		}
 	}
 }

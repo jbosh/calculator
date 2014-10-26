@@ -36,8 +36,9 @@ namespace Calculator
 				CaretStart = SelectionStart;
 			if (e.Clicks >= 2 || (ModifierKeys & Keys.Control) == Keys.Control)
 			{
-				SelectionStart = FindPreviousWord(CaretStart, Text);
-				SelectionLength = FindNextWord(SelectionStart, Text) - SelectionStart;
+				var node = FindToken(CaretStart, Text);
+				SelectionStart = node.Value.Index;
+				SelectionLength = node.Value.Length;
 				return;
 			}
 		}
@@ -136,55 +137,94 @@ namespace Calculator
 			switch (e.KeyCode)
 			{
 				case Keys.Left:
-					e.Handled = true;
-					if (e.Shift)
 					{
-						if (CaretStart < SelectionStart + SelectionLength)
+						e.Handled = true;
+
+						if (e.Shift)
 						{
-							var index = FindPreviousWord(SelectionStart + SelectionLength, Text);
-							if (index < CaretStart)
-								index = CaretStart;
-							index -= SelectionStart + SelectionLength;
-							SelectionLength += index;
+							if (CaretStart < SelectionStart + SelectionLength) //shrink
+							{
+								var node = FindToken(SelectionStart + SelectionLength, Text);
+								var index = 0;
+								if (node.Value.Index != SelectionStart + SelectionLength) //you're in the word
+									index = node.Value.Index;
+								else if (node.Previous != null) //move to previous word
+									index = node.Previous.Value.Index;
+								if (index < CaretStart)
+									index = CaretStart;
+								index -= SelectionStart + SelectionLength;
+								SelectionLength += index;
+							}
+							else //grow
+							{
+								var node = FindToken(SelectionStart, Text);
+								var index = 0;
+								if (node.Value.Index != SelectionStart) //you're in the word
+									index = node.Value.Index;
+								else if (node.Previous != null) //move to previous word
+									index = node.Previous.Value.Index;
+								index -= SelectionStart;
+								SelectionStart += index;
+								SelectionLength -= index;
+							}
 						}
 						else
 						{
-							var index = FindPreviousWord(SelectionStart, Text);
-							index -= SelectionStart;
-							SelectionStart += index;
-							SelectionLength -= index;
+							var node = FindToken(SelectionStart, Text);
+							var index = 0;
+							if (node.Value.Index != SelectionStart) //you're in the word
+								index = node.Value.Index;
+							else if (node.Previous != null) //move to previous word
+								index = node.Previous.Value.Index;
+							SelectionStart = index;
 						}
-					}
-					else
-					{
-						var index = FindPreviousWord(SelectionStart, Text);
-						SelectionStart = index;
 					}
 					break;
 				case Keys.Right:
-					e.Handled = true;
-					if (e.Shift)
 					{
-						if (SelectionStart < CaretStart)
+						e.Handled = true;
+						if (e.Shift)
 						{
-							var index = FindNextWord(SelectionStart, Text);
-							if (CaretStart < index)
-								index = CaretStart;
-							index -= SelectionStart;
-							SelectionStart += index;
-							SelectionLength -= index;
+							if (SelectionStart < CaretStart) //shrink
+							{
+								var node = FindToken(SelectionStart, Text);
+								var index = Text.Length;
+								if (node.Value.Index != SelectionStart) //you're in the word
+									index = SelectionStart + SelectionLength;
+								else if (node.Next != null) //move to next word
+									index = node.Next.Value.Index;
+
+								if (CaretStart < index)
+									index = CaretStart;
+								index -= SelectionStart;
+								SelectionStart += index;
+								if(SelectionStart + SelectionLength < Text.Length)
+									SelectionLength -= index;
+							}
+							else //grow
+							{
+								var node = FindToken(SelectionStart + SelectionLength, Text);
+								var index = Text.Length;
+								if (node.Value.Index + node.Value.Length != SelectionStart + SelectionLength) //you're in the word
+									index = node.Value.Index + node.Value.Length;
+								else if (node.Next != null) //move to next word
+									index = node.Next.Value.Index;
+
+								index -= SelectionStart + SelectionLength;
+								SelectionLength += index;
+							}
 						}
 						else
 						{
-							var index = FindNextWord(SelectionStart + SelectionLength, Text);
-							index -= SelectionStart + SelectionLength;
-							SelectionLength += index;
+							var node = FindToken(SelectionStart, Text);
+							var index = Text.Length;
+							if (node.Value.Index + node.Value.Length != SelectionStart) //you're in the word
+								index = node.Value.Index + node.Value.Length;
+							else if (node.Next != null) //move to next word
+								index = node.Next.Value.Index;
+
+							SelectionStart = index;
 						}
-					}
-					else
-					{
-						var index = FindNextWord(SelectionStart, Text);
-						SelectionStart = index;
 					}
 					break;
 			}
@@ -284,21 +324,47 @@ namespace Calculator
 			return false;
 		}
 
-		static Regex WordIdentifier = new Regex("([a-zA-Z0-9_$]+)", RegexOptions.Compiled);
-		private static int FindPreviousWord(int index, string sentence)
+		//Order matters, first one wins
+		private static Regex[] WordRegs = new[]
 		{
-			var revSentence = sentence.Reverse();
-			var nextIdx = FindNextWord(sentence.Length - index, revSentence);
-			var output = Math.Max(sentence.Length - nextIdx, 0);
-			return output;
-		}
+			new Regex(@"0x[\d\.a-fA-F]+", RegexOptions.Compiled), //hex
+			new Regex(@"0b[10]+", RegexOptions.Compiled), //binary
+			new Regex(@"[\d\.]+[Ee][-\d\.]+", RegexOptions.Compiled), //scientific
+			new Regex(@"[\d]*\.?[\d]+", RegexOptions.Compiled), //number
+			new Regex(@"[\w][\w\d]+", RegexOptions.Compiled), //ids
+			new Regex(@" +", RegexOptions.Compiled), //spaces
+			new Regex(@".", RegexOptions.Compiled), //anything else
+		};
 
-		private static int FindNextWord(int index, string sentence)
+		private static LinkedListNode<Match> FindToken(int index, string sentence)
 		{
-			var match = WordIdentifier.Match(sentence, index);
-			if(!match.Success || match.Index != index)
-				return index + 1;
-			return index + match.Length;
+			var list = new LinkedList<Match>();
+			var word = default(LinkedListNode<Match>);
+			for (var i = 0; i < sentence.Length;)
+			{
+				foreach (var reg in WordRegs)
+				{
+					var match = reg.Match(sentence, i);
+					if (match.Success && match.Index == i)
+					{
+						var node = list.AddLast(match);
+						if (match.ContainsIndex(index))
+							word = node;
+						i += match.Length;
+						break;
+					}
+				}
+			}
+			if (word == null)
+			{
+				if (index == 0)
+					word = list.First;
+				if (index == sentence.Length)
+					word = list.Last;
+				if(word == null)
+					throw new Exception();
+			}
+			return word;
 		}
 
 		struct UndoData
