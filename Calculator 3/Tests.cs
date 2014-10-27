@@ -200,6 +200,8 @@ namespace Calculator
 			TestFunction("0.0?{0;1}:{1;2}", new Vector(1, 2));
 			TestFunction("1.2?{0;1}:{1;2}", new Vector(0, 1));
 			TestFunction("{0}?1:3", null);
+			TestFunction("(1 > 1 ? 2 : 3)", 3);
+			TestFunction("1 > 1 ? 1 : 1 ? 2 : 3", 2);
 
 			TestFunction("1==2", 0);
 			TestFunction("1==1", 1);

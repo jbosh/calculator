@@ -113,7 +113,7 @@ Binary = '0b'[10]+
 
 <Value> ::= Double
           | ID
-          | '(' <Logical Expression> ')'
+          | '(' <Ternary Expression> ')'
           | Hex
           | Binary
           | <Vector Expression>
