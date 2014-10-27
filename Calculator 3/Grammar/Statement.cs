@@ -50,7 +50,7 @@ namespace Calculator.Grammar
 			{TokenType.OpExpression, VisitOp},
 			{TokenType.Expression, VisitOp},
 			{TokenType.CompareExpression, VisitOp},
-			{TokenType.Pow, VisitPow},
+			{TokenType.PowExpression, VisitPow},
 			{TokenType.Factorial, VisitFactorial},
 
 			{TokenType.Function, VisitFunc},
@@ -129,6 +129,10 @@ namespace Calculator.Grammar
 				.Replace("}", " } ")
 				.Replace("{", " { ")
 				.Replace(",", "");
+
+			if (!Program.UseXor)
+				source = source.Replace("^", "**");
+
 			#region Process Extra Spaces
 			{
 				Match match;
@@ -383,6 +387,8 @@ namespace Calculator.Grammar
 					return left | right;
 				case TokenType.LogicalAnd:
 					return left & right;
+				case TokenType.Xor:
+					return left ^ right;
 				default:
 					throw new Exception();
 			}
@@ -431,28 +437,14 @@ namespace Calculator.Grammar
 				return Variable.SelectError(left, right);
 			if (right.Value is Vector)
 			{
-				if (Program.UseXor)
-					return ((Vector)left.Value).Xor(right.Value);
-				else
-					return ((Vector)left.Value).Pow(right.Value);
+				return ((Vector)left.Value).Pow(right.Value);
 			}
 			if (left.Value is Vector)
 			{
-				if (Program.UseXor && token.Children[1].Type != TokenType.AlwaysPow)
-					return ((Vector)left.Value).Xor(right.Value);
-				else
-					return ((Vector)left.Value).Pow(right.Value);
+				return ((Vector)left.Value).Pow(right.Value);
 			}
-			if (Program.UseXor && token.Children[1].Type != TokenType.AlwaysPow)
-			{
-				if (left.Value is double || right.Value is double)
-					return Variable.Error("xor double");
-				return new Variable(left.Value ^ right.Value);
-			}
-			else
-			{
-				return new Variable(Math.Pow((double)left.Value, (double)right.Value));
-			}
+
+			return new Variable(Math.Pow((double)left.Value, (double)right.Value));
 		}
 		private static Variable VisitFactorial(CalcToken token)
 		{

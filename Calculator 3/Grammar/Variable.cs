@@ -71,6 +71,10 @@ namespace Calculator.Grammar
 				return new Variable((ulong)a.Value ^ (ulong)b.Value);
 			if (a.Errored || b.Errored)
 				return Variable.SelectError(a, b);
+			if (a.Value is Vector)
+				return ((Vector)a.Value).Xor(b.Value);
+			if (b.Value is Vector)
+				return ((Vector)b.Value).Xor(a.Value);
 			return new Variable(a.Value ^ b.Value);
 		}
 		public Variable ShiftLeft(Variable count)

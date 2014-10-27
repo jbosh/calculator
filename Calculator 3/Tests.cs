@@ -270,10 +270,11 @@ namespace Calculator
 			TestFunction("2^2", 0);
 			TestFunction("2^3", 1);
 			TestFunction("2**2", 4);
-			TestFunction("2.3 + 2321.23 * 234.21 - 233.231 * 2 ^ 2", 543657.58);
-			TestFunction("(4*10^6)g(15)", 7056);
-			TestFunction("[58sin 45]^2", null);
-			TestFunction("g^2^g", null);
+			TestFunction("(2 + 2321 * 234 - 233 * 2) ^ 2", 542648);
+			TestFunction("2 + 2321 * 234 - 233 * 2 ^ 2", 542648);
+			TestFunction("(4*10^6)g(15)", 6762);
+			TestFunction("[58sin 45]^2", 43);
+			TestFunction("g^2^g", 2);
 			TestFunction("g**2**g", Math.Pow(Math.Pow(9.8, 2), 9.8));
 			TestFunction("{2;4}^2", new Vector(0, 6));
 			TestFunction("{2;4}^{4;2}", new Vector(6, 6));

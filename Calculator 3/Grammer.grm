@@ -74,6 +74,7 @@ Binary = '0b'[10]+
 
 <Logical Expression> ::= <Logical Expression> '&' <Compare Expression>
                        | <Logical Expression> '|' <Compare Expression>
+                       | <Logical Expression> '^' <Compare Expression>
                        | <Compare Expression>
 
 <Compare expression> ::= <Compare Expression> '<' <Shift Expression>
@@ -97,8 +98,7 @@ Binary = '0b'[10]+
            | <Op Exp> '%' <Pow Exp>
            | <Pow Exp>
 
-<Pow Exp> ::= <Pow Exp> '^' <Negate Exp>
-            | <Pow Exp> '**' <Negate Exp>
+<Pow Exp> ::= <Pow Exp> '**' <Negate Exp>
             | <Negate Exp>
 
 <Negate Exp>  ::= '~' <Negate Exp>
