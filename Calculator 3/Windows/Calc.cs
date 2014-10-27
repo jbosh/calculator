@@ -571,7 +571,7 @@ namespace Calculator.Windows
 					case MouseButtons.Middle:
 						{
 							Format = (OutputFormat)(((uint)Format + 1) % (uint)OutputFormat.Count);
-							Calculate(false);
+							Parent.Recalculate(false);
 						}
 						break;
 				}
