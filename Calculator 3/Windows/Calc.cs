@@ -122,9 +122,11 @@ namespace Calculator.Windows
 				case Keys.Add:
 					if (e.Control)
 					{
-						//select last field if we're not there already
-						if (!fields[fields.Count - 1].txtQuestion.Focused
-							&& fields[fields.Count - 1].txtQuestion.Text.Length == 0)
+						bool isLastFieldEmpty = !fields.Last().txtQuestion.Focused
+							&& fields.Last().txtQuestion.Text.Length == 0;
+						if (e.Shift)
+							InsertField(FindActiveField());
+						else if (isLastFieldEmpty) //select last field if we're not there already
 							fields[fields.Count - 1].txtQuestion.Focus();
 						else
 							Push();
@@ -350,19 +352,29 @@ namespace Calculator.Windows
 		}
 		private void Push(string text = "")
 		{
+			InsertField(fields.Count - 1, text);
+		}
+		private void InsertField(int index, string text = "")
+		{
 			if (fields.Count >= 24)
 				return;
 
-			var field = new CalculatorField(fields[fields.Count - 1]);
+			
+			var field = new CalculatorField(fields[index]);
 			field.txtQuestion.TextChanged += (o, e) => Recalculate(false);
-			fields.Add(field);
+			fields.Insert(index + 1, field);
 			Controls.Add(field.lblEquals);
 			Controls.Add(field.lblAnswer);
 			Controls.Add(field.txtQuestion);
 			field.txtQuestion.Focus();
 			field.Text = text;
 
-			var size = SizeFromClientSize(new Size(ClientSize.Width, field.Bottom + 2));
+			for (var i = 0; i < fields.Count; i++)
+			{
+				fields[i].MoveAfterField(i == 0 ? null : fields[i - 1]);
+			}
+
+			var size = SizeFromClientSize(new Size(ClientSize.Width, fields.Last().Bottom + 2));
 			MinimumSize = new Size(CalculatorField.TotalLabelSize + 6, size.Height);
 			MaximumSize = new Size(int.MaxValue, size.Height);
 			Size = size;
@@ -381,7 +393,6 @@ namespace Calculator.Windows
 			Controls.Remove(field.txtQuestion);
 			fields.RemoveAt(index);
 
-			fields[0].Index = 0;
 			for (var i = 0; i < fields.Count; i++)
 			{
 				fields[i].MoveAfterField(i == 0 ? null : fields[i - 1]);
