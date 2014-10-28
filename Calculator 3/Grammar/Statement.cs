@@ -71,6 +71,20 @@ namespace Calculator.Grammar
 				return Variable.Error("Empty string");
 
 			Text = source;
+
+			{
+				var splits = source.Split(new[] { "=>" }, StringSplitOptions.RemoveEmptyEntries);
+				if (splits.Length == 2)
+				{
+					var name = splits[0].Trim();
+					var script = splits[1].Trim();
+					var scriptVar = new Variable(script, name);
+					scriptVar.ErrorText = name;
+					Memory.SetVariable(name, scriptVar);
+					return scriptVar;
+				}
+			}
+
 			{
 				var match = RegEqualOperator.Match(source);
 				if (match.Success)
@@ -104,7 +118,7 @@ namespace Calculator.Grammar
 			}
 
 			var preprocess = Preprocess(source);
-				
+
 			root = CalcToken.Parse(preprocess);
 			var variable = default(Variable);
 			if (root == null)
@@ -210,7 +224,7 @@ namespace Calculator.Grammar
 		private static bool IsFunc(string token)
 		{
 			var name = token.Trim();
-			switch(name)
+			switch (name)
 			{
 				case "deg":
 				case "acos":
@@ -240,6 +254,13 @@ namespace Calculator.Grammar
 
 			if (Scripts.FuncExists(name))
 				return true;
+
+			{
+				var variable = Memory.GetVariable(name);
+				if (variable != null && variable.Value is string)
+					return true;
+			}
+
 			return false;
 		}
 		private static Variable Visit(CalcToken token)
@@ -261,7 +282,8 @@ namespace Calculator.Grammar
 		{
 			if (token.Children[0].Type != TokenType.Id)
 				throw new NotImplementedException();
-			switch (token.Children[0].Text)
+			var name = token.Children[0].Text;
+			switch (name)
 			{
 				case "abs":
 				case "sqrt":
@@ -292,15 +314,29 @@ namespace Calculator.Grammar
 					return VisitVectorFunc(token);
 			}
 
-			if (Scripts.FuncExists(token.Children[0].Text))
+			if (Scripts.FuncExists(name))
 			{
 				var left = Visit(token.Children[1]);
 				if (left.Errored)
 					return left;
-				return Scripts.ExecuteFunc(token.Children[0].Text, left);
+				return Scripts.ExecuteFunc(name, left);
 			}
 
-			return Variable.Error(string.Format("{0} not found", token.Children[0].Text));
+			{
+				var variable = Memory.GetVariable(name);
+				if(variable != null && variable.Value is string)
+				{
+					var left = Visit(token.Children[1]);
+					Statement.Memory.Push();
+					Statement.Memory.SetVariable("value", left);
+					var stat = new Statement();
+					var output = stat.ProcessString(variable.Value);
+					Statement.Memory.Pop();
+					return output;
+				}
+			}
+
+			return Variable.Error(string.Format("{0} not found", name));
 		}
 
 		#region Basic Parsing

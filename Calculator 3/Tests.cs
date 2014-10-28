@@ -311,6 +311,9 @@ namespace Calculator
 			TestFunction("normalize{n}", null);
 			TestFunction("_x = 2", 2);
 			TestFunction("_x", 2);
+			TestFunction("funkyMath=>value+17)12*sqrt(16)", "value+17)12*sqrt(16)");
+			TestFunction("funkyMath(7)", 1152);
+			TestFunction("funkyMaths(7)", null);
 			Memory.Pop();
 		}
 		private static void TestFunction(string function, dynamic correct)
