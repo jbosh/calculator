@@ -112,9 +112,6 @@ namespace Calculator.Windows
 		private void RadioStandardClicked()
 		{
 			ClickRadioButton(radioStandard);
-			chkThousands.Enabled = true;
-			numRounding.Enabled = true;
-			numBinaryRounding.Enabled = false;
 			if (Recalulating)
 				return;
 			Program.DefaultFormat = OutputFormat.Standard;
@@ -123,9 +120,6 @@ namespace Calculator.Windows
 		private void RadioScientificClicked()
 		{
 			ClickRadioButton(radioScientific);
-			chkThousands.Enabled = false;
-			numRounding.Enabled = true;
-			numBinaryRounding.Enabled = false;
 			if (Recalulating)
 				return;
 			Program.DefaultFormat = OutputFormat.Scientific;
@@ -134,9 +128,6 @@ namespace Calculator.Windows
 		private void RadioHexClicked()
 		{
 			ClickRadioButton(radioHex);
-			chkThousands.Enabled = true;
-			numRounding.Enabled = false;
-			numBinaryRounding.Enabled = false;
 			if (Recalulating)
 				return;
 			Program.DefaultFormat = OutputFormat.Hex;
@@ -145,9 +136,6 @@ namespace Calculator.Windows
 		private void RadioBinaryClicked()
 		{
 			ClickRadioButton(radioBinary);
-			chkThousands.Enabled = true;
-			numRounding.Enabled = false;
-			numBinaryRounding.Enabled = true;
 			if (Recalulating)
 				return;
 			Program.DefaultFormat = OutputFormat.Binary;
