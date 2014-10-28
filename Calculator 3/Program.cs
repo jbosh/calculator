@@ -27,17 +27,18 @@ namespace Calculator
 	}
 	internal static class Program
 	{
-		private static bool alwaysOnTop;
+		private static bool alwaysOnTop = true;
 		private static bool antialias = true;
-		private static OutputFormat defaultFormat;
+		private static OutputFormat defaultFormat = OutputFormat.Standard;
+		private static bool radians = false;
+		private static int rounding = -1;
+		private static int binaryRounding = -1;
+		private static bool defaultThousandsSeparator = true;
+		private static bool copyPasteHelper = true;
+		private static bool useXor = false;
+		private static bool errorAsNan = false;
+
 		private static Form HelpForm, OptionsForm, CopyHelpersForm;
-		private static bool radians;
-		private static int rounding;
-		private static int binaryRounding;
-		private static bool defaultThousandsSeparator;
-		private static bool copyPasteHelper;
-		private static bool useXor;
-		private static bool errorAsNan;
 		private static List<ICalculator> Window = new List<ICalculator>();
 		private static int SleepMilliseconds{ get; set; }
 		public static bool Radians
