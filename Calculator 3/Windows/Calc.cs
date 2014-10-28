@@ -137,7 +137,10 @@ namespace Calculator.Windows
 				case Keys.Subtract:
 					if (e.Control)
 					{
-						Pop();
+						if (e.Shift)
+							RemoveField(FindActiveField());
+						else
+							Pop();
 						e.Handled = true;
 						return;
 					}
@@ -366,21 +369,33 @@ namespace Calculator.Windows
 		}
 		private void Pop()
 		{
+			RemoveField(fields.Count - 1);
+		}
+		private void RemoveField(int index)
+		{
 			if (fields.Count <= 1)
 				return;
-			CalculatorField field = fields[fields.Count - 1];
-			var lastField = fields[fields.Count - 2];
-			lastField.txtQuestion.Focus();
+			CalculatorField field = fields[index];
 			Controls.Remove(field.lblEquals);
 			Controls.Remove(field.lblAnswer);
 			Controls.Remove(field.txtQuestion);
-			fields.RemoveAt(fields.Count - 1);
+			fields.RemoveAt(index);
 
-			var size = SizeFromClientSize(new Size(ClientSize.Width, lastField.Bottom + 2));
+			fields[0].Index = 0;
+			for (var i = 0; i < fields.Count; i++)
+			{
+				fields[i].MoveAfterField(i == 0 ? null : fields[i - 1]);
+			}
+
+			var lastField = fields[index];
+			lastField.txtQuestion.Focus();
+
+			var size = SizeFromClientSize(new Size(ClientSize.Width, fields.Last().Bottom + 2));
 			MinimumSize = new Size(CalculatorField.TotalLabelSize + 6, size.Height);
 			MaximumSize = new Size(int.MaxValue, size.Height);
 			Size = size;
 		}
+
 		#region Nested type: CalculatorField
 		private class CalculatorField
 		{
@@ -389,7 +404,7 @@ namespace Calculator.Windows
 			public const int QuestionTextSize = 427;
 			public const int TotalLabelSize = AnswerLabelSize + EqualsLabelSize;
 			public readonly Statement statement;
-			public readonly int Index;
+			public int Index;
 			public readonly Label lblAnswer;
 			public readonly Label lblEquals;
 			public readonly TextBoxAdvanced txtQuestion;
@@ -415,22 +430,19 @@ namespace Calculator.Windows
 			}
 
 			#region Constructors
-			public CalculatorField()
+			public CalculatorField(CalculatorField previous = null)
 			{
 				Index = 0;
 				lblEquals = new Label();
 				lblAnswer = new Label();
 				txtQuestion = new TextBoxAdvanced();
 
-				lblAnswer.Location = new Point(450, 5);
 				lblAnswer.Name = "lblAnswer";
 				lblAnswer.Size = new Size(AnswerLabelSize, 17);
-				lblAnswer.TabIndex = 0;
 				lblAnswer.TabStop = false;
 
 				statement = new Statement();
 				txtQuestion.CaretStart = 0;
-				txtQuestion.Location = new Point(3, 2);
 				txtQuestion.Name = "txtQuestion";
 				txtQuestion.Size = new Size(427, 20);
 				txtQuestion.TabIndex = Index;
@@ -445,7 +457,6 @@ namespace Calculator.Windows
 				}
 				txtQuestion.Font = font;
 				lblEquals.AutoSize = true;
-				lblEquals.Location = new Point(434, txtQuestion.Top + 4);
 				lblEquals.Name = "";
 				lblEquals.Size = new Size(EqualsLabelSize, 13);
 				lblEquals.TabIndex = 0;
@@ -457,6 +468,8 @@ namespace Calculator.Windows
 				ThousandsSeparator = Program.DefaultThousandsSeparator;
 
 				lblAnswer.Click += lblAnswer_Click;
+
+				MoveAfterField(previous);
 			}
 
 			public void Resize(int width)
@@ -472,19 +485,29 @@ namespace Calculator.Windows
 #endif
 			}
 
-			public CalculatorField(CalculatorField previous) : this()
+			public void MoveAfterField(CalculatorField previous)
 			{
-				Index = previous.Index + 1;
+				if (previous == null)
+				{
+					Index = 0;
 
-				lblAnswer.Location = new Point(450, previous.lblAnswer.Bottom + 5);
-				txtQuestion.Location = new Point(3, previous.txtQuestion.Bottom + 2);
-				txtQuestion.Name = "txtQuestion";
+					lblAnswer.Location = new Point(450, 5);
+					txtQuestion.Location = new Point(3, 2);
+					lblEquals.Location = new Point(434, txtQuestion.Top + 4);
+				}
+				else
+				{
+					Index = previous.Index + 1;
+
+					lblAnswer.Location = new Point(450, previous.lblAnswer.Bottom + 5);
+					txtQuestion.Location = new Point(3, previous.txtQuestion.Bottom + 2);
+					lblEquals.Location = new Point(434, txtQuestion.Top + 4);
+				}
+
 				txtQuestion.TabIndex = Index;
-
-				lblEquals.AutoSize = true;
-				lblEquals.Location = new Point(434, txtQuestion.Top + 4);
 			}
 			#endregion
+
 			public void Calculate(bool global)
 			{
 				var parse = statement.ProcessString(txtQuestion.Text);
