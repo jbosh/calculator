@@ -147,6 +147,15 @@ namespace Calculator.Windows
 						return;
 					}
 					break;
+				case Keys.D:
+					if (e.Control)
+					{
+						var idx = FindActiveField();
+						var text = fields[idx].Text;
+						InsertField(idx, text);
+						e.Handled = true;
+					}
+					break;
 				case Keys.X:
 					if(e.Control)
 					{
