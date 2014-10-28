@@ -408,7 +408,7 @@ namespace Calculator
 			switch (format)
 			{
 				case OutputFormat.Scientific:
-					var scientific = value.ToString("E" + (Rounding == -1 ? "" : "Rounding "));
+					var scientific = value.ToString("E" + (Rounding == -1 ? "" : Rounding.ToString()));
 					var index = scientific.IndexOf('E') + 1;
 					if (scientific[index] == '-')
 						index++;
