@@ -147,6 +147,18 @@ namespace Calculator.Windows
 						return;
 					}
 					break;
+				case Keys.X:
+					if(e.Control)
+					{
+						var idx = FindActiveField();
+						var field = fields[idx];
+						if (field.txtQuestion.SelectionLength == 0)
+						{
+							RemoveField(idx);
+							e.Handled = true;
+						}
+					}
+					break;
 				case Keys.Down:
 					SelectNextControl(ActiveControl, true, true, false, false);
 					e.Handled = true;
@@ -398,7 +410,8 @@ namespace Calculator.Windows
 				fields[i].MoveAfterField(i == 0 ? null : fields[i - 1]);
 			}
 
-			var lastField = fields[index];
+			var lastIndex = index >= fields.Count ? fields.Count - 1 : index;
+			var lastField = fields[lastIndex];
 			lastField.txtQuestion.Focus();
 
 			var size = SizeFromClientSize(new Size(ClientSize.Width, fields.Last().Bottom + 2));
