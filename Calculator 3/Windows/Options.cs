@@ -53,6 +53,7 @@ namespace Calculator.Windows
 					break;
 			}
 			Recalulating = false;
+			
 
 			Lock.ReleaseMutex();
 		}
@@ -100,50 +101,55 @@ namespace Calculator.Windows
 			Program.BinaryRounding = (int)numBinaryRounding.Value;
 		}
 
-		private bool ClickRadioButton(RadioButton btn)
+		private void ClickRadioButton(RadioButton btn)
 		{
-			if (Recalulating)
-				return true;
 			radioStandard.Checked = btn == radioStandard;
 			radioScientific.Checked = btn == radioScientific;
 			radioHex.Checked = btn == radioHex;
 			radioBinary.Checked = btn == radioBinary;
-			return false;
 		}
 
 		private void RadioStandardClicked()
 		{
-			if (ClickRadioButton(radioStandard))
-				return;
+			ClickRadioButton(radioStandard);
 			chkThousands.Enabled = true;
 			numRounding.Enabled = true;
+			numBinaryRounding.Enabled = false;
+			if (Recalulating)
+				return;
 			Program.DefaultFormat = OutputFormat.Standard;
 		}
 
 		private void RadioScientificClicked()
 		{
-			if (ClickRadioButton(radioScientific))
-				return;
+			ClickRadioButton(radioScientific);
 			chkThousands.Enabled = false;
 			numRounding.Enabled = true;
+			numBinaryRounding.Enabled = false;
+			if (Recalulating)
+				return;
 			Program.DefaultFormat = OutputFormat.Scientific;
 		}
 
 		private void RadioHexClicked()
 		{
-			if (ClickRadioButton(radioHex))
-				return;
+			ClickRadioButton(radioHex);
 			chkThousands.Enabled = true;
 			numRounding.Enabled = false;
+			numBinaryRounding.Enabled = false;
+			if (Recalulating)
+				return;
 			Program.DefaultFormat = OutputFormat.Hex;
 		}
 
 		private void RadioBinaryClicked()
 		{
-			if (ClickRadioButton(radioBinary))
-				return;
+			ClickRadioButton(radioBinary);
 			chkThousands.Enabled = true;
-			numRounding.Enabled = true;
+			numRounding.Enabled = false;
+			numBinaryRounding.Enabled = true;
+			if (Recalulating)
+				return;
 			Program.DefaultFormat = OutputFormat.Binary;
 		}
 
