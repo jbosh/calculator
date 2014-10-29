@@ -585,7 +585,15 @@ namespace Calculator.Windows
 					case MouseButtons.Left:
 						{
 							if (lblAnswer.Text != null)
+							{
+								var tooltip = new ToolTip
+								{
+									UseFading = false,
+									UseAnimation = false,
+								};
+								tooltip.Show("Copied", lblAnswer, mouseArgs.X - 20, mouseArgs.Y - 10, 200);
 								Clipboard.SetText(Answer);
+							}
 						}
 						break;
 					case MouseButtons.Right:
