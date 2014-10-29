@@ -14,12 +14,16 @@ namespace Calculator
 		public bool InterceptNextPaste { get; set; }
 		public int CaretStart { get; set; }
 
+		private Match CtrlClickMatch;
+		private Tuple<int, int> CtrlClickLastSelection;
+
 		public TextBoxAdvanced()
 		{
 			CaretStart = SelectionStart;
 			KeyUp += TextBoxAdvanced_KeyUp;
 			KeyDown += TextBoxAdvanced_KeyDown;
 			MouseDown += TextBoxAdvanced_MouseDown;
+			MouseMove += TextBoxAdvanced_MouseMove;
 			TextChanged += TextBoxAdvanced_TextChanged;
 			AllowDrop = true;
 			DragOver += TextBoxAdvanced_DragOver;
@@ -39,7 +43,40 @@ namespace Calculator
 				var node = FindToken(CaretStart, Text);
 				SelectionStart = node.Value.Index;
 				SelectionLength = node.Value.Length;
+
+				CtrlClickMatch = node.Value;
+				CtrlClickLastSelection = new Tuple<int,int>(SelectionStart, SelectionLength);
 				return;
+			}
+		}
+		
+		void TextBoxAdvanced_MouseMove(object sender, MouseEventArgs e)
+		{
+			if (e.Button == MouseButtons.Left)
+			{
+				if (CtrlClickMatch != null && (ModifierKeys & Keys.Control) == Keys.Control)
+				{
+					var newSelection = new Tuple<int, int>(SelectionStart, SelectionLength);
+					int index;
+					if (newSelection.Item1 != CtrlClickLastSelection.Item1) //moving selection start
+					{
+						index = newSelection.Item1;
+					}
+					else //changing length only
+					{
+						index = newSelection.Item1 + newSelection.Item2;
+					}
+
+					var node = FindToken(index, Text);
+					var match = node.Value;
+					var start = Math.Min(CtrlClickMatch.Index, match.Index);
+					var end = Math.Max(CtrlClickMatch.Index + CtrlClickMatch.Length, match.Index + match.Length);
+					SelectionStart = start;
+					SelectionLength = end - start;
+
+					CtrlClickLastSelection = newSelection;
+					return;
+				}
 			}
 		}
 
