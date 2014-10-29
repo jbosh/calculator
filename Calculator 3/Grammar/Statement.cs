@@ -243,6 +243,7 @@ namespace Calculator.Grammar
 				case "normalize":
 				case "length":
 				case "round":
+				case "roundto":
 				case "floor":
 				case "ceiling":
 				case "endian":
@@ -290,6 +291,7 @@ namespace Calculator.Grammar
 				case "ln":
 				case "log":
 				case "round":
+				case "roundto":
 				case "ceiling":
 				case "endian":
 				case "floor":
@@ -526,6 +528,19 @@ namespace Calculator.Grammar
 					return left.Ln();
 				case "log":
 					return left.Log();
+				case "roundto":
+					{
+						if(!(left.Value is Vector))
+							return Variable.Error("Roundto args");
+						if(left.Value.Count != 2)
+							return Variable.Error("Roundto num args");
+						var decimals = left.Value[1].Value;
+						if(decimals == null)
+							return Variable.Error("Roundto args");
+						if(decimals is Vector)
+							return Variable.Error("Roundto dec arg");
+						return left.Value[0].Round((int)decimals);
+					}
 				case "round":
 					return left.Round();
 				case "ceiling":

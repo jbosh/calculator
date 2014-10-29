@@ -95,6 +95,13 @@ namespace Calculator
 			TestFunction("ceiling 3", 3);
 			TestFunction("round{2.7301043; 3.2123} * 100", new Vector(300, 300));
 			TestFunction("floor{2.73123412; 1.232341} * 100", new Vector(200, 100));
+			TestFunction("roundto{2}", null);
+			TestFunction("roundto 2", null);
+			TestFunction("roundto{2.7361043; 2.2123} * 100", 274);
+			TestFunction("roundto{2.73123412; {1.232341;7}} * 100", null);
+			TestFunction("roundto{2.73123412; 1232341; 7} * 100", null);
+			TestFunction("roundto{2.73123412; 3}", 2.731);
+			TestFunction("roundto{2.73173412; 3}", 2.732);
 			TestFunction("ceiling{2.132;8.812} * 100", new Vector(300, 900));
 			TestFunction("atan{2.4}", null);
 			TestFunction("atan{1;1}", 45);
