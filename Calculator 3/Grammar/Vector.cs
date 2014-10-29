@@ -53,9 +53,9 @@ namespace Calculator.Grammar
 		}
 		private static void MakeTwoVectors(Variable a, Variable b, out Vector aVec, out Vector bVec)
 		{
-			var count = a.Value is Vector ? ((Vector)a.Value).Count : ((Vector)b.Value).Count;
-			aVec = a.Value is Vector ? a.Value : MakeVector(count, a);
-			bVec = b.Value is Vector ? b.Value : MakeVector(count, b);
+			var count = a.IsVector ? ((Vector)a.Value).Count : ((Vector)b.Value).Count;
+			aVec = a.IsVector ? a.Value : MakeVector(count, a);
+			bVec = b.IsVector ? b.Value : MakeVector(count, b);
 		}
 		private static Vector PerformOp(Vector a, Vector b, Func<Variable, Variable, Variable> func)
 		{
@@ -200,7 +200,7 @@ namespace Calculator.Grammar
 		{
 			if (Values.Length != 2)
 				return Variable.Error("Dot arg count");
-			if (Values[0].Value is Vector && Values[1].Value is Vector)
+			if (Values[0].IsVector && Values[1].IsVector)
 			{
 				var a = (Vector) Values[0].Value;
 				var b = (Vector) Values[1].Value;
@@ -248,7 +248,7 @@ namespace Calculator.Grammar
 				throw new Exception();
 			if (Values.Any(v => v.Errored))
 				return Values.First(v => v.Errored);
-			if (Values.Any(v => v.Value is Vector))
+			if (Values.Any(v => v.IsVector))
 				return Variable.Error("Length vector of vectors");
 			var d = 0.0;
 			for (var i = 0; i < Count; i++)
@@ -265,19 +265,19 @@ namespace Calculator.Grammar
 			if (Values.Any(v => v.Errored))
 				return Values.First(v => v.Errored);
 
-			if (Values[2].Value is Vector)
+			if (Values[2].IsVector)
 				return Variable.Error("Lerp amt is vector");
 
-			if (Values[0].Value is Vector)
+			if (Values[0].IsVector)
 			{
-				if (!(Values[1].Value is Vector))
+				if (!Values[1].IsVector)
 					return Variable.Error("Lerp v0 is vector");
 
 				//lerp (v0, v1, amt)
 			}
 			else
 			{
-				if (Values[1].Value is Vector)
+				if (Values[1].IsVector)
 					return Variable.Error("Lerp v1 is vector");
 
 				//lerp (d0, d1, amt)
@@ -350,15 +350,15 @@ namespace Calculator.Grammar
 		}
 		public Variable Xor(long d)
 		{
-			if (Values.Any(v0 => v0.Value is double))
+			if (Values.Any(v0 => v0.IsDouble))
 				return Variable.Error("xor double");
 			return PerformOp(v0 => new Variable(v0.Value ^ d));
 		}
 		public Variable Xor(Vector d)
 		{
-			if (Values.Any(v0 => v0.Value is double))
+			if (Values.Any(v0 => v0.IsDouble))
 				return Variable.Error("xor double");
-			if (d.Values.Any(v0 => v0.Value is double))
+			if (d.Values.Any(v0 => v0.IsDouble))
 				return Variable.Error("xor double");
 			return new Variable(PerformOp(this, d, (v0, v1) => new Variable(v0.Value ^ v1.Value)));
 		}
@@ -432,12 +432,12 @@ namespace Calculator.Grammar
 
 			for (var i = 0; i < a.Count; i++)
 			{
-				if (a[i].Value is long && b[i].Value is long)
+				if (a[i].IsLong && b[i].IsLong)
 				{
 					if (a[i] != b[i])
 						return false;
 				}
-				else if (a[i].Value is double || b[i].Value is double)
+				else if (a[i].IsDouble || b[i].IsDouble)
 				{
 					if (Math.Abs((double)a[i].Value - (double)b[i].Value) > 0.001)
 						return false;

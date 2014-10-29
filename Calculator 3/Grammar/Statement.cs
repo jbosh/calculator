@@ -473,11 +473,11 @@ namespace Calculator.Grammar
 			var right = Visit(token.Children[2]);
 			if (left.Errored || right.Errored)
 				return Variable.SelectError(left, right);
-			if (right.Value is Vector)
+			if (right.IsVector)
 			{
 				return ((Vector)left.Value).Pow(right.Value);
 			}
-			if (left.Value is Vector)
+			if (left.IsVector)
 			{
 				return ((Vector)left.Value).Pow(right.Value);
 			}
@@ -501,9 +501,9 @@ namespace Calculator.Grammar
 				return boolean;
 
 			CalcToken visitedToken = null;
-			if (boolean.Value is double)
+			if (boolean.IsDouble)
 				visitedToken = boolean.Value != 0.0 ? leftToken : rightToken;
-			else if (boolean.Value is long)
+			else if (boolean.IsLong)
 				visitedToken = boolean.Value != 0 ? leftToken : rightToken;
 
 			if(visitedToken == null)
@@ -530,7 +530,7 @@ namespace Calculator.Grammar
 					return left.Log();
 				case "roundto":
 					{
-						if(!(left.Value is Vector))
+						if(!left.IsVector)
 							return Variable.Error("Roundto args");
 						if(left.Value.Count != 2)
 							return Variable.Error("Roundto num args");
@@ -550,23 +550,23 @@ namespace Calculator.Grammar
 				case "floor":
 					return left.Floor();
 				case "dot":
-					if(left.Value is Vector)
+					if(left.IsVector)
 						return ((Vector)left.Value).Dot();
 					return Variable.Error("Dot on non vector");
 				case "cross":
-					if (left.Value is Vector)
+					if (left.IsVector)
 						return ((Vector)left.Value).Cross();
 					return Variable.Error("Cross on non vector");
 				case "normalize":
-					if (left.Value is Vector)
+					if (left.IsVector)
 						return ((Vector)left.Value).Normalize();
 					return Variable.Error("Normalize on non vector");
 				case "length":
-					if (left.Value is Vector)
+					if (left.IsVector)
 						return ((Vector)left.Value).Length();
 					return Variable.Error("Length on non vector");
 				case "lerp":
-					if (left.Value is Vector)
+					if (left.IsVector)
 						return ((Vector)left.Value).Lerp();
 					return Variable.Error("Lerp on non vector");
 				default:
@@ -580,15 +580,15 @@ namespace Calculator.Grammar
 			if (left.Errored)
 				return left;
 
-			if (!(left.Value is Vector))
+			if (!left.IsVector)
 				return Variable.Error("lane func on non vector");
 			var arguments = (Vector)left.Value;
 
 			if (arguments.Count < 2)
 				return Variable.Error("lane func arg count");
-			if(!(arguments[0].Value is Vector))
+			if(!arguments[0].IsVector)
 				return Variable.Error("lane func arg on non vector");
-			if (arguments[1].Value is Vector)
+			if (arguments[1].IsVector)
 				return Variable.Error("lane func idx is vector");
 
 			var vector = (Vector)arguments[0].Value;
@@ -632,15 +632,15 @@ namespace Calculator.Grammar
 				case "tan":
 					return left.Tan();
 				case "asin":
-					if (left.Value is Vector)
+					if (left.IsVector)
 						return Variable.Error("asin on vector");
 					return new Variable(degreeAfter * Math.Asin(left.Value));
 				case "acos":
-					if (left.Value is Vector)
+					if (left.IsVector)
 						return Variable.Error("acos on vector");
 					return new Variable(degreeAfter * Math.Acos(left.Value));
 				case "atan":
-					if (left.Value is Vector && left.Value.Count == 2)
+					if (left.IsVector && left.Value.Count == 2)
 					{
 						if (left.Value[0].Errored || left.Value[1].Errored)
 							return Variable.SelectError(left.Value[0], left.Value[1]);
@@ -651,7 +651,7 @@ namespace Calculator.Grammar
 							return Variable.Error("atan on vector");
 						return new Variable(degreeAfter * Math.Atan2((double)y, (double)x));
 					}
-					if (left.Value is Vector)
+					if (left.IsVector)
 						return Variable.Error("atan on vector");
 					return new Variable(degreeAfter * Math.Atan(left.Value));
 				default:

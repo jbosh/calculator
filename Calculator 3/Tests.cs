@@ -328,11 +328,11 @@ namespace Calculator
 			var stat = new Statement();
 			var output = stat.ProcessString(function);
 
-			if (output.Value is Vector)
+			if (output.IsVector)
 				output.Value = ((Vector)output.Value).Round(2).Value;
 
 			var failed = false;
-			if (output.Value is double)
+			if (output.IsDouble)
 				failed = Math.Abs(output.Value - correct) > 0.01;
 			else if (output.Value is ulong || correct is ulong)
 				failed = (ulong)output.Value != (ulong)correct;

@@ -9,6 +9,9 @@ namespace Calculator.Grammar
 		public dynamic Value;
 		public string ErrorText;
 		public bool Errored { get { return ErrorText != null; } }
+		public bool IsVector { get { return Value != null ? Value is Vector : false; } }
+		public bool IsDouble { get { return Value != null ? Value is double : false; } }
+		public bool IsLong { get { return Value != null ? Value is long : false; } }
 		public Variable(dynamic value = null, string name = null)
 		{
 			if (value is bool)
@@ -33,11 +36,11 @@ namespace Calculator.Grammar
 		#region Logical Operations
 		public static Variable operator &(Variable a, Variable b)
 		{
-			if (a.Value is double)
+			if (a.IsDouble)
 				a.Value = (long)Math.Round((double)a.Value);
-			if (b.Value is double)
+			if (b.IsDouble)
 				b.Value = (long)Math.Round((double)b.Value);
-			if (a.Value is int || a.Value is long)
+			if (a.Value is int || a.IsLong)
 				return new Variable(a.Value & b.Value);
 			if (a.Value is ulong || b.Value is ulong)
 				return new Variable((ulong)a.Value & (ulong)b.Value);
@@ -47,11 +50,11 @@ namespace Calculator.Grammar
 		}
 		public static Variable operator |(Variable a, Variable b)
 		{
-			if (a.Value is double)
+			if (a.IsDouble)
 				a.Value = (long)Math.Round((double)a.Value);
-			if (b.Value is double)
+			if (b.IsDouble)
 				b.Value = (long)Math.Round((double)b.Value);
-			if (a.Value is int || a.Value is long)
+			if (a.Value is int || a.IsLong)
 				return new Variable(a.Value | b.Value);
 			if (a.Value is ulong || b.Value is ulong)
 				return new Variable((ulong)a.Value | (ulong)b.Value);
@@ -61,19 +64,19 @@ namespace Calculator.Grammar
 		}
 		public static Variable operator ^(Variable a, Variable b)
 		{
-			if (a.Value is double)
+			if (a.IsDouble)
 				a.Value = (long)Math.Round((double)a.Value);
-			if (b.Value is double)
+			if (b.IsDouble)
 				b.Value = (long)Math.Round((double)b.Value);
-			if (a.Value is int || a.Value is long)
+			if (a.Value is int || a.IsLong)
 				return new Variable(a.Value ^ b.Value);
 			if (a.Value is ulong || b.Value is ulong)
 				return new Variable((ulong)a.Value ^ (ulong)b.Value);
 			if (a.Errored || b.Errored)
 				return Variable.SelectError(a, b);
-			if (a.Value is Vector)
+			if (a.IsVector)
 				return ((Vector)a.Value).Xor(b.Value);
-			if (b.Value is Vector)
+			if (b.IsVector)
 				return ((Vector)b.Value).Xor(a.Value);
 			return new Variable(a.Value ^ b.Value);
 		}
@@ -81,13 +84,13 @@ namespace Calculator.Grammar
 		{
 			if (count.Errored || Errored)
 				return Variable.SelectError(count, this);
-			if (Value is double)
+			if (IsDouble)
 				Value = (long)Math.Round((double)Value);
-			if (count.Value is double)
+			if (count.IsDouble)
 				count.Value = (int)count.Value;
-			if (Value is Vector || count.Value is Vector)
+			if (IsVector || count.IsVector)
 				return new Variable(Vector.ShiftLeft(Value, count.Value));
-			if (Value is long || Value is int || Value is ulong)
+			if (IsLong || Value is int || Value is ulong)
 				return new Variable(Value << (int)count.Value);
 			return Variable.Error("ShiftLeft types");
 		}
@@ -95,13 +98,13 @@ namespace Calculator.Grammar
 		{
 			if (count.Errored || Errored)
 				return Variable.SelectError(count, this);
-			if (Value is double)
+			if (IsDouble)
 				Value = (long)Math.Round((double)Value);
-			if (count.Value is double)
+			if (count.IsDouble)
 				count.Value = (int)count.Value;
-			if (Value is Vector || count.Value is Vector)
+			if (IsVector || count.IsVector)
 				return new Variable(Vector.ShiftRight(Value, count.Value));
-			if (Value is long || Value is int || Value is ulong)
+			if (IsLong || Value is int || Value is ulong)
 				return new Variable(Value >> (int)count.Value);
 			return Variable.Error("ShiftRight types");
 		}
@@ -134,10 +137,10 @@ namespace Calculator.Grammar
 		{
 			if(b.Errored)
 				return b;
-			if (b.Value is Vector)
+			if(b.IsVector)
 				return new Variable(a.Value / b.Value);
 			// Because integer division doesn't work, must cast to double.
-			if(a.Value is Vector)
+			if(a.IsVector)
 				return new Variable(a.Value / (double)b.Value);
 			if (b.Value != 0 && a.Value % b.Value == 0)
 				return new Variable(a.Value / b.Value);
@@ -156,13 +159,13 @@ namespace Calculator.Grammar
 		#region Miscellaneous Functions
 		public Variable Abs()
 		{
-			if (Value is Vector)
+			if (IsVector)
 				return ((Vector) Value).Abs();
 			return new Variable(Math.Abs(Value));
 		}
 		public Variable Sqrt()
 		{
-			if (Value is Vector)
+			if (IsVector)
 				return ((Vector) Value).Sqrt();
 			return new Variable(Math.Sqrt(Value));
 		}
@@ -176,7 +179,7 @@ namespace Calculator.Grammar
 		}
 		public Variable Round()
 		{
-			if (Value is Vector)
+			if (IsVector)
 				return ((Vector) Value).Round();
 			var amt = Math.Round((double)Value);
 			var amtLong = (long)amt;
@@ -188,16 +191,16 @@ namespace Calculator.Grammar
 		{
 			if (Errored)
 				return this;
-			if (Value is Vector)
+			if (IsVector)
 				return ((Vector)Value).Round(decimals);
-			if (Value is long || Value is ulong)
+			if (IsLong || Value is ulong)
 				return new Variable(Value);
 			var amt = Math.Round((double)Value, decimals);
 			return new Variable(amt);
 		}
 		public Variable Ceiling()
 		{
-			if (Value is Vector)
+			if (IsVector)
 				return ((Vector)Value).Ceiling();
 			var amt = Math.Ceiling((double)Value);
 			var amtLong = (long)amt;
@@ -207,7 +210,7 @@ namespace Calculator.Grammar
 		}
 		public Variable Floor()
 		{
-			if (Value is Vector)
+			if (IsVector)
 				return ((Vector)Value).Floor();
 			var amt = Math.Floor((double)Value);
 			var amtLong = (long)amt;
@@ -217,7 +220,7 @@ namespace Calculator.Grammar
 		}
 		public Variable Negate()
 		{
-			if (Value is Vector)
+			if (IsVector)
 				return ((Vector)Value).Negate();
 			return new Variable(~(long)Value);
 		}
@@ -225,7 +228,7 @@ namespace Calculator.Grammar
 		{
 			var degreeBefore = Program.Radians ? 1 : 0.0174532925199433;
 
-			if (Value is Vector)
+			if (IsVector)
 				return ((Vector)Value).Sin();
 			return new Variable(Math.Sin(Value * degreeBefore));
 		}
@@ -233,7 +236,7 @@ namespace Calculator.Grammar
 		{
 			var degreeBefore = Program.Radians ? 1 : 0.0174532925199433;
 
-			if (Value is Vector)
+			if (IsVector)
 				return ((Vector)Value).Cos();
 			return new Variable(Math.Cos(Value * degreeBefore));
 		}
@@ -241,15 +244,15 @@ namespace Calculator.Grammar
 		{
 			var degreeBefore = Program.Radians ? 1 : 0.0174532925199433;
 
-			if (Value is Vector)
+			if (IsVector)
 				return ((Vector)Value).Tan();
 			return new Variable(Math.Tan(Value * degreeBefore));
 		}
 		public Variable Endian()
 		{
-			if (Value is Vector)
+			if (IsVector)
 				return ((Vector) Value).Endian();
-            if (Value is double)
+            if (IsDouble)
             {
                 var bytes = BitConverter.GetBytes((double)Value);
                 Array.Reverse(bytes);
@@ -314,13 +317,13 @@ namespace Calculator.Grammar
 		{
 			if (a.Errored || b.Errored)
 				return Variable.SelectError(a, b);
-			if (a.Value is long && b.Value is long)
+			if (a.IsLong && b.IsLong)
 				return new Variable((long)a.Value == (long)b.Value);
-			if (a.Value is Vector && b.Value is Vector)
+			if (a.IsVector && b.IsVector)
 				return new Variable((Vector)a.Value == (Vector)b.Value ? 1 : 0);
-			if (a.Value is Vector || b.Value is Vector)
+			if (a.IsVector || b.IsVector)
 				return Variable.Error("== types");
-			if (a.Value is double || b.Value is double)
+			if (a.IsDouble || b.IsDouble)
 				return new Variable((double)a.Value == (double)b.Value);
 
 			throw new Exception();
@@ -329,13 +332,13 @@ namespace Calculator.Grammar
 		{
 			if (a.Errored || b.Errored)
 				return Variable.SelectError(a, b);
-			if (a.Value is long && b.Value is long)
+			if (a.IsLong && b.IsLong)
 				return new Variable((long)a.Value != (long)b.Value);
-			if (a.Value is Vector && b.Value is Vector)
+			if (a.IsVector && b.IsVector)
 				return new Variable((Vector)a.Value != (Vector)b.Value ? 1 : 0);
-			if (a.Value is Vector || b.Value is Vector)
+			if (a.IsVector || b.IsVector)
 				return Variable.Error("!= types");
-			if (a.Value is double || b.Value is double)
+			if (a.IsDouble || b.IsDouble)
 				return new Variable((double)a.Value != (double)b.Value);
 
 			throw new Exception();
@@ -344,11 +347,11 @@ namespace Calculator.Grammar
 		{
 			if (a.Errored || b.Errored)
 				return Variable.SelectError(a, b);
-			if (a.Value is long && b.Value is long)
+			if (a.IsLong && b.IsLong)
 				return new Variable((long)a.Value < (long)b.Value);
-			if (a.Value is Vector || b.Value is Vector)
+			if (a.IsVector || b.IsVector)
 				return Variable.Error("< types");
-			if (a.Value is double || b.Value is double)
+			if (a.IsDouble || b.IsDouble)
 				return new Variable((double)a.Value < (double)b.Value);
 
 			throw new Exception();
@@ -357,13 +360,13 @@ namespace Calculator.Grammar
 		{
 			if (a.Errored || b.Errored)
 				return Variable.SelectError(a, b);
-			if (a.Value is double && b.Value is double)
+			if (a.IsDouble && b.IsDouble)
 				return new Variable((double)a.Value <= b.Value);
-			if (a.Value is long && b.Value is long)
+			if (a.IsLong && b.IsLong)
 				return new Variable((long)a.Value <= (long)b.Value);
-			if (a.Value is Vector || b.Value is Vector)
+			if (a.IsVector || b.IsVector)
 				return Variable.Error("<= types");
-			if (a.Value is double || b.Value is double)
+			if (a.IsDouble || b.IsDouble)
 				return new Variable((double)a.Value <= (double)b.Value);
 
 			throw new Exception();
@@ -372,13 +375,13 @@ namespace Calculator.Grammar
 		{
 			if (a.Errored || b.Errored)
 				return Variable.SelectError(a, b);
-			if (a.Value is double && b.Value is double)
+			if (a.IsDouble && b.IsDouble)
 				return new Variable((double)a.Value > b.Value);
-			if (a.Value is long && b.Value is long)
+			if (a.IsLong && b.IsLong)
 				return new Variable((long)a.Value > (long)b.Value);
-			if (a.Value is Vector || b.Value is Vector)
+			if (a.IsVector || b.IsVector)
 				return Variable.Error("> types");
-			if (a.Value is double || b.Value is double)
+			if (a.IsDouble || b.IsDouble)
 				return new Variable((double)a.Value > (double)b.Value);
 
 			throw new Exception();
@@ -387,13 +390,13 @@ namespace Calculator.Grammar
 		{
 			if (a.Errored || b.Errored)
 				return Variable.SelectError(a, b);
-			if (a.Value is double && b.Value is double)
+			if (a.IsDouble && b.IsDouble)
 				return new Variable((double)a.Value >= b.Value);
-			if (a.Value is long && b.Value is long)
+			if (a.IsLong && b.IsLong)
 				return new Variable((long)a.Value >= (long)b.Value);
-			if (a.Value is Vector || b.Value is Vector)
+			if (a.IsVector || b.IsVector)
 				return Variable.Error(">= types");
-			if (a.Value is double || b.Value is double)
+			if (a.IsDouble || b.IsDouble)
 				return new Variable((double)a.Value >= (double)b.Value);
 
 			throw new Exception();
