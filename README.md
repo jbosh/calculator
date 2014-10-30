@@ -21,6 +21,11 @@ More features and info are on the [wiki](https://github.com/jbosh/calculator/wik
 
 As you can see, the answers show up on the right as you type on the left.
 
+### Options
+Hit `F2` for these bad boys.
+
+![OptionsScreenshot.png](https://raw.githubusercontent.com/jbosh/calculator_wiki/master/OptionsMenu.png)
+
 ## The Latest Version
 Go to [Releases](https://github.com/jbosh/calculator/releases). Grab the latest one, it'll have the highest number.<br/>
 If you want to build source, just pull from [github](https://github.com/jbosh/calculator), there should be no additional dependencies except the default .net libraries.
