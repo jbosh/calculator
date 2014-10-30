@@ -552,10 +552,19 @@ namespace Calculator.Windows
 			{
 				var parse = statement.ProcessString(txtQuestion.Text);
 				var format = statement.Format == OutputFormat.Invalid ? Format : statement.Format;
+
+				var rounding = -1;
+				if(format == OutputFormat.Binary)
+					rounding = Program.BinaryRounding;
+				else
+					rounding = Program.Rounding;
+				if(statement.Rounding.HasValue)
+					rounding = statement.Rounding.Value;
+
 				if (parse.Errored && !Program.ErrorsAsNan)
 					lblAnswer.Text = parse.ErrorText;
 				else
-					lblAnswer.Text = Program.FormatOutput(parse, format, ThousandsSeparator);
+					lblAnswer.Text = Program.FormatOutput(parse, format, ThousandsSeparator, rounding);
 			}
 			private void txtQuestion_TextChanged()
 			{

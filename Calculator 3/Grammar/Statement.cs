@@ -24,9 +24,13 @@ namespace Calculator.Grammar
 			= new Regex(@"[\d\.]+[Ee][-\d\.]+", RegexOptions.Compiled);
 		private static readonly Regex RegEqualOperator
 			= new Regex(@"[^<>=!](=)[^<>=!]", RegexOptions.Compiled);
+		private static readonly Regex RegFormattingSuffix
+			= new Regex(@",([xseb])(-?\d*)$", RegexOptions.Compiled);
 		public string VariableName { get; private set; }
         public string Text { get; private set; }
 		public OutputFormat Format { get; private set; }
+		public const int UndefinedRounding = -2;
+		public int? Rounding { get; private set; }
 
 		private static Dictionary<TokenType, Func<CalcToken, Variable>> Dispatch;
 		public static MemoryManager Memory;
@@ -96,26 +100,41 @@ namespace Calculator.Grammar
 			}
 
 			Format = OutputFormat.Invalid;
-			if (source.EndsWith(",x"))
 			{
-				Format = OutputFormat.Hex;
-				source = source.Remove(source.Length - 2);
+				var match = RegFormattingSuffix.Match(source);
+				if (match.Success)
+				{
+					source = source.Remove(match.Index);
+					var suffix = match.Groups[1].Value[0];
+					switch(suffix)
+					{
+						case 'x':
+							Format = OutputFormat.Hex;
+							break;
+						case 'b':
+							Format = OutputFormat.Binary;
+							break;
+						case 'e':
+							Format = OutputFormat.Scientific;
+							break;
+						case 's':
+							Format = OutputFormat.Standard;
+							break;
+					}
+
+					Rounding = null;
+					var rounding = match.Groups[2].Value;
+					if (rounding.Length != 0)
+					{
+						int amt = int.Parse(rounding);
+						if (amt >= -1)
+							Rounding = amt;
+						else
+							return Variable.Error("Invalid rounding amt");
+					}
+				}
 			}
-			else if (source.EndsWith(",b"))
-			{
-				Format = OutputFormat.Binary;
-				source = source.Remove(source.Length - 2);
-			}
-			else if (source.EndsWith(",e"))
-			{
-				Format = OutputFormat.Scientific;
-				source = source.Remove(source.Length - 2);
-			}
-			else if (source.EndsWith(",s"))
-			{
-				Format = OutputFormat.Standard;
-				source = source.Remove(source.Length - 2);
-			}
+			
 
 			var preprocess = Preprocess(source);
 

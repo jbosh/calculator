@@ -275,6 +275,12 @@ namespace Calculator
 			TestFunction("_recursion(129)", null);
 			Scripts.RemoveScript("_factorial");
 
+			TestFunction("1234,s", 1234);
+			TestFunction("1234,sa", null);
+			TestFunction("1234,s-2", null);
+			TestFunction("1234,s-1", 1234);
+			TestFunction("1234,x0", 1234);
+
 			Program.UseXor = true;
 			TestFunction("2^2", 0);
 			TestFunction("2^3", 1);

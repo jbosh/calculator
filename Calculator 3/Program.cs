@@ -374,42 +374,42 @@ namespace Calculator
 					break;
 			}
 		}
-		public static string FormatOutput(object value, OutputFormat format, bool thousandsSeparator)
+		public static string FormatOutput(object value, OutputFormat format, bool thousandsSeparator, int rounding)
 		{
 			if (value is double)
-				return FormatOutput((double)value, format, thousandsSeparator);
+				return FormatOutput((double)value, format, thousandsSeparator, rounding);
 			if (value is long)
-				return FormatOutput((long)value, format, thousandsSeparator);
+				return FormatOutput((long)value, format, thousandsSeparator, rounding);
 			if (value is Variable)
 			{
 				var v = ((Variable) value).Value;
 				if(v == null)
 					return "NaN";
-				return FormatOutput(v, format, thousandsSeparator);
+				return FormatOutput(v, format, thousandsSeparator, rounding);
 			}
 			if (value is Vector)
-				return FormatOutput((Vector)value, format, thousandsSeparator);
+				return FormatOutput((Vector)value, format, thousandsSeparator, rounding);
 			return "";
 		}
-		private static string FormatOutput(Vector value, OutputFormat format, bool thousandsSeparator)
+		private static string FormatOutput(Vector value, OutputFormat format, bool thousandsSeparator, int rounding)
 		{
 			var builder = new StringBuilder();
 			builder.Append('{');
 			for (var i = 0; i < value.Count; i++)
 			{
-				builder.Append(FormatOutput(value[i], format, thousandsSeparator));
+				builder.Append(FormatOutput(value[i], format, thousandsSeparator, rounding));
 				if (i != value.Count - 1)
 					builder.Append("; ");
 			}
 			builder.Append('}');
 			return builder.ToString();
 		}
-		private static string FormatOutput(double value, OutputFormat format, bool thousandsSeparator)
+		private static string FormatOutput(double value, OutputFormat format, bool thousandsSeparator, int rounding)
 		{
 			switch (format)
 			{
 				case OutputFormat.Scientific:
-					var scientific = value.ToString("E" + (Rounding == -1 ? "" : Rounding.ToString()));
+					var scientific = value.ToString("E" + (rounding == -1 ? "" : rounding.ToString()));
 					var index = scientific.IndexOf('E') + 1;
 					if (scientific[index] == '-')
 						index++;
@@ -429,14 +429,14 @@ namespace Calculator
 				case OutputFormat.Hex: //No hex with doubles
 				case OutputFormat.Standard:
 				default:
-					if (Rounding != -1)
-						value = Math.Round(value, Math.Min(Rounding, 15));
+					if (rounding != -1)
+						value = Math.Round(value, Math.Min(rounding, 15));
 					if (thousandsSeparator && !value.ToString().Contains("E"))
 						return value.ToString("#,0." + new string('#', 50));
 					return value.ToString();
 			}
 		}
-		private static string FormatOutput(long value, OutputFormat format, bool thousandsSeparator)
+		private static string FormatOutput(long value, OutputFormat format, bool thousandsSeparator, int rounding)
 		{
 			switch (format)
 			{
@@ -449,7 +449,7 @@ namespace Calculator
 					}
 				
 				case OutputFormat.Binary:
-					var top = BinaryRounding == -1 ? 32 : BinaryRounding;
+					var top = rounding == -1 ? 32 : rounding;
 					var builder = new StringBuilder();
 					for (var i = top; i >= 0; i--)
 					{
