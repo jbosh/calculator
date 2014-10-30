@@ -143,6 +143,9 @@ namespace Calculator.Windows
 					catch { }
 				}
 		}
+		
+		public bool IsLightWindow { get { return false; } }
+		
 		public void Recalculate(bool global)
 		{
 			//This is a required check so that windows will not keep

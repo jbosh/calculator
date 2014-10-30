@@ -184,7 +184,7 @@ namespace Calculator
 
 			Thread.CurrentThread.IsBackground = true;
 			Thread.CurrentThread.Priority = ThreadPriority.BelowNormal;
-			while (Window.Count > 0)
+			while (Window.Any(w => !w.IsLightWindow))
 			{
 				Application.DoEvents();
 				Thread.Sleep(SleepMilliseconds);

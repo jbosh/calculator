@@ -76,7 +76,9 @@ namespace Calculator.Windows
 				CopyHelpers.Replacements.Add(row.Helper);
 			}
 		}
-
+		
+		public bool IsLightWindow { get { return true; } }
+		
 		public void Recalculate(bool global)
 		{
 			if (TopMost != Program.AlwaysOnTop)

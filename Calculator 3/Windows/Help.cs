@@ -17,6 +17,7 @@ namespace Calculator.Windows
 			TopMost = true;
 		}
 		#region ICalculator Members
+		public bool IsLightWindow { get { return true; } }
 		public void Recalculate(bool global)
 		{
 			TopMost = Program.AlwaysOnTop;

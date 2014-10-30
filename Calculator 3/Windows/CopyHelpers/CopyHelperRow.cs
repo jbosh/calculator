@@ -49,7 +49,9 @@ namespace Calculator.Windows
 			if (EditHelper != null)
 				EditHelper(Helper);
 		}
-
+		
+		public bool IsLightWindow { get { return false; } }
+		
 		public void Recalculate(bool global)
 		{
 			lblPattern.Text = Helper.Pattern;

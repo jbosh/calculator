@@ -66,6 +66,7 @@ namespace Calculator.Windows
 		#endregion
 
 		#region ICalculator Members
+		public bool IsLightWindow { get { return false; } }
 		public void Recalculate(bool global)
 		{
 			if (AlreadyCalculating)

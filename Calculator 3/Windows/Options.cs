@@ -20,6 +20,7 @@ namespace Calculator.Windows
 			radioBinary.Click += (a, b) => RadioBinaryClicked();
 		}
 		#region ICalculator Members
+		public bool IsLightWindow { get { return true; } }
 		public void Recalculate(bool global)
 		{
 			Lock.WaitOne();
