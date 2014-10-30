@@ -174,8 +174,13 @@ namespace Calculator.Windows
 					e.Handled = true;
 					return;
 				case Keys.Enter:
-					SelectNextControl(ActiveControl, true, true, false, false);
-					e.Handled = true;
+					{
+						bool selected = SelectNextControl(ActiveControl, true, true, false, false);
+						if (!selected) //bottom control, add another one
+							Push();
+						e.Handled = true;
+						e.SuppressKeyPress = true;
+					}
 					return;
 				case Keys.Up:
 					SelectNextControl(ActiveControl, false, true, false, false);
