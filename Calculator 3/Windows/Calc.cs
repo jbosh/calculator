@@ -501,6 +501,7 @@ namespace Calculator.Windows
 				ThousandsSeparator = Program.DefaultThousandsSeparator;
 
 				lblAnswer.Click += lblAnswer_Click;
+				lblAnswer.Cursor = Cursors.Hand;
 
 				MoveAfterField(previous);
 			}
