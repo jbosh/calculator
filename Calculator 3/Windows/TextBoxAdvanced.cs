@@ -11,11 +11,14 @@ namespace Calculator
 {
 	public class TextBoxAdvanced : TextBox
 	{
+		private const int KeyStateCTRL = 8;
+
 		public bool InterceptNextPaste { get; set; }
 		public int CaretStart { get; set; }
 
 		private Match CtrlClickMatch;
 		private Tuple<int, int> CtrlClickLastSelection;
+		private TextSelection DragText;
 
 		public TextBoxAdvanced()
 		{
@@ -24,7 +27,9 @@ namespace Calculator
 			KeyDown += TextBoxAdvanced_KeyDown;
 			MouseDown += TextBoxAdvanced_MouseDown;
 			MouseMove += TextBoxAdvanced_MouseMove;
+			MouseUp += TextBoxAdvanced_MouseUp;
 			TextChanged += TextBoxAdvanced_TextChanged;
+
 			AllowDrop = true;
 			DragOver += TextBoxAdvanced_DragOver;
 			DragDrop += TextBoxAdvanced_DragDrop;
@@ -36,23 +41,64 @@ namespace Calculator
 
 		private void TextBoxAdvanced_MouseDown(object sender, MouseEventArgs e)
 		{
-			if (e.Clicks < 2)
-				CaretStart = SelectionStart;
-			if (e.Clicks >= 2 || (ModifierKeys & Keys.Control) == Keys.Control)
+			if (DragText.Active && DragText.Length != 0)
 			{
-				var node = FindToken(CaretStart, Text);
-				SelectionStart = node.Value.Index;
-				SelectionLength = node.Value.Length;
+				var effects = DoDragDrop(DragText.Select(Text), DragDropEffects.Copy | DragDropEffects.Move);
+				if (effects == DragDropEffects.None)
+					Cursor = Cursors.IBeam;
+				else if (DragText.Active && effects == DragDropEffects.Move)
+				{
+					DragText.Active = false;
+					Text = Text.Remove(DragText.Start, DragText.Length);
+				}
+			}
+			else
+			{
+				if (e.Clicks < 2)
+					CaretStart = SelectionStart;
+				if (e.Clicks >= 2 || (ModifierKeys & Keys.Control) == Keys.Control)
+				{
+					var node = FindToken(CaretStart, Text);
+					if (node != null)
+					{
+						SelectionStart = node.Value.Index;
+						SelectionLength = node.Value.Length;
 
-				CtrlClickMatch = node.Value;
-				CtrlClickLastSelection = new Tuple<int,int>(SelectionStart, SelectionLength);
-				return;
+						CtrlClickMatch = node.Value;
+						CtrlClickLastSelection = new Tuple<int, int>(SelectionStart, SelectionLength);
+						DragText = new TextSelection(SelectionStart, SelectionLength);
+					}
+					return;
+				}
+			}
+		}
+
+		void TextBoxAdvanced_MouseUp(object sender, MouseEventArgs e)
+		{
+			if (e.Button == MouseButtons.Left)
+			{
+				if (SelectionLength != 0)
+					DragText = new TextSelection(SelectionStart, SelectionLength);
 			}
 		}
 		
 		void TextBoxAdvanced_MouseMove(object sender, MouseEventArgs e)
 		{
-			if (e.Button == MouseButtons.Left)
+			if (e.Button == MouseButtons.None)
+			{
+				var idx = GetTrueIndexPositionFromPoint(e.Location);
+				if (DragText.Contains(idx))
+				{
+					Cursor = Cursors.Arrow;
+					DragText = new TextSelection(SelectionStart, SelectionLength);
+				}
+				else
+				{
+					Cursor = Cursors.IBeam;
+					DragText.Active = false;
+				}
+			}
+			else if (e.Button == MouseButtons.Left)
 			{
 				if (CtrlClickMatch != null && (ModifierKeys & Keys.Control) == Keys.Control)
 				{
@@ -132,6 +178,10 @@ namespace Calculator
 		{
 			switch (m.Msg)
 			{
+				case 0x0201: //WM_LBUTTONDOWN:
+					DragText = new TextSelection(SelectionStart, SelectionLength, DragText.Active);
+					base.WndProc(ref m);
+					break;
 				case 0x302: //WM_PASTE
 					{
 						if (!Clipboard.ContainsText())
@@ -170,7 +220,10 @@ namespace Calculator
 		private void TextBoxAdvanced_KeyDown(object sender, KeyEventArgs e)
 		{
 			if (!e.Control)
+			{
+				DragText = new TextSelection(SelectionStart, SelectionLength, e.Shift);
 				return;
+			}
 			switch (e.KeyCode)
 			{
 				case Keys.Left:
@@ -204,6 +257,7 @@ namespace Calculator
 								SelectionStart += index;
 								SelectionLength -= index;
 							}
+							DragText = new TextSelection(SelectionStart, SelectionLength);
 						}
 						else
 						{
@@ -214,6 +268,7 @@ namespace Calculator
 							else if (node.Previous != null) //move to previous word
 								index = node.Previous.Value.Index;
 							SelectionStart = index;
+							DragText.Active = false;
 						}
 					}
 					break;
@@ -250,6 +305,7 @@ namespace Calculator
 								index -= SelectionStart + SelectionLength;
 								SelectionLength += index;
 							}
+							DragText = new TextSelection(SelectionStart, SelectionLength);
 						}
 						else
 						{
@@ -261,6 +317,7 @@ namespace Calculator
 								index = node.Next.Value.Index;
 
 							SelectionStart = index;
+							DragText.Active = false;
 						}
 					}
 					break;
@@ -375,6 +432,8 @@ namespace Calculator
 
 		private static LinkedListNode<Match> FindToken(int index, string sentence)
 		{
+			if (sentence.Length == 0)
+				return null;
 			var list = new LinkedList<Match>();
 			var word = default(LinkedListNode<Match>);
 			for (var i = 0; i < sentence.Length;)
@@ -456,18 +515,27 @@ namespace Calculator
 
 		void TextBoxAdvanced_DragOver(object sender, DragEventArgs e)
 		{
+			var setCursor = false;
 			if (e.Data.GetDataPresent(DataFormats.Text))
 			{
 				SetCaractPositionFromPoint(e.X, e.Y);
-				e.Effect = DragDropEffects.Copy;
+				setCursor = true;
 			}
 			else if (e.Data.GetDataPresent(DataFormats.FileDrop))
 			{
 				var filenames = (string[])e.Data.GetData(DataFormats.FileDrop);
 				if (filenames.Length == 1)
 				{
-					e.Effect = DragDropEffects.Copy;
+					setCursor = true;
 				}
+			}
+
+			if (setCursor)
+			{
+				if((e.AllowedEffect & DragDropEffects.Move) != 0 && (e.KeyState & KeyStateCTRL) == 0)
+					e.Effect = DragDropEffects.Move;
+				else
+					e.Effect = DragDropEffects.Copy;
 			}
 		}
 
@@ -477,6 +545,22 @@ namespace Calculator
 			{
 				var str = e.Data.GetData(DataFormats.Text).ToString();
 				var idx = SetCaractPositionFromPoint(e.X, e.Y);
+				if (DragText.Active)
+				{
+					DragText.Active = false;
+					if (DragText.Contains(idx))
+					{
+						e.Effect = DragDropEffects.None;
+						return; //failed
+					}
+
+					if (e.Effect == DragDropEffects.Move)
+					{
+						if (idx > DragText.Start)
+							idx -= DragText.Length;
+						Text = Text.Remove(DragText.Start, DragText.Length);
+					}
+				}
 				if (Program.CopyPasteHelper)
 					str = CopyHelpers.Process(str);
 				Text = Text.Insert(idx, str);
@@ -496,6 +580,10 @@ namespace Calculator
 
 		[DllImport("user32.dll")]
 		private static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wp, IntPtr lp);
+
+		[DllImport("User32.dll", EntryPoint = "SendMessage", CharSet = CharSet.Auto)]
+		private static extern IntPtr SendMessage(HandleRef hWnd, int msg, int wParam, int lParam);
+
 		private const int WM_SETREDRAW = 0x0b;
 
 		/// <summary>
@@ -515,5 +603,50 @@ namespace Calculator
 			SendMessage(this.Handle, WM_SETREDRAW, (IntPtr)1, IntPtr.Zero);
 			Invalidate();
 		}
+
+		private const int EM_CHARFROMPOS = 0x00D7;
+
+		public int GetTrueIndexPositionFromPoint(Point pt)
+		{
+#if DEBUG
+			if (IntPtr.Size != 4)
+				throw new NotImplementedException("64 bit not supported for this function. LOWORD and HIWORD");
+			if ((object)this is RichTextBox) //casting is for compiler warning
+				throw new NotImplementedException("SendMessage needs to send POINT instead of LO/HI");
+#endif
+
+			var lo = pt.X;
+			var hi = pt.Y << 16;
+			var wpt = lo | hi;
+			var index = SendMessage(new HandleRef(this, Handle), EM_CHARFROMPOS, 0, wpt);
+
+			return index.ToInt32();
+		}
+
+		private struct TextSelection
+		{
+			public bool Active;
+			public int Start;
+			public int Length;
+			public TextSelection(int start, int length, bool active = true)
+			{
+				Active = active;
+				Start = start;
+				Length = length;
+			}
+			public bool Contains(int idx)
+			{
+				return idx >= Start && idx < Start + Length;
+			}
+			public string Select(string text)
+			{
+				return text.Substring(Start, Length);
+			}
+			public override string ToString()
+			{
+				return string.Format("Start: {0} Length: {1}", Start, Length);
+			}
+		}
+		
 	}
 }

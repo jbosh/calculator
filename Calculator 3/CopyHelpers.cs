@@ -37,7 +37,6 @@ namespace Calculator
 		{
 			var destination = source;
 			destination = ProcessReplacements(destination);
-			destination = destination.Trim();
 			return destination;
 		}
 
