@@ -582,7 +582,7 @@ namespace Calculator
 		private static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wp, IntPtr lp);
 
 		[DllImport("User32.dll", EntryPoint = "SendMessage", CharSet = CharSet.Auto)]
-		private static extern IntPtr SendMessage(HandleRef hWnd, int msg, int wParam, int lParam);
+		private static extern IntPtr SendMessage(HandleRef hWnd, int msg, IntPtr wParam, IntPtr lParam);
 
 		private const int WM_SETREDRAW = 0x0b;
 
@@ -609,16 +609,14 @@ namespace Calculator
 		public int GetTrueIndexPositionFromPoint(Point pt)
 		{
 #if DEBUG
-			if (IntPtr.Size != 4)
-				throw new NotImplementedException("64 bit not supported for this function. LOWORD and HIWORD");
 			if ((object)this is RichTextBox) //casting is for compiler warning
 				throw new NotImplementedException("SendMessage needs to send POINT instead of LO/HI");
 #endif
 
-			var lo = pt.X;
-			var hi = pt.Y << 16;
-			var wpt = lo | hi;
-			var index = SendMessage(new HandleRef(this, Handle), EM_CHARFROMPOS, 0, wpt);
+			var lo = (long)pt.X;
+			var hi = (long)pt.Y << (IntPtr.Size * 4);
+			var wpt = new IntPtr(lo | hi);
+			var index = SendMessage(new HandleRef(this, Handle), EM_CHARFROMPOS, IntPtr.Zero, wpt);
 
 			return index.ToInt32();
 		}
