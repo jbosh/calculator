@@ -126,7 +126,7 @@ namespace Calculator.Windows
 						bool isLastFieldEmpty = !fields.Last().txtQuestion.Focused
 							&& fields.Last().txtQuestion.Text.Length == 0;
 						if (e.Shift)
-							InsertField(FindActiveField());
+							InsertField(FindActiveFieldIndex());
 						else if (isLastFieldEmpty) //select last field if we're not there already
 							fields[fields.Count - 1].txtQuestion.Focus();
 						else
@@ -141,7 +141,7 @@ namespace Calculator.Windows
 					if (e.Control)
 					{
 						if (e.Shift)
-							RemoveField(FindActiveField());
+							RemoveField(FindActiveFieldIndex());
 						else
 							Pop();
 						e.Handled = true;
@@ -151,7 +151,7 @@ namespace Calculator.Windows
 				case Keys.D:
 					if (e.Control)
 					{
-						var idx = FindActiveField();
+						var idx = FindActiveFieldIndex();
 						var text = fields[idx].Text;
 						InsertField(idx, text);
 						e.Handled = true;
@@ -160,7 +160,7 @@ namespace Calculator.Windows
 				case Keys.X:
 					if(e.Control)
 					{
-						var idx = FindActiveField();
+						var idx = FindActiveFieldIndex();
 						var field = fields[idx];
 						if (field.txtQuestion.SelectionLength == 0)
 						{
@@ -222,10 +222,9 @@ namespace Calculator.Windows
 					}
 					else if (e.Control)
 					{
-						var index = FindActiveField();
-						if (index != -1)
+						var field = FindActiveField();
+						if (field != null)
 						{
-							var field = fields[index];
 							if (field.txtQuestion.SelectionLength == 0)
 							{
 								Clipboard.SetText(field.lblAnswer.Text);
@@ -236,7 +235,7 @@ namespace Calculator.Windows
 				case Keys.V:
 					if (e.Control && e.Shift)
 					{
-						var index = FindActiveField();
+						var index = FindActiveFieldIndex();
 						if (index != -1)
 						{
 							e.Handled = true;
@@ -247,8 +246,7 @@ namespace Calculator.Windows
 				case Keys.Oemcomma:
 					if (e.Control)
 					{
-						var idx = FindActiveField();
-						var field = fields[idx];
+						var field = FindActiveField();
 						field.ThousandsSeparator = !field.ThousandsSeparator;
 						Recalculate(false);
 					}
@@ -258,7 +256,7 @@ namespace Calculator.Windows
 				Program.GlobalKeyDown(e);
 		}
 
-		private int FindActiveField()
+		private int FindActiveFieldIndex()
 		{
 			var index = -1;
 			for (var i = 0; i < fields.Count; i++)
@@ -270,6 +268,18 @@ namespace Calculator.Windows
 				}
 			}
 			return index;
+		}
+
+		private CalculatorField FindActiveField()
+		{
+			for (var i = 0; i < fields.Count; i++)
+			{
+				if (fields[i].txtQuestion == ActiveControl)
+				{
+					return fields[i];
+				}
+			}
+			return null;
 		}
 
 		private void SaveFile()
