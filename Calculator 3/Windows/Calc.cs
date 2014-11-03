@@ -244,6 +244,15 @@ namespace Calculator.Windows
 						}
 					}
 					break;
+				case Keys.Oemcomma:
+					if (e.Control)
+					{
+						var idx = FindActiveField();
+						var field = fields[idx];
+						field.ThousandsSeparator = !field.ThousandsSeparator;
+						Recalculate(false);
+					}
+					break;
 			}
 			if (!e.Handled)
 				Program.GlobalKeyDown(e);
