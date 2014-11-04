@@ -161,7 +161,8 @@ namespace Calculator.Grammar
 				.Replace(")", " ) ")
 				.Replace("}", " } ")
 				.Replace("{", " { ")
-				.Replace(",", "");
+				.Replace(",", "")
+				.Replace("'", "");
 
 			if (!Program.UseXor)
 				source = source.Replace("^", "**");

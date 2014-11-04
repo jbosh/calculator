@@ -22,6 +22,7 @@ namespace Calculator
 			TestFunction(".3E2", 30);
 			TestFunction("0.2E12", 200000000000);
 			TestFunction("203,20,2", 203202);
+			TestFunction("203'20'2", 203202);
 			TestFunction("2E.2", 3.17);
 			TestFunction("e", 2.72);
 			TestFunction("π", 3.14);
