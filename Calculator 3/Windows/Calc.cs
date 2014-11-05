@@ -15,6 +15,7 @@ namespace Calculator.Windows
 		{
 			get { return fields.Select(f => f.statement); }
 		}
+		private const int MaxRows = 24;
 		private readonly List<CalculatorField> fields;
 		private Graph graph;
 		private bool AlreadyCalculating;
@@ -377,7 +378,7 @@ namespace Calculator.Windows
 		}
 		public void ReadFile(string path)
 		{
-			var lines = File.ReadAllLines(path);
+			var lines = Extensions.ReadLines(path, MaxRows);
 			if (fields.Count > lines.Length)
 			{
 				while (fields.Count != lines.Length && fields.Count != 1)
@@ -402,9 +403,8 @@ namespace Calculator.Windows
 		}
 		private void InsertField(int index, string text = "")
 		{
-			if (fields.Count >= 24)
+			if (fields.Count >= MaxRows)
 				return;
-
 			
 			var field = new CalculatorField(fields[index]);
 			field.txtQuestion.TextChanged += (o, e) => Recalculate(false);
