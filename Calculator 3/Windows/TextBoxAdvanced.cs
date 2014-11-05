@@ -195,7 +195,7 @@ namespace Calculator
 						var restoreClipboard = Clipboard.GetText();
 						if (Program.CopyPasteHelper)
 						{
-							var text = CopyHelpers.Process(Clipboard.GetText());
+							var text = CopyHelpers.Process(Clipboard.GetText()).Trim();
 							if (string.IsNullOrEmpty(text)) //not gonna paste nothing
 								break;
 
