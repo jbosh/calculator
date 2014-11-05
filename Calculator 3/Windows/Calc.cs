@@ -164,8 +164,10 @@ namespace Calculator.Windows
 						var field = fields[idx];
 						if (field.txtQuestion.SelectionLength == 0)
 						{
+							field.txtQuestion.SelectAll();
 							RemoveField(idx);
 							e.Handled = true;
+							e.SuppressKeyPress = true;
 						}
 					}
 					break;
