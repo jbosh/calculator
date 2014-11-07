@@ -195,7 +195,7 @@ namespace Calculator
 						var restoreClipboard = Clipboard.GetText();
 						if (Program.CopyPasteHelper)
 						{
-							var text = CopyHelpers.Process(Clipboard.GetText()).Trim();
+							var text = CopyHelpers.Process(Clipboard.GetText());
 							if (string.IsNullOrEmpty(text)) //not gonna paste nothing
 								break;
 
@@ -579,8 +579,10 @@ namespace Calculator
 						Text = Text.Remove(DragText.Start, DragText.Length);
 					}
 				}
-				if (Program.CopyPasteHelper)
+
+				if (e.Effect != DragDropEffects.Move && Program.CopyPasteHelper)
 					str = CopyHelpers.Process(str);
+
 				Text = Text.Insert(idx, str);
 				SelectionStart = idx + str.Length;
 			}

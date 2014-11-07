@@ -308,7 +308,7 @@ namespace Calculator.Windows
 				return;
 			var lines = Clipboard.GetText(TextDataFormat.Text)
 				.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
-				.Select(l => Program.CopyPasteHelper ? CopyHelpers.Process(l).Trim() : l)
+				.Select(l => Program.CopyPasteHelper ? CopyHelpers.Process(l) : l)
 				.ToArray();
 
 			while (fieldIndex + lines.Length > fields.Count)

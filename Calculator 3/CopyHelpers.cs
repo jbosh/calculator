@@ -37,7 +37,7 @@ namespace Calculator
 		{
 			var destination = source;
 			destination = ProcessReplacements(destination);
-			return destination;
+			return destination.Trim();
 		}
 
 		public static string ProcessReplacement(string source, CopyHelper replacement)
