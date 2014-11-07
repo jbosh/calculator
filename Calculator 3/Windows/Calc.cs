@@ -164,7 +164,9 @@ namespace Calculator.Windows
 						var field = fields[idx];
 						if (field.txtQuestion.SelectionLength == 0)
 						{
-							field.txtQuestion.SelectAll();
+							if (field.txtQuestion.Text.Length == 0) //stop the ding when there is nothing
+								field.txtQuestion.Text = Environment.NewLine;
+							field.txtQuestion.SelectAll(); //stop the ding when erasing row
 							RemoveField(idx);
 							e.Handled = true;
 							e.SuppressKeyPress = true;
