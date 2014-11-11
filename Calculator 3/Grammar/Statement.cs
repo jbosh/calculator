@@ -101,6 +101,7 @@ namespace Calculator.Grammar
 
 			Format = OutputFormat.Invalid;
 			{
+				Rounding = null;
 				var match = RegFormattingSuffix.Match(source);
 				if (match.Success)
 				{
@@ -122,7 +123,6 @@ namespace Calculator.Grammar
 							break;
 					}
 
-					Rounding = null;
 					var rounding = match.Groups[2].Value;
 					if (rounding.Length != 0)
 					{
