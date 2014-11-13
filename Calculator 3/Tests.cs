@@ -280,6 +280,7 @@ namespace Calculator
 			TestFunction("1234,s-2", null);
 			TestFunction("1234,s-1", 1234);
 			TestFunction("1234,x0", 1234);
+			TestFunction("1234,s-", null);
 
 			Program.UseXor = true;
 			TestFunction("2^2", 0);

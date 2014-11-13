@@ -25,7 +25,7 @@ namespace Calculator.Grammar
 		private static readonly Regex RegEqualOperator
 			= new Regex(@"[^<>=!](=)[^<>=!]", RegexOptions.Compiled);
 		private static readonly Regex RegFormattingSuffix
-			= new Regex(@",([xseb])(-?\d*)$", RegexOptions.Compiled);
+			= new Regex(@",([xseb])(-?\d+)?$", RegexOptions.Compiled);
 		public string VariableName { get; private set; }
         public string Text { get; private set; }
 		public OutputFormat Format { get; private set; }
