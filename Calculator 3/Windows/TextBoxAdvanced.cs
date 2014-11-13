@@ -137,10 +137,53 @@ namespace Calculator
 			switch (keyData)
 			{
 				case Keys.Control | Keys.Back:
-					SendKeys.SendWait("^+{LEFT}{BACKSPACE}");
+					if (SelectionLength != 0)
+					{
+						var start = SelectionStart;
+						Text = Text.Remove(SelectionStart, SelectionLength);
+						SelectionStart = start;
+						SelectionLength = 0;
+					}
+					else
+					{
+						var node = FindToken(SelectionStart, Text);
+						if (node != null)
+						{
+							var index = 0;
+							if (node.Value.Index != SelectionStart) //you're in the word
+								index = node.Value.Index;
+							else if (node.Previous != null) //move to previous word
+								index = node.Previous.Value.Index;
+
+							Text = Text.Remove(index, SelectionStart - index);
+							SelectionStart = index;
+						}
+					}
 					return true;
 				case Keys.Control | Keys.Delete:
-					SendKeys.SendWait("^+{RIGHT}{BACKSPACE}");
+					if (SelectionLength != 0)
+					{
+						var start = SelectionStart;
+						Text = Text.Remove(SelectionStart, SelectionLength);
+						SelectionStart = start;
+						SelectionLength = 0;
+					}
+					else
+					{
+						var node = FindToken(SelectionStart, Text);
+						if (node != null)
+						{
+							var index = Text.Length;
+							if (node.Value.Index != SelectionStart) //you're in the word
+								index = node.Value.Index + node.Value.Length;
+							else if (node.Next != null) //move to next word
+								index = node.Next.Value.Index;
+
+							var start = SelectionStart;
+							Text = Text.Remove(SelectionStart, index - SelectionStart);
+							SelectionStart = start;
+						}
+					}
 					return true;
 				case Keys.Control | Keys.A:
 					SelectAll();
