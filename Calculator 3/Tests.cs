@@ -263,6 +263,7 @@ namespace Calculator
 			TestFunction("vset_lane{{{0;1};2;1;0};0;1}", new Vector(1, 2, 1, 0));
 			TestFunction("vset_lane{{0}; 0; 3 > 4 ? 1 : 0}", new Vector(0));
 			TestFunction("vset_lane{{0}; 0; 3 > 4 ? 0 : 1}", new Vector(1));
+			TestFunction("vset_lane{{0}; 1; 1}", new Vector(0, 1));
 
 			TestFunction("vset_lane{0;0;1}", null);
 			TestFunction("vget_lane{0;0;1}", null);

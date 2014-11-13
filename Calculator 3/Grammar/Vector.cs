@@ -24,6 +24,10 @@ namespace Calculator.Grammar
 				.Select(arg => new Variable(arg))
 				.ToArray();
 		}
+		public static Vector AppendVariable(Vector vector, Variable variable)
+		{
+			return new Vector(vector.Values.Concat(new Variable[] { variable }));
+		}
 		public Vector(IEnumerable<Variable> args)
 		{
 			Values = args.ToArray();
