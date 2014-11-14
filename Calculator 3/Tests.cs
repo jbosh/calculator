@@ -116,6 +116,9 @@ namespace Calculator
 			TestFunction("{2; 4} * 2", new Vector(4, 8));
 			TestFunction("{2; 4} * 2 / 4", new Vector(1, 2));
 			TestFunction("{-1; -3; -5}", new Vector(-1, -3, -5));
+			TestFunction("{2; 4} % 3", new Vector(2, 1));
+			TestFunction("{2; 4} % {3; 5}", new Vector(2, 4));
+			TestFunction("{2.3; 4.7} % 2.1", new Vector(0.2, 0.5));
 
 			TestFunction("33{2}", new Vector(66));
 			TestFunction("{{2; 3}; {1; 1}; {0; 1}} + {{0; 1}; {2; 3}; {4; 5}} ",

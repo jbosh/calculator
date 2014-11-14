@@ -200,6 +200,21 @@ namespace Calculator.Grammar
 			return PerformOp(a, b, (v0, v1) => v0 / v1);
 		}
 
+		public static Vector operator %(Vector a, long b)
+		{
+			return PerformOp(a, MakeVector(a.Count, new Variable(b)), (v0, v1) => v0 % v1);
+		}
+
+		public static Vector operator %(Vector a, double b)
+		{
+			return PerformOp(a, MakeVector(a.Count, new Variable(b)), (v0, v1) => v0 % v1);
+		}
+
+		public static Vector operator %(Vector a, Vector b)
+		{
+			return PerformOp(a, b, (v0, v1) => v0 % v1);
+		}
+
 		public Variable Dot()
 		{
 			if (Values.Length != 2)
