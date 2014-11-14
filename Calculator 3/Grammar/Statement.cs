@@ -25,7 +25,7 @@ namespace Calculator.Grammar
 		private static readonly Regex RegEqualOperator
 			= new Regex(@"[^<>=!](=)[^<>=!]", RegexOptions.Compiled);
 		private static readonly Regex RegFormattingSuffix
-			= new Regex(@",([xseb])(-?\d*)$", RegexOptions.Compiled);
+			= new Regex(@",([xseb])(-?\d+)?$", RegexOptions.Compiled);
 		public string VariableName { get; private set; }
         public string Text { get; private set; }
 		public OutputFormat Format { get; private set; }
@@ -101,6 +101,7 @@ namespace Calculator.Grammar
 
 			Format = OutputFormat.Invalid;
 			{
+				Rounding = null;
 				var match = RegFormattingSuffix.Match(source);
 				if (match.Success)
 				{
@@ -122,7 +123,6 @@ namespace Calculator.Grammar
 							break;
 					}
 
-					Rounding = null;
 					var rounding = match.Groups[2].Value;
 					if (rounding.Length != 0)
 					{
@@ -613,12 +613,14 @@ namespace Calculator.Grammar
 
 			var vector = (Vector)arguments[0].Value;
 			var index = (int)arguments[1].Value;
-			if (index >= vector.Count || index < 0)
+			if (index < 0)
 				return Variable.Error("lane func idx invalid");
 			switch (token.Children[0].Text)
 			{
 				case "vget_lane":
 					{
+						if (index >= vector.Count)
+							return Variable.Error("lane func idx invalid");
 						if (arguments.Count != 2)
 							return Variable.Error("vget_lane arg count");
 						return vector[index];
@@ -628,6 +630,13 @@ namespace Calculator.Grammar
 						if (arguments.Count != 3)
 							return Variable.Error("vset_lane arg count");
 						var value = arguments[2];
+
+						if (index == vector.Count)
+							return new Variable(Vector.AppendVariable(vector, value));
+							
+						if (index >= vector.Count)
+							return Variable.Error("lane func idx invalid");
+							
 						vector[index] = value;
 						return new Variable(vector);
 					}

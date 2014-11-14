@@ -137,10 +137,53 @@ namespace Calculator
 			switch (keyData)
 			{
 				case Keys.Control | Keys.Back:
-					SendKeys.SendWait("^+{LEFT}{BACKSPACE}");
+					if (SelectionLength != 0)
+					{
+						var start = SelectionStart;
+						Text = Text.Remove(SelectionStart, SelectionLength);
+						SelectionStart = start;
+						SelectionLength = 0;
+					}
+					else
+					{
+						var node = FindToken(SelectionStart, Text);
+						if (node != null)
+						{
+							var index = 0;
+							if (node.Value.Index != SelectionStart) //you're in the word
+								index = node.Value.Index;
+							else if (node.Previous != null) //move to previous word
+								index = node.Previous.Value.Index;
+
+							Text = Text.Remove(index, SelectionStart - index);
+							SelectionStart = index;
+						}
+					}
 					return true;
 				case Keys.Control | Keys.Delete:
-					SendKeys.SendWait("^+{RIGHT}{BACKSPACE}");
+					if (SelectionLength != 0)
+					{
+						var start = SelectionStart;
+						Text = Text.Remove(SelectionStart, SelectionLength);
+						SelectionStart = start;
+						SelectionLength = 0;
+					}
+					else
+					{
+						var node = FindToken(SelectionStart, Text);
+						if (node != null)
+						{
+							var index = Text.Length;
+							if (node.Value.Index != SelectionStart) //you're in the word
+								index = node.Value.Index + node.Value.Length;
+							else if (node.Next != null) //move to next word
+								index = node.Next.Value.Index;
+
+							var start = SelectionStart;
+							Text = Text.Remove(SelectionStart, index - SelectionStart);
+							SelectionStart = start;
+						}
+					}
 					return true;
 				case Keys.Control | Keys.A:
 					SelectAll();
@@ -235,40 +278,49 @@ namespace Calculator
 							if (CaretStart < SelectionStart + SelectionLength) //shrink
 							{
 								var node = FindToken(SelectionStart + SelectionLength, Text);
-								var index = 0;
-								if (node.Value.Index != SelectionStart + SelectionLength) //you're in the word
-									index = node.Value.Index;
-								else if (node.Previous != null) //move to previous word
-									index = node.Previous.Value.Index;
-								if (index < CaretStart)
-									index = CaretStart;
-								index -= SelectionStart + SelectionLength;
-								SelectionLength += index;
+								if (node != null)
+								{
+									var index = 0;
+									if (node.Value.Index != SelectionStart + SelectionLength) //you're in the word
+										index = node.Value.Index;
+									else if (node.Previous != null) //move to previous word
+										index = node.Previous.Value.Index;
+									if (index < CaretStart)
+										index = CaretStart;
+									index -= SelectionStart + SelectionLength;
+									SelectionLength += index;
+								}
 							}
 							else //grow
 							{
 								var node = FindToken(SelectionStart, Text);
-								var index = 0;
-								if (node.Value.Index != SelectionStart) //you're in the word
-									index = node.Value.Index;
-								else if (node.Previous != null) //move to previous word
-									index = node.Previous.Value.Index;
-								index -= SelectionStart;
-								SelectionStart += index;
-								SelectionLength -= index;
+								if (node != null)
+								{
+									var index = 0;
+									if (node.Value.Index != SelectionStart) //you're in the word
+										index = node.Value.Index;
+									else if (node.Previous != null) //move to previous word
+										index = node.Previous.Value.Index;
+									index -= SelectionStart;
+									SelectionStart += index;
+									SelectionLength -= index;
+								}
 							}
 							DragText = new TextSelection(SelectionStart, SelectionLength);
 						}
 						else
 						{
 							var node = FindToken(SelectionStart, Text);
-							var index = 0;
-							if (node.Value.Index != SelectionStart) //you're in the word
-								index = node.Value.Index;
-							else if (node.Previous != null) //move to previous word
-								index = node.Previous.Value.Index;
-							SelectionStart = index;
-							DragText.Active = false;
+							if (node != null)
+							{
+								var index = 0;
+								if (node.Value.Index != SelectionStart) //you're in the word
+									index = node.Value.Index;
+								else if (node.Previous != null) //move to previous word
+									index = node.Previous.Value.Index;
+								SelectionStart = index;
+								DragText.Active = false;
+							}
 						}
 					}
 					break;
@@ -280,44 +332,53 @@ namespace Calculator
 							if (SelectionStart < CaretStart) //shrink
 							{
 								var node = FindToken(SelectionStart, Text);
-								var index = Text.Length;
-								if (node.Value.Index != SelectionStart) //you're in the word
-									index = SelectionStart + SelectionLength;
-								else if (node.Next != null) //move to next word
-									index = node.Next.Value.Index;
+								if (node != null)
+								{
+									var index = Text.Length;
+									if (node.Value.Index != SelectionStart) //you're in the word
+										index = SelectionStart + SelectionLength;
+									else if (node.Next != null) //move to next word
+										index = node.Next.Value.Index;
 
-								if (CaretStart < index)
-									index = CaretStart;
-								index -= SelectionStart;
-								SelectionStart += index;
-								if(SelectionStart + SelectionLength < Text.Length)
-									SelectionLength -= index;
+									if (CaretStart < index)
+										index = CaretStart;
+									index -= SelectionStart;
+									SelectionStart += index;
+									if (SelectionStart + SelectionLength < Text.Length)
+										SelectionLength -= index;
+								}
 							}
 							else //grow
 							{
 								var node = FindToken(SelectionStart + SelectionLength, Text);
-								var index = Text.Length;
-								if (node.Value.Index + node.Value.Length != SelectionStart + SelectionLength) //you're in the word
-									index = node.Value.Index + node.Value.Length;
-								else if (node.Next != null) //move to next word
-									index = node.Next.Value.Index;
+								if (node != null)
+								{
+									var index = Text.Length;
+									if (node.Value.Index + node.Value.Length != SelectionStart + SelectionLength) //you're in the word
+										index = node.Value.Index + node.Value.Length;
+									else if (node.Next != null) //move to next word
+										index = node.Next.Value.Index;
 
-								index -= SelectionStart + SelectionLength;
-								SelectionLength += index;
+									index -= SelectionStart + SelectionLength;
+									SelectionLength += index;
+								}
 							}
 							DragText = new TextSelection(SelectionStart, SelectionLength);
 						}
 						else
 						{
 							var node = FindToken(SelectionStart, Text);
-							var index = Text.Length;
-							if (node.Value.Index + node.Value.Length != SelectionStart) //you're in the word
-								index = node.Value.Index + node.Value.Length;
-							else if (node.Next != null) //move to next word
-								index = node.Next.Value.Index;
+							if (node != null)
+							{
+								var index = Text.Length;
+								if (node.Value.Index + node.Value.Length != SelectionStart) //you're in the word
+									index = node.Value.Index + node.Value.Length;
+								else if (node.Next != null) //move to next word
+									index = node.Next.Value.Index;
 
-							SelectionStart = index;
-							DragText.Active = false;
+								SelectionStart = index;
+								DragText.Active = false;
+							}
 						}
 					}
 					break;
@@ -561,8 +622,10 @@ namespace Calculator
 						Text = Text.Remove(DragText.Start, DragText.Length);
 					}
 				}
-				if (Program.CopyPasteHelper)
+
+				if (e.Effect != DragDropEffects.Move && Program.CopyPasteHelper)
 					str = CopyHelpers.Process(str);
+
 				Text = Text.Insert(idx, str);
 				SelectionStart = idx + str.Length;
 			}

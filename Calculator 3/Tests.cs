@@ -117,6 +117,9 @@ namespace Calculator
 			TestFunction("{2; 4} * 2", new Vector(4, 8));
 			TestFunction("{2; 4} * 2 / 4", new Vector(1, 2));
 			TestFunction("{-1; -3; -5}", new Vector(-1, -3, -5));
+			TestFunction("{2; 4} % 3", new Vector(2, 1));
+			TestFunction("{2; 4} % {3; 5}", new Vector(2, 4));
+			TestFunction("{2.3; 4.7} % 2.1", new Vector(0.2, 0.5));
 
 			TestFunction("33{2}", new Vector(66));
 			TestFunction("{{2; 3}; {1; 1}; {0; 1}} + {{0; 1}; {2; 3}; {4; 5}} ",
@@ -264,6 +267,7 @@ namespace Calculator
 			TestFunction("vset_lane{{{0;1};2;1;0};0;1}", new Vector(1, 2, 1, 0));
 			TestFunction("vset_lane{{0}; 0; 3 > 4 ? 1 : 0}", new Vector(0));
 			TestFunction("vset_lane{{0}; 0; 3 > 4 ? 0 : 1}", new Vector(1));
+			TestFunction("vset_lane{{0}; 1; 1}", new Vector(0, 1));
 
 			TestFunction("vset_lane{0;0;1}", null);
 			TestFunction("vget_lane{0;0;1}", null);
@@ -281,6 +285,7 @@ namespace Calculator
 			TestFunction("1234,s-2", null);
 			TestFunction("1234,s-1", 1234);
 			TestFunction("1234,x0", 1234);
+			TestFunction("1234,s-", null);
 
 			Program.UseXor = true;
 			TestFunction("2^2", 0);

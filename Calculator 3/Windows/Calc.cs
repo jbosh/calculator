@@ -165,8 +165,12 @@ namespace Calculator.Windows
 						var field = fields[idx];
 						if (field.txtQuestion.SelectionLength == 0)
 						{
+							if (field.txtQuestion.Text.Length == 0) //stop the ding when there is nothing
+								field.txtQuestion.Text = Environment.NewLine;
+							field.txtQuestion.SelectAll(); //stop the ding when erasing row
 							RemoveField(idx);
 							e.Handled = true;
+							e.SuppressKeyPress = true;
 						}
 					}
 					break;
@@ -326,7 +330,6 @@ namespace Calculator.Windows
 				return;
 			var lines = Clipboard.GetText(TextDataFormat.Text)
 				.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
-				.Select(l => l.Trim())
 				.Select(l => Program.CopyPasteHelper ? CopyHelpers.Process(l) : l)
 				.ToArray();
 
@@ -338,6 +341,8 @@ namespace Calculator.Windows
 				var field = fields[i + fieldIndex];
 				field.Text = lines[i];
 				field.txtQuestion.InterceptNextPaste = true;
+				field.txtQuestion.SelectionStart = 0;
+				field.txtQuestion.SelectionLength = 0;
 			}
 		}
 		private void CopyAllLines()
