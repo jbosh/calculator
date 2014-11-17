@@ -574,7 +574,7 @@ namespace Calculator.Windows
 
 			public void Calculate(bool global)
 			{
-				var parse = statement.ProcessString(txtQuestion.Text);
+				var variable = statement.ProcessString(txtQuestion.Text);
 				var format = statement.Format == OutputFormat.Invalid ? Format : statement.Format;
 
 				var rounding = -1;
@@ -585,10 +585,15 @@ namespace Calculator.Windows
 				if(statement.Rounding.HasValue)
 					rounding = statement.Rounding.Value;
 
-				if (parse.Errored && !Program.ErrorsAsNan)
-					lblAnswer.Text = parse.ErrorText;
+				if (variable.Errored && !Program.ErrorsAsNan)
+					lblAnswer.Text = variable.ErrorText;
 				else
-					lblAnswer.Text = Program.FormatOutput(parse, format, ThousandsSeparator, rounding);
+				{
+					var text = Program.FormatOutput(variable, format, ThousandsSeparator, rounding);
+					if(variable.Units != null)
+						text += string.Concat("<", variable.Units.ToString(), ">");
+					lblAnswer.Text = text;
+				}
 			}
 			private void txtQuestion_TextChanged()
 			{

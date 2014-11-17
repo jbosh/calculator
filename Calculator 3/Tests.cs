@@ -287,6 +287,31 @@ namespace Calculator
 			TestFunction("1234,x0", 1234);
 			TestFunction("1234,s-", null);
 
+			TestFunction("<<m>>", null);
+			TestFunction("2.0<m>", new Variable(2, units: new VariableUnits(new[] { "m" })));
+			TestFunction("<m>", new Variable(1, units: new VariableUnits(new[] { "m" })));
+			TestFunction("1<m> + 2<m>", new Variable(3, units: new VariableUnits(new[] { "m" })));
+			TestFunction("1<m> - 2<m>", new Variable(-1, units: new VariableUnits(new[] { "m" })));
+			TestFunction("4<m^2>", new Variable(4, units: new VariableUnits(new[] { "m", "m" })));
+			TestFunction("4<m*m>", new Variable(4, units: new VariableUnits(new[] { "m", "m" })));
+			TestFunction("4<m m>", new Variable(4, units: new VariableUnits(new[] { "m", "m" })));
+			TestFunction("sqrt(4<m^2>)", new Variable(2, units: new VariableUnits(new[] { "m" })));
+			TestFunction("4<m> / 2", new Variable(2, units: new VariableUnits(new[] { "m" }))); 
+			TestFunction("4<m> + 2", null);
+			TestFunction("4<m> * 2<s>", new Variable(8, units: new VariableUnits(new[] { "m", "s" })));
+			TestFunction("{4}<m>", null);
+			TestFunction("{4<m>} * {2<s>}", new Vector(new Variable(8, units: new VariableUnits(new[] { "m", "s" }))));
+			TestFunction("4<m> / 2<m>", 2.0);
+			TestFunction("1000<m> * (<km> / 1000<m>)", new Variable(1, units: new VariableUnits(new[] { "km" })));
+			TestFunction("10<m/s> * 4<s>", new Variable(40, units: new VariableUnits(new[] { "m" })));
+			TestFunction("10<m> / 1<m>", 10);
+			TestFunction("10<m> / 1<m> + 20", 30);
+			TestFunction("2<m> / 1<s> / 2", new Variable(1, units: new VariableUnits(new[] { "m" }, new[] { "s" } )));
+			TestFunction("1<m> 2<s>", new Variable(2, units: new VariableUnits(new[] { "m", "s" })));
+			TestFunction("1<m> <s>", new Variable(1, units: new VariableUnits(new[] { "m", "s" })));
+			TestFunction("2<m s^-1>", new Variable(2, units: new VariableUnits(new[] { "m" }, new[] { "s" })));
+			TestFunction("123<m/(s s)>", new Variable(123, units: new VariableUnits(new[] { "m" }, new[] { "s", "s" })));
+
 			Program.UseXor = true;
 			TestFunction("2^2", 0);
 			TestFunction("2^3", 1);
@@ -344,12 +369,21 @@ namespace Calculator
 				output.Value = ((Vector)output.Value).Round(2).Value;
 
 			var failed = false;
-			if (output.IsDouble)
+			if (correct is Variable) //we're using units
+			{
+				var diff = (Variable)(output - correct);
+				failed = output.Units != correct.Units;
+				failed |= Math.Abs(diff.Value) > 0.01;
+			}
+			else if (output.Units != null)
+				failed = true;
+			else if (output.IsDouble)
 				failed = Math.Abs(output.Value - correct) > 0.01;
 			else if (output.Value is ulong || correct is ulong)
 				failed = (ulong)output.Value != (ulong)correct;
 			else
 				failed = output.Value != correct;
+
 			if (failed)
 				throw new ApplicationException(string.Format("Failed on \"{0}\". Answer: {1}.", function, output));
 		}

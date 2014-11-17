@@ -15,7 +15,7 @@ namespace Calculator.Grammar
 		private static readonly Regex RegSpaces
 			= new Regex(@"[^a-zA-Z\d\.]([\d\.]+)([_a-zA-Z]+)", RegexOptions.Compiled);
 		private static readonly Regex RegMulti
-			= new Regex(@"([\d\w\)]+)( +)([\d\w\(\{]+)", RegexOptions.Compiled);
+			= new Regex(@"([\d\w\)\]]+)( +)([\d\w\(\{\[]+)", RegexOptions.Compiled);
 		private static readonly Regex RegHex
 			= new Regex(@"0x[\d\.a-fA-F]+", RegexOptions.Compiled);
 		private static readonly Regex RegBinary
@@ -26,6 +26,8 @@ namespace Calculator.Grammar
 			= new Regex(@"[^<>=!](=)[^<>=!]", RegexOptions.Compiled);
 		private static readonly Regex RegFormattingSuffix
 			= new Regex(@",([xseb])(-?\d+)?$", RegexOptions.Compiled);
+		private static readonly Regex RegUnits
+			= new Regex(@"<[^>\+\.=!~&\|<{}%\?]+>", RegexOptions.Compiled);
 		public string VariableName { get; private set; }
         public string Text { get; private set; }
 		public OutputFormat Format { get; private set; }
@@ -33,6 +35,7 @@ namespace Calculator.Grammar
 		public int? Rounding { get; private set; }
 
 		private static Dictionary<TokenType, Func<CalcToken, Variable>> Dispatch;
+		private static Dictionary<TokenType, Func<CalcToken, VariableUnits>> DispatchUnits;
 		public static MemoryManager Memory;
 		private CalcToken root;
 		public static void Initialize()
@@ -45,6 +48,7 @@ namespace Calculator.Grammar
 			{TokenType.Vector, VisitVector},
 			{TokenType.Id, VisitID},
 			{TokenType.Binary, VisitBinary},
+			{TokenType.ValueWithUnits, VisitValueWithUnits},
 
 			{TokenType.Negation, VisitNegation},
 			{TokenType.Minus, VisitMinus},
@@ -59,6 +63,13 @@ namespace Calculator.Grammar
 
 			{TokenType.Function, VisitFunc},
 			{TokenType.TernaryExpression, VisitTernary},
+			};
+
+			DispatchUnits = new Dictionary<TokenType, Func<CalcToken, VariableUnits>>
+			{
+			{TokenType.UnitValue, VisitUnitValue},
+			{TokenType.UnitPowExp, VisitUnitPow},
+			{TokenType.UnitOpExp, VisitUnitOp},
 			};
 		}
 		/// <summary>
@@ -152,6 +163,21 @@ namespace Calculator.Grammar
 
 			return variable;
 		}
+		private static string PreprocessImplicitMultiplication(string source)
+		{
+			var chars = source.ToCharArray();
+			for (int i = 0; i < source.Length; i++)
+			{
+				var match = RegMulti.Match(source, i);
+				if (!match.Success)
+					break;
+				if (!IsFunc(match.Groups[1].Value))
+					chars[match.Groups[2].Index] = '*';
+				i = match.Groups[2].Index;
+			}
+			source = new string(chars);
+			return source;
+		}
 		private static string Preprocess(string source)
 		{
 			source = " " + source
@@ -223,21 +249,29 @@ namespace Calculator.Grammar
 				source = new string('(', Math.Abs(parenDepth)) + source;
 			}
 			#endregion
-			#region Process Implicit Multiplication
+			#region Process Units
 			{
-                var chars = source.ToCharArray();
-				for(int i = 0; i < source.Length; i++)
+				for (int i = 0; i < source.Length; i++)
 				{
-					var match = RegMulti.Match(source, i);
-					if(!match.Success)
+					var match = RegUnits.Match(source, i);
+					if (!match.Success)
 						break;
-					if (!IsFunc(match.Groups[1].Value))
-						chars[match.Groups[2].Index] = '*';
-					i = match.Groups[2].Index;
+
+					var unitString = string.Concat("[", match.Value, "]");
+					unitString = PreprocessImplicitMultiplication(unitString);
+					var root = CalcToken.Parse(unitString);
+					if (root != null)
+					{
+						source = source.Insert(match.Index, "[");
+						source = source.Insert(match.Index + match.Length + 1, "]");
+						i = match.Index + match.Length + 1;
+					}
 				}
-				source = new string(chars);
 			}
 			#endregion
+
+			source = PreprocessImplicitMultiplication(source);
+
 			return source;
 		}
 		[DebuggerStepThrough]
@@ -290,14 +324,74 @@ namespace Calculator.Grammar
 				return Dispatch[token.Type](token);
 			return Variable.Error(string.Format("{0} not found", token));
 		}
-		/// <summary>
-		/// Default for visiting an unknown token.
-		/// </summary>
-		/// <param name="token"></param>
-		/// <returns></returns>
 		private static Variable VisitValue(CalcToken token)
 		{
 			return Visit(token.Children[0]);
+		}
+		private static Variable VisitValueWithUnits(CalcToken token)
+		{
+			var value = default(Variable);
+			if (token.Children.Length == 4)
+			{
+				value = Visit(token.Children[0]);
+				value.Units = VisitUnitExpression(token.Children[2]);
+			}
+			else
+			{
+				value = new Variable(1.0);
+				value.Units = VisitUnitExpression(token.Children[1]);
+			}
+
+			return value;
+		}
+		private static VariableUnits VisitUnitExpression(CalcToken token)
+		{
+			if (DispatchUnits.ContainsKey(token.Type))
+				return DispatchUnits[token.Type](token);
+			return new VariableUnits();
+		}
+		private static VariableUnits VisitUnitPow(CalcToken token)
+		{
+			var left = VisitUnitValue(token.Children[0]);
+			var negative = token.Children[2].Text == "-";
+			var parseIdx = negative ? 3 : 2;
+			if (token.Children[parseIdx].Type != TokenType.Double)
+				return VariableUnits.Error("unit pow");
+			var right = VisitDouble(token.Children[parseIdx]);
+			if(!right.IsLong)
+				return VariableUnits.Error("unit pow");
+			if (negative)
+				right.Value = -right.Value;
+			return left.Pow(right.Value);
+		}
+		private static VariableUnits VisitUnitOp(CalcToken token)
+		{
+			var left = VisitUnitExpression(token.Children[0]);
+			var right = VisitUnitExpression(token.Children[2]);
+			switch (token.Children[1].Text[0])
+			{
+				case '*':
+					return left * right;
+				case '/':
+					return left / right;
+				default:
+					throw new NotImplementedException();
+			}
+		}
+		private static VariableUnits VisitUnitValue(CalcToken token)
+		{
+			if (token.Children.Length == 1) //id
+			{
+				if (token.Children[0].Type == TokenType.UnitOpExp)
+					return VisitUnitExpression(token.Children[0]);
+				return new VariableUnits(new[] { token.Children[0].Text });
+			}
+			else if(token.Children.Length == 0)
+			{
+				var value = int.Parse(token.Text);
+				return new VariableUnits();
+			}
+			throw new NotImplementedException();
 		}
 		private static Variable VisitFunc(CalcToken token)
 		{

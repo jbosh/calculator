@@ -109,12 +109,18 @@ Binary = '0b'[10]+
               | <Function>
 
 <Function> ::= ID <Function>
-             | <Value>
+             | <Value With Units>
+
+<Value With Units> ::= '[<' <Unit Expression> '>]'
+                     | Double '[<' <Unit Expression> '>]'
+                     | Hex '[<' <Unit Expression> '>]'
+                     | Binary '[<' <Unit Expression> '>]'
+                     | <Value>
 
 <Value> ::= Double
-          | ID
           | '(' <Ternary Expression> ')'
           | Hex
+          | ID
           | Binary
           | <Vector Expression>
 
@@ -124,3 +130,19 @@ Binary = '0b'[10]+
                     | <Ternary Expression>
 
 
+! ------------------------------------------------- Units grammar
+<Unit Expression> ::= <Unit Op Exp>
+
+<Unit Op Exp> ::= <Unit Op Exp> '*' <Unit Pow Exp>
+                | <Unit Op Exp> '/' <Unit Pow Exp>
+                | <Unit Pow Exp>
+
+<Unit Pow Exp> ::= <Unit Value> '**' Double
+                 | <Unit Value> '^' Double
+                 | <Unit Value> '**' '-' Double
+                 | <Unit Value> '^' '-' Double
+                 | <Unit Value>
+
+<Unit Value> ::= Double
+               | ID
+               | '(' <Unit Op Exp> ')'
