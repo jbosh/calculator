@@ -245,9 +245,11 @@ namespace Calculator.Grammar
 				}
 				else
 				{
-					if (value / (double)Amount < 1.0)
-						return value / (double)Amount;
-					return value / Amount;
+					var unrounded = value / (double)Amount;
+					var rounded = Math.Round(unrounded);
+					if (Math.Abs(rounded - unrounded) < 0.0001)
+						return value / Amount;
+					return unrounded;
 				}
 			}
 
@@ -255,9 +257,11 @@ namespace Calculator.Grammar
 			{
 				if (Multiply)
 				{
-					if (value / (double)Amount < 1.0)
-						return value / (double)Amount;
-					return value / Amount;
+					var unrounded = value / (double)Amount;
+					var rounded = Math.Round(unrounded);
+					if (Math.Abs(rounded - unrounded) < 0.0001)
+						return value / Amount;
+					return unrounded;
 				}
 				else
 				{

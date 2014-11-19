@@ -176,8 +176,13 @@ namespace Calculator.Grammar
 		public static Variable operator *(Variable a, Variable b)
 		{
 			var units = default(VariableUnits);
+
 			if (a.Units != null || b.Units != null)
+			{
+				if (a.IsVector || b.IsVector)
+					return Variable.Error("vector with units");
 				units = a.Units * b.Units;
+			}
 			if (a.Value is ulong || b.Value is ulong)
 				return new Variable((ulong)a.Value * (ulong)b.Value, units: units);
 			return new Variable(a.Value * b.Value, units: units);
@@ -191,7 +196,11 @@ namespace Calculator.Grammar
 			if(b.Errored)
 				return b;
 			if (b.IsVector)
+			{
+				if(a.Units != null)
+					return Variable.Error("units / vector");
 				return new Variable(a.Value / b.Value);
+			}
 			// Because integer division doesn't work, must cast to double.
 			if (a.IsVector)
 			{

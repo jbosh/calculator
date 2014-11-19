@@ -25,7 +25,7 @@ namespace Calculator.Grammar
 		private static readonly Regex RegEqualOperator
 			= new Regex(@"[^<>=!](=)[^<>=!]", RegexOptions.Compiled);
 		private static readonly Regex RegFormattingSuffix
-			= new Regex(@",([xseb])(-?\d+)?$", RegexOptions.Compiled);
+			= new Regex(@",([xseb])(-?\d+)?(<[^>]+>)?$", RegexOptions.Compiled);
 		private static readonly Regex RegUnits
 			= new Regex(@"<[^>\+\.=!~&\|<{}%\?]+>", RegexOptions.Compiled);
 		public string VariableName { get; private set; }
@@ -110,6 +110,7 @@ namespace Calculator.Grammar
 				}
 			}
 
+			var outUnits = default(VariableUnits);
 			Format = OutputFormat.Invalid;
 			{
 				Rounding = null;
@@ -143,6 +144,21 @@ namespace Calculator.Grammar
 						else
 							return Variable.Error("Invalid rounding amt");
 					}
+
+					var units = match.Groups[3].Value;
+					if (units.Length != 0)
+					{
+						var unitString = string.Concat("[", units, "]");
+						unitString = PreprocessImplicitMultiplication(unitString);
+						var unitRoot = CalcToken.Parse(unitString);
+						if (unitRoot == null)
+							return Variable.Error("invalid unit suffix");
+
+						var unitVariable = Visit(unitRoot);
+						if (unitVariable.Errored || unitVariable.Units == null)
+							return Variable.Error("invalid unit suffix");
+						outUnits = unitVariable.Units;
+					}
 				}
 			}
 			
@@ -157,6 +173,13 @@ namespace Calculator.Grammar
 				variable = Visit(root);
 			if (!variable.Errored)
 			{
+				if (outUnits != null)
+				{
+					variable = VariableUnitsConverter.Convert(variable, outUnits);
+					if (variable.Errored)
+						return variable;
+				}
+
 				if (!string.IsNullOrEmpty(VariableName))
 					Memory.SetVariable(VariableName, variable);
 			}
