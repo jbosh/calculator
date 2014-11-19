@@ -304,6 +304,7 @@ namespace Calculator.Grammar
 				case "lerp":
 				case "vget_lane":
 				case "vset_lane":
+				case "convert":
 					return true;
 			}
 
@@ -414,6 +415,7 @@ namespace Calculator.Grammar
 				case "normalize":
 				case "length":
 				case "lerp":
+				case "convert":
 					return VisitMiscFunc(token);
 				case "sin":
 				case "cos":
@@ -428,6 +430,7 @@ namespace Calculator.Grammar
 				case "vget_lane":
 				case "vset_lane":
 					return VisitVectorFunc(token);
+					throw new NotImplementedException();
 			}
 
 			if (Scripts.FuncExists(name))
@@ -683,6 +686,19 @@ namespace Calculator.Grammar
 					if (left.IsVector)
 						return ((Vector)left.Value).Lerp();
 					return Variable.Error("Lerp on non vector");
+				case "convert":
+					{
+						if(!left.IsVector)
+							return Variable.Error("conversion args");
+						var args = (Vector)left.Value;
+						if(args.Count != 2)
+							return Variable.Error("conversion args");
+
+						var value = args[0];
+						var units = args[1];
+						return VariableUnitsConverter.Convert(value, units.Units);
+					}
+					throw new NotImplementedException();
 				default:
 					throw new DataException(string.Format("Unsupported token type {0}.", token.Children[0].Text));
 			}

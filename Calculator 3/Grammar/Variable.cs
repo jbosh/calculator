@@ -35,16 +35,26 @@ namespace Calculator.Grammar
 			return b;
 		}
 
-		private static bool AreUnitsCompatible(Variable a, Variable b, out VariableUnits units)
+		private static bool ConvertToValidUnits(ref Variable a, ref Variable b, out VariableUnits units)
 		{
 			units = default(VariableUnits);
 			if (!a.IsVector && !b.IsVector)
 			{
-				
 				if (a.Units != b.Units)
-					return false;
-				if(a.Units != null)
+				{
+					if (a.Units == null || b.Units == null)
+						return false;
+
+					var newA = VariableUnitsConverter.Convert(a, b.Units);
+					if (newA.Errored)
+						return false;
+					a = newA;
 					units = a.Units.Clone();
+				}
+				else if (a.Units != null)
+				{
+					units = a.Units.Clone();
+				}
 			}
 			return true;
 		}
@@ -145,7 +155,7 @@ namespace Calculator.Grammar
 		public static Variable operator +(Variable a, Variable b)
 		{
 			VariableUnits units;
-			if (!AreUnitsCompatible(a, b, out units))
+			if (!ConvertToValidUnits(ref a, ref b, out units))
 				return Variable.Error("units mismatch");
 
 			if (a.Value is ulong || b.Value is ulong)
@@ -156,7 +166,7 @@ namespace Calculator.Grammar
 		public static Variable operator -(Variable a, Variable b)
 		{
 			VariableUnits units;
-			if (!AreUnitsCompatible(a, b, out units))
+			if (!ConvertToValidUnits(ref a, ref b, out units))
 				return Variable.Error("units mismatch");
 
 			if (a.Value is ulong || b.Value is ulong)
@@ -201,7 +211,7 @@ namespace Calculator.Grammar
 		public static Variable operator %(Variable a, Variable b)
 		{
 			if (a.Units != null || b.Units != null)
-				throw new NotImplementedException();
+				return Variable.Error("% operator on units");
 			return new Variable(a.Value % b.Value);
 		}
 		#endregion

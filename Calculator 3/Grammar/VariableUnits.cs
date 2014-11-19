@@ -9,8 +9,8 @@ namespace Calculator.Grammar
 	{
 		public string ErrorText { get; private set; }
 		public bool Errored { get { return ErrorText != null; } }
-		private readonly string[] Numerator;
-		private readonly string[] Denominator;
+		public readonly string[] Numerator;
+		public readonly string[] Denominator;
 		public VariableUnits(IEnumerable<string> numerator = null, IEnumerable<string> denominator = null)
 		{
 			var numList = default(List<string>);

@@ -144,6 +144,7 @@ namespace Calculator
 		{
 			Application.EnableVisualStyles();
 
+			VariableUnitsConverter.Initialize();
 			Statement.Initialize();
 			Grammar.CalcToken.Initialize();
 			Scripts.LoadScripts(ScriptsFolder);

@@ -312,6 +312,13 @@ namespace Calculator
 			TestFunction("2<m s^-1>", new Variable(2, units: new VariableUnits(new[] { "m" }, new[] { "s" })));
 			TestFunction("123<m/(s s)>", new Variable(123, units: new VariableUnits(new[] { "m" }, new[] { "s", "s" })));
 
+			TestFunction("convert{1<km>; <m>}", new Variable(1000, units: new VariableUnits(new[] { "m" })));
+			TestFunction("convert{1<m>/1<s>; <ft>/<s>}", new Variable(3.281, units: new VariableUnits(new[] { "ft" }, new[] { "s" })));
+			TestFunction("convert{1<m>/1<s>; <ft>/<min>}", new Variable(196.86, units: new VariableUnits(new[] { "ft" }, new[] { "min" })));
+			TestFunction("3<km> + 3<m>", new Variable(3003, units: new VariableUnits(new[] { "m" })));
+			TestFunction("3<m> + 3<km>", new Variable(3.003, units: new VariableUnits(new[] { "km" })));
+			TestFunction("3<m> + 3<kg>", null);
+
 			Program.UseXor = true;
 			TestFunction("2^2", 0);
 			TestFunction("2^3", 1);
