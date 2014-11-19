@@ -212,13 +212,23 @@ namespace Calculator.Grammar
 			var units = default(VariableUnits);
 			if (a.Units != null || b.Units != null)
 			{
-				if (Program.UnitAutoConversion)
+				if (a.Units == null || b.Units == null)
 				{
-					var newA = VariableUnitsConverter.Convert(a, b.Units);
-					if (!newA.Errored)
-						a = newA;
+					if (a.Units == null)
+						units = new VariableUnits(b.Units.Denominator, b.Units.Numerator);
+					else
+						units = a.Units;
 				}
-				units = a.Units / b.Units;
+				else
+				{
+					if (Program.UnitAutoConversion)
+					{
+						var newA = VariableUnitsConverter.Convert(a, b.Units);
+						if (!newA.Errored)
+							a = newA;
+					}
+					units = a.Units / b.Units;
+				}
 			}
 
 			if (b.Value != 0 && a.Value % b.Value == 0)

@@ -315,6 +315,7 @@ namespace Calculator
 			TestFunction("2<m>*{20;3}", null);
 			TestFunction("2<m>/{20;3}", null);
 			TestFunction("2000<m>,s<km>", new Variable(2, units: new VariableUnits(new[] { "km" })));
+			TestFunction("1/(1000<ms>/10<f>)", new Variable(0.01, units: new VariableUnits(new[] { "f" }, new[] { "ms" })));
 
 			TestFunction("convert{1<km>; <m>}", new Variable(1000, units: new VariableUnits(new[] { "m" })));
 			TestFunction("convert{1<m>/1<s>; <ft>/<s>}", new Variable(3.281, units: new VariableUnits(new[] { "ft" }, new[] { "s" })));
