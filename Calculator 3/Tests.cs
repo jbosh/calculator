@@ -318,6 +318,7 @@ namespace Calculator
 			TestFunction("3<km> + 3<m>", new Variable(3003, units: new VariableUnits(new[] { "m" })));
 			TestFunction("3<m> + 3<km>", new Variable(3.003, units: new VariableUnits(new[] { "km" })));
 			TestFunction("3<m> + 3<kg>", null);
+			TestFunction("convert{3; <m>}", new Variable(3, units: new VariableUnits(new[] { "m" })));
 
 			Program.UseXor = true;
 			TestFunction("2^2", 0);

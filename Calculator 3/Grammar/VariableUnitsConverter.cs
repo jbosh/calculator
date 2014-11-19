@@ -22,11 +22,33 @@ namespace Calculator.Grammar
 			AddMapping("m", "km", 1000, ConversionOp.Divide);
 			AddMapping("m", "cm", 100, ConversionOp.Multiply);
 			AddMapping("m", "mm", 1000, ConversionOp.Multiply);
+
 			AddMapping("m", "ft", 3.28084, ConversionOp.Multiply);
+
+			AddMapping("ft", "in", 12, ConversionOp.Multiply);
+			AddMapping("mi", "ft", 5280, ConversionOp.Multiply);
+
+			AddMapping("us", "ns", 1000, ConversionOp.Multiply);
+			AddMapping("ms", "us", 1000, ConversionOp.Multiply);
+			AddMapping("s", "ms", 1000, ConversionOp.Multiply);
 			AddMapping("s", "min", 60, ConversionOp.Divide);
 			AddMapping("min", "hr", 60, ConversionOp.Divide);
 			AddMapping("hr", "day", 24, ConversionOp.Divide);
 			AddMapping("day", "year", 365, ConversionOp.Divide);
+
+
+			AddMapping("g", "kg", 1000, ConversionOp.Divide);
+			AddMapping("g", "cg", 100, ConversionOp.Multiply);
+			AddMapping("g", "mg", 1000, ConversionOp.Multiply);
+
+			AddMapping("kg", "lb", 2.20462, ConversionOp.Divide);
+
+			AddMapping("lb", "oz", 16, ConversionOp.Multiply);
+
+			AddMapping("b", "kb", 1024, ConversionOp.Divide);
+			AddMapping("kb", "mb", 1024, ConversionOp.Divide);
+			AddMapping("mb", "gb", 1024, ConversionOp.Divide);
+			AddMapping("gb", "tb", 1024, ConversionOp.Divide);
 		}
 		[DebuggerStepThrough]
 		private static void AddMapping(string from, string to, int amt, ConversionOp op)
