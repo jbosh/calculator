@@ -453,11 +453,15 @@ namespace Calculator.Grammar
 			{
 				if (a[i].IsLong && b[i].IsLong)
 				{
+					if (a[i].Units != b[i].Units)
+						return false;
 					if (a[i] != b[i])
 						return false;
 				}
 				else if (a[i].IsDouble || b[i].IsDouble)
 				{
+					if (a[i].Units != b[i].Units)
+						return false;
 					if (Math.Abs((double)a[i].Value - (double)b[i].Value) > 0.001)
 						return false;
 				}

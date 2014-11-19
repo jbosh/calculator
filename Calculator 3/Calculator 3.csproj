@@ -123,6 +123,8 @@
     <Compile Include="Grammar\Statement.cs" />
     <Compile Include="Grammar\Token.cs" />
     <Compile Include="Grammar\Variable.cs" />
+    <Compile Include="Grammar\VariableUnits.cs" />
+    <Compile Include="Grammar\VariableUnitsConverter.cs" />
     <Compile Include="Grammar\Vector.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

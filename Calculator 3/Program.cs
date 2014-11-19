@@ -37,6 +37,7 @@ namespace Calculator
 		private static bool copyPasteHelper = true;
 		private static bool useXor = false;
 		private static bool errorAsNan = false;
+		private static bool unitAutoConversion = true;
 
 		private static Form HelpForm, OptionsForm, CopyHelpersForm;
 		private static List<ICalculator> Window = new List<ICalculator>();
@@ -84,6 +85,15 @@ namespace Calculator
 			{
 				errorAsNan = value;
 				RecalculateWindows(false);
+			}
+		}
+		public static bool UnitAutoConversion
+		{
+			get { return unitAutoConversion; }
+			set
+			{
+				unitAutoConversion = value;
+				RecalculateWindows(true);
 			}
 		}
 		public static int Rounding
@@ -144,6 +154,7 @@ namespace Calculator
 		{
 			Application.EnableVisualStyles();
 
+			VariableUnitsConverter.Initialize();
 			Statement.Initialize();
 			Grammar.CalcToken.Initialize();
 			Scripts.LoadScripts(ScriptsFolder);
@@ -164,13 +175,7 @@ namespace Calculator
 					{
 						var formula = string.Concat(args.Skip(1));
 						var Memory = new MemoryManager();
-						Memory.SetVariable("G", 6.67428E-11);
-						Memory.SetVariable("g", 9.8);
-						Memory.SetVariable("pi", Math.PI);
-						Memory.SetVariable("π", Math.PI);
-						Memory.SetVariable("e", Math.E);
-						Memory.SetVariable("c", 299792458.0);
-						Memory.SetVariable("x", 0);
+						Memory.SetDefaultConstants();
 						Memory.Push();
 						Statement.Memory = Memory;
 						var stat = new Statement();
@@ -248,6 +253,9 @@ namespace Calculator
 							case "errorsAsNan":
 								ErrorsAsNan = reader.ReadElementContentAsBoolean();
 								break;
+							case "unitAutoConversion":
+								UnitAutoConversion = reader.ReadElementContentAsBoolean();
+								break;
 							case "antiAlias":
 								Antialiasing = reader.ReadElementContentAsBoolean();
 								break;
@@ -288,6 +296,7 @@ namespace Calculator
 				writer.WriteElementString("thousandsSeparator", DefaultThousandsSeparator.ToString().ToLower());
 				writer.WriteElementString("antiAlias", Antialiasing.ToString().ToLower());
 				writer.WriteElementString("errorsAsNan", ErrorsAsNan.ToString().ToLower());
+				writer.WriteElementString("unitAutoConversion", UnitAutoConversion.ToString().ToLower());
 
 				writer.WriteElementString("rounding", Rounding.ToString());
 				writer.WriteElementString("binaryRounding", BinaryRounding.ToString());

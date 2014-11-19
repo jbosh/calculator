@@ -7,17 +7,19 @@ namespace Calculator.Grammar
 	{
 		public string Name;
 		public dynamic Value;
+		public VariableUnits Units;
 		public string ErrorText;
 		public bool Errored { get { return ErrorText != null; } }
 		public bool IsVector { get { return Value != null ? Value is Vector : false; } }
 		public bool IsDouble { get { return Value != null ? Value is double : false; } }
 		public bool IsLong { get { return Value != null ? Value is long : false; } }
-		public Variable(dynamic value = null, string name = null)
+		public Variable(dynamic value = null, string name = null, VariableUnits units = null)
 		{
 			if (value is bool)
 				value = value ? 1L : 0L;
 			Value = value;
 			Name = name;
+			Units = units;
 			ErrorText = null;
 		}
 		public static Variable Error(string text = "Unknown error")
@@ -33,9 +35,36 @@ namespace Calculator.Grammar
 			return b;
 		}
 
+		private static bool ConvertToValidUnits(ref Variable a, ref Variable b, out VariableUnits units)
+		{
+			units = default(VariableUnits);
+			if (!a.IsVector && !b.IsVector)
+			{
+				if (a.Units != b.Units)
+				{
+					if (a.Units == null || b.Units == null)
+						return false;
+
+					var newA = VariableUnitsConverter.Convert(a, b.Units);
+					if (newA.Errored)
+						return false;
+					a = newA;
+					units = a.Units.Clone();
+				}
+				else if (a.Units != null)
+				{
+					units = a.Units.Clone();
+				}
+			}
+			return true;
+		}
+
 		#region Logical Operations
 		public static Variable operator &(Variable a, Variable b)
 		{
+			if (a.Units != null || b.Units != null)
+				return Variable.Error("units '&' unsupported");
+
 			if (a.IsDouble)
 				a.Value = (long)Math.Round((double)a.Value);
 			if (b.IsDouble)
@@ -50,6 +79,9 @@ namespace Calculator.Grammar
 		}
 		public static Variable operator |(Variable a, Variable b)
 		{
+			if (a.Units != null || b.Units != null)
+				return Variable.Error("units '|' unsupported");
+
 			if (a.IsDouble)
 				a.Value = (long)Math.Round((double)a.Value);
 			if (b.IsDouble)
@@ -64,6 +96,9 @@ namespace Calculator.Grammar
 		}
 		public static Variable operator ^(Variable a, Variable b)
 		{
+			if (a.Units != null || b.Units != null)
+				return Variable.Error("units xor unsupported");
+
 			if (a.IsDouble)
 				a.Value = (long)Math.Round((double)a.Value);
 			if (b.IsDouble)
@@ -82,6 +117,9 @@ namespace Calculator.Grammar
 		}
 		public Variable ShiftLeft(Variable count)
 		{
+			if (Units != null)
+				return Variable.Error("units '<<' unsupported");
+
 			if (count.Errored || Errored)
 				return Variable.SelectError(count, this);
 			if (IsDouble)
@@ -96,6 +134,9 @@ namespace Calculator.Grammar
 		}
 		public Variable ShiftRight(Variable count)
 		{
+			if (Units != null)
+				return Variable.Error("unit '>>' unsupported");
+
 			if (count.Errored || Errored)
 				return Variable.SelectError(count, this);
 			if (IsDouble)
@@ -113,21 +154,38 @@ namespace Calculator.Grammar
 		#region Operators
 		public static Variable operator +(Variable a, Variable b)
 		{
+			VariableUnits units;
+			if (!ConvertToValidUnits(ref a, ref b, out units))
+				return Variable.Error("units mismatch");
+
 			if (a.Value is ulong || b.Value is ulong)
-				return new Variable((ulong)a.Value + (ulong)b.Value);
-			return new Variable(a.Value + b.Value);
+				return new Variable((ulong)a.Value + (ulong)b.Value, units: units);
+
+			return new Variable(a.Value + b.Value, units: units);
 		}
 		public static Variable operator -(Variable a, Variable b)
 		{
+			VariableUnits units;
+			if (!ConvertToValidUnits(ref a, ref b, out units))
+				return Variable.Error("units mismatch");
+
 			if (a.Value is ulong || b.Value is ulong)
-				return new Variable((ulong)a.Value - (ulong)b.Value);
-			return new Variable(a.Value - b.Value);
+				return new Variable((ulong)a.Value - (ulong)b.Value, units: units);
+			return new Variable(a.Value - b.Value, units: units);
 		}
 		public static Variable operator *(Variable a, Variable b)
 		{
+			var units = default(VariableUnits);
+
+			if (a.Units != null || b.Units != null)
+			{
+				if (a.IsVector || b.IsVector)
+					return Variable.Error("vector with units");
+				units = a.Units * b.Units;
+			}
 			if (a.Value is ulong || b.Value is ulong)
-				return new Variable((ulong)a.Value * (ulong)b.Value);
-			return new Variable(a.Value * b.Value);
+				return new Variable((ulong)a.Value * (ulong)b.Value, units: units);
+			return new Variable(a.Value * b.Value, units: units);
 		}
 		public static Variable operator *(Variable a, double b)
 		{
@@ -137,14 +195,35 @@ namespace Calculator.Grammar
 		{
 			if(b.Errored)
 				return b;
-			if(b.IsVector)
+			if (b.IsVector)
+			{
+				if(a.Units != null)
+					return Variable.Error("units / vector");
 				return new Variable(a.Value / b.Value);
+			}
 			// Because integer division doesn't work, must cast to double.
-			if(a.IsVector)
+			if (a.IsVector)
+			{
+				if (b.Units != null)
+					return Variable.Error("vector / units");
 				return new Variable(a.Value / (double)b.Value);
+			}
+			
+			var units = default(VariableUnits);
+			if (a.Units != null || b.Units != null)
+			{
+				if (Program.UnitAutoConversion)
+				{
+					var newA = VariableUnitsConverter.Convert(a, b.Units);
+					if (!newA.Errored)
+						a = newA;
+				}
+				units = a.Units / b.Units;
+			}
+
 			if (b.Value != 0 && a.Value % b.Value == 0)
-				return new Variable(a.Value / b.Value);
-			return new Variable(a.Value / (double)b.Value);
+				return new Variable(a.Value / b.Value, units: units);
+			return new Variable(a.Value / (double)b.Value, units: units);
 		}
 		public static Variable operator /(Variable a, double b)
 		{
@@ -152,6 +231,8 @@ namespace Calculator.Grammar
 		}
 		public static Variable operator %(Variable a, Variable b)
 		{
+			if (a.Units != null || b.Units != null)
+				return Variable.Error("% operator on units");
 			return new Variable(a.Value % b.Value);
 		}
 		#endregion
@@ -161,20 +242,29 @@ namespace Calculator.Grammar
 		{
 			if (IsVector)
 				return ((Vector) Value).Abs();
-			return new Variable(Math.Abs(Value));
+			return new Variable(Math.Abs(Value), units: Units);
 		}
 		public Variable Sqrt()
 		{
 			if (IsVector)
 				return ((Vector) Value).Sqrt();
-			return new Variable(Math.Sqrt(Value));
+			var units = default(VariableUnits);
+			if (Units != null)
+			{
+				units = Units.Sqrt();
+			}
+			return new Variable(Math.Sqrt(Value), units: units);
 		}
 		public Variable Ln()
 		{
+			if (Units != null)
+				return Variable.Error("units 'ln' unsupported");
 			return new Variable(Math.Log(Value));
 		}
 		public Variable Log()
 		{
+			if (Units != null)
+				return Variable.Error("units 'log' unsupported");
 			return new Variable(Math.Log10(Value));
 		}
 		public Variable Round()
@@ -194,9 +284,9 @@ namespace Calculator.Grammar
 			if (IsVector)
 				return ((Vector)Value).Round(decimals);
 			if (IsLong || Value is ulong)
-				return new Variable(Value);
+				return new Variable(Value, units: Units);
 			var amt = Math.Round((double)Value, decimals);
-			return new Variable(amt);
+			return new Variable(amt, units: Units);
 		}
 		public Variable Ceiling()
 		{
@@ -205,8 +295,8 @@ namespace Calculator.Grammar
 			var amt = Math.Ceiling((double)Value);
 			var amtLong = (long)amt;
 			if (amtLong < long.MaxValue && amtLong > long.MinValue)
-				return new Variable(amtLong);
-			return new Variable(amt);
+				return new Variable(amtLong, units: Units);
+			return new Variable(amt, units: Units);
 		}
 		public Variable Floor()
 		{
@@ -215,17 +305,21 @@ namespace Calculator.Grammar
 			var amt = Math.Floor((double)Value);
 			var amtLong = (long)amt;
 			if (amtLong < long.MaxValue && amtLong > long.MinValue)
-				return new Variable(amtLong);
-			return new Variable(amt);
+				return new Variable(amtLong, units: Units);
+			return new Variable(amt, units: Units);
 		}
 		public Variable Negate()
 		{
+			if (Units != null)
+				return Variable.Error("units 'negate' unsupported");
 			if (IsVector)
 				return ((Vector)Value).Negate();
 			return new Variable(~(long)Value);
 		}
 		public Variable Sin()
 		{
+			if (Units != null)
+				return Variable.Error("units 'sin' unsupported");
 			var degreeBefore = Program.Radians ? 1 : 0.0174532925199433;
 
 			if (IsVector)
@@ -234,6 +328,8 @@ namespace Calculator.Grammar
 		}
 		public Variable Cos()
 		{
+			if (Units != null)
+				return Variable.Error("units 'cos' unsupported");
 			var degreeBefore = Program.Radians ? 1 : 0.0174532925199433;
 
 			if (IsVector)
@@ -242,6 +338,8 @@ namespace Calculator.Grammar
 		}
 		public Variable Tan()
 		{
+			if (Units != null)
+				return Variable.Error("units 'tan' unsupported");
 			var degreeBefore = Program.Radians ? 1 : 0.0174532925199433;
 
 			if (IsVector)
@@ -250,6 +348,8 @@ namespace Calculator.Grammar
 		}
 		public Variable Endian()
 		{
+			if (Units != null)
+				return Variable.Error("units 'endian' unsupported");
 			if (IsVector)
 				return ((Vector) Value).Endian();
             if (IsDouble)
@@ -288,6 +388,10 @@ namespace Calculator.Grammar
 		#region Equality
 		public static bool operator ==(Variable a, Variable b)
 		{
+			if(a.IsVector || b.IsVector)
+				return a.Value == b.Value;
+			if (a.Units != b.Units)
+				return false;
 			return a.Value == b.Value;
 		}
 		public static bool operator !=(Variable a, Variable b)

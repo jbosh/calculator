@@ -1,5 +1,6 @@
 ﻿using System;
 using Calculator.Grammar;
+using System.Linq;
 
 namespace Calculator
 {
@@ -52,7 +53,7 @@ namespace Calculator
 			TestFunction("1/0", double.PositiveInfinity);
 			TestFunction("-1/0", double.NegativeInfinity);
 
-			TestFunction("-2 1 3 4 g", -235.2);
+			TestFunction("-2 1 3 4 g", new Variable(-235.2, units: new VariableUnits(new[] { "m" }, new[] { "s", "s" })));
 			TestFunction("2^2", 4);
 			TestFunction("2.3 + 2321.23 * 234.21 - 233.231 * 2 ^ 2", 542724.65);
 			TestFunction("2*(5+3)", 16);
@@ -63,17 +64,18 @@ namespace Calculator
 			TestFunction("---107", -107);
 			TestFunction("-(35*35)", -1225);
 			TestFunction("3(3(3", 27);
-			TestFunction("(4*10^6)g(15)", 588000000);
-			TestFunction("g(g(g(g(g(g", 885842.38);
-			TestFunction("2*g*e", 53.28);
+			TestFunction("(4*10^6)g(15)", new Variable(588000000, units: new VariableUnits(new[] { "m" }, new[] { "s", "s" })));
+			TestFunction("g(g(g(g(g(g", new Variable(885842.38, units: new VariableUnits(Enumerable.Repeat("m", 6), Enumerable.Repeat("s", 12))));
+			TestFunction("2*g*e", new Variable(53.28, units: new VariableUnits(new[] { "m" }, new[] { "s", "s" })));
 			TestFunction("--------------2", 2);
 			TestFunction("---------------2", -2);
 			TestFunction("---------------(22+3)", -25);
-			TestFunction("g^2", 96.04);
-			TestFunction("g^2^g", Math.Pow(Math.Pow(9.8, 2), 9.8));
-			TestFunction("(-g*.76+3.6*3.6/2+3.6*3.6/5)*100", 162.40);
-			TestFunction("-g/2(2)(2)", -19.6);
-			TestFunction("-g/2(2)(2)(2)", -19.6 * 2);
+			TestFunction("g^2", new Variable(96.04, units: new VariableUnits(Enumerable.Repeat("m", 2), Enumerable.Repeat("s", 4))));
+			TestFunction("9.8^2^9.8", Math.Pow(Math.Pow(9.8, 2), 9.8));
+			TestFunction("(-g*.76+3.6*3.6/2+3.6*3.6/5)*100", null);
+			TestFunction("(-g*.76+3.6<m/s^2>*3.6/2+3.6<m/s^2>*3.6/5)*100", new Variable(162.40, units: new VariableUnits(new[] { "m" }, new[] { "s", "s" })));
+			TestFunction("-g/2(2)(2)", new Variable(-19.6, units: new VariableUnits(new[] { "m" }, new[] { "s", "s" })));
+			TestFunction("-g/2(2)(2)(2)", new Variable(-19.6 * 2, units: new VariableUnits(new[] { "m" }, new[] { "s", "s" })));
 
 			TestFunction("3! * 2!", 12);
 			TestFunction("3!! * 2!", 1440);
@@ -81,10 +83,10 @@ namespace Calculator
 			TestFunction("sqrt 4", 2);
 			TestFunction("10 sin 30 + cos(58+2)", 5.5);
 			TestFunction("acos cos 30", 30);
-			TestFunction("(2ln(e) + sqrt(9)*3)c", 3297717038);
+			TestFunction("(2ln(e) + sqrt(9)*3)c", new Variable(3297717038, units: new VariableUnits(new[] { "m" }, new[] { "s" })));
 			TestFunction("(cos 60 sin 45+sin 60 cos 45)", .97);
 			TestFunction("(200cos 45)/(cos 60*sin 45+sin 60*cos 45)", 146.41);
-			TestFunction("abs(2*g*e)", 53.28);
+			TestFunction("abs(2*g*e)", new Variable(53.28, units: new VariableUnits(new[] { "m" }, new[] { "s", "s" })));
 			TestFunction("sin deg rad 30", .5);
 			TestFunction("[58sin 45]^2", 1682.00);
 			TestFunction("-2160 - abs(2160) % 512", -2272.0);
@@ -287,16 +289,52 @@ namespace Calculator
 			TestFunction("1234,x0", 1234);
 			TestFunction("1234,s-", null);
 
+			TestFunction("<<m>>", null);
+			TestFunction("2.0<m>", new Variable(2, units: new VariableUnits(new[] { "m" })));
+			TestFunction("<m>", new Variable(1, units: new VariableUnits(new[] { "m" })));
+			TestFunction("1<m> + 2<m>", new Variable(3, units: new VariableUnits(new[] { "m" })));
+			TestFunction("1<m> - 2<m>", new Variable(-1, units: new VariableUnits(new[] { "m" })));
+			TestFunction("4<m^2>", new Variable(4, units: new VariableUnits(new[] { "m", "m" })));
+			TestFunction("4<m*m>", new Variable(4, units: new VariableUnits(new[] { "m", "m" })));
+			TestFunction("4<m m>", new Variable(4, units: new VariableUnits(new[] { "m", "m" })));
+			TestFunction("sqrt(4<m^2>)", new Variable(2, units: new VariableUnits(new[] { "m" })));
+			TestFunction("4<m> / 2", new Variable(2, units: new VariableUnits(new[] { "m" }))); 
+			TestFunction("4<m> + 2", null);
+			TestFunction("4<m> * 2<s>", new Variable(8, units: new VariableUnits(new[] { "m", "s" })));
+			TestFunction("{4}<m>", null);
+			TestFunction("{4<m>} * {2<s>}", new Vector(new Variable(8, units: new VariableUnits(new[] { "m", "s" }))));
+			TestFunction("4<m> / 2<m>", 2.0);
+			TestFunction("10<m/s> * 4<s>", new Variable(40, units: new VariableUnits(new[] { "m" })));
+			TestFunction("10<m> / 1<m>", 10);
+			TestFunction("10<m> / 1<m> + 20", 30);
+			TestFunction("2<m> / 1<s> / 2", new Variable(1, units: new VariableUnits(new[] { "m" }, new[] { "s" } )));
+			TestFunction("1<m> 2<s>", new Variable(2, units: new VariableUnits(new[] { "m", "s" })));
+			TestFunction("1<m> <s>", new Variable(1, units: new VariableUnits(new[] { "m", "s" })));
+			TestFunction("2<m s^-1>", new Variable(2, units: new VariableUnits(new[] { "m" }, new[] { "s" })));
+			TestFunction("123<m/(s s)>", new Variable(123, units: new VariableUnits(new[] { "m" }, new[] { "s", "s" })));
+			TestFunction("2<m>*{20;3}", null);
+			TestFunction("2<m>/{20;3}", null);
+			TestFunction("2000<m>,s<km>", new Variable(2, units: new VariableUnits(new[] { "km" })));
+
+			TestFunction("convert{1<km>; <m>}", new Variable(1000, units: new VariableUnits(new[] { "m" })));
+			TestFunction("convert{1<m>/1<s>; <ft>/<s>}", new Variable(3.281, units: new VariableUnits(new[] { "ft" }, new[] { "s" })));
+			TestFunction("convert{1<m>/1<s>; <ft>/<min>}", new Variable(196.86, units: new VariableUnits(new[] { "ft" }, new[] { "min" })));
+			TestFunction("3<km> + 3<m>", new Variable(3003, units: new VariableUnits(new[] { "m" })));
+			TestFunction("3<m> + 3<km>", new Variable(3.003, units: new VariableUnits(new[] { "km" })));
+			TestFunction("3<m> + 3<kg>", null);
+			TestFunction("convert{3; <m>}", new Variable(3, units: new VariableUnits(new[] { "m" })));
+			TestFunction("convert{2231<m>;<km>}", new Variable(2.231, units: new VariableUnits(new[] { "km" })));
+
 			Program.UseXor = true;
 			TestFunction("2^2", 0);
 			TestFunction("2^3", 1);
 			TestFunction("2**2", 4);
 			TestFunction("(2 + 2321 * 234 - 233 * 2) ^ 2", 542648);
 			TestFunction("2 + 2321 * 234 - 233 * 2 ^ 2", 542648);
-			TestFunction("(4*10^6)g(15)", 6762);
+			TestFunction("(4*10^6)g(15)", new Variable(6762, units: new VariableUnits(new[] { "m" }, new[] { "s", "s" })));
 			TestFunction("[58sin 45]^2", 43);
-			TestFunction("g^2^g", 2);
-			TestFunction("g**2**g", Math.Pow(Math.Pow(9.8, 2), 9.8));
+			TestFunction("9.8^2^9.8", 2);
+			TestFunction("9.8**2**9.8", Math.Pow(Math.Pow(9.8, 2), 9.8));
 			TestFunction("{2;4}^2", new Vector(0, 6));
 			TestFunction("{2;4}^{4;2}", new Vector(6, 6));
 			TestFunction("{2.0;4}^2", null);
@@ -304,6 +342,9 @@ namespace Calculator
 			TestFunction("{2.0;4}**2", new Vector(4, 16));
 			Program.UseXor = false;
 
+			Program.UnitAutoConversion = false;
+			TestFunction("1000<m> * (<km> / 1000<m>)", new Variable(1, units: new VariableUnits(new[] { "km" })));
+			Program.UnitAutoConversion = true;
 
 			Memory.Push();
 			Memory["a"] = new Variable(2, "a");
@@ -344,12 +385,21 @@ namespace Calculator
 				output.Value = ((Vector)output.Value).Round(2).Value;
 
 			var failed = false;
-			if (output.IsDouble)
+			if (correct is Variable) //we're using units
+			{
+				var diff = (Variable)(output - correct);
+				failed = output.Units != correct.Units;
+				failed |= Math.Abs(diff.Value) > 0.01;
+			}
+			else if (output.Units != null)
+				failed = true;
+			else if (output.IsDouble)
 				failed = Math.Abs(output.Value - correct) > 0.01;
 			else if (output.Value is ulong || correct is ulong)
 				failed = (ulong)output.Value != (ulong)correct;
 			else
 				failed = output.Value != correct;
+
 			if (failed)
 				throw new ApplicationException(string.Format("Failed on \"{0}\". Answer: {1}.", function, output));
 		}

@@ -24,6 +24,7 @@ namespace Calculator.Grammar
 		Colon,
 		Semicolon,
 		QuestionMark,
+		UnitBraceLeft,
 		Xor,
 		BraceLeft,
 		LogicalOr,
@@ -36,6 +37,7 @@ namespace Calculator.Grammar
 		Equals,
 		CompareEquals,
 		GreaterThan,
+		UnitBraceRight,
 		GreaterEqual,
 		ShiftRight,
 		Binary,
@@ -54,7 +56,12 @@ namespace Calculator.Grammar
 		ShiftExpression,
 		Statement,
 		TernaryExpression,
+		UnitExpression,
+		UnitOpExp,
+		UnitPowExp,
+		UnitValue,
 		Value,
+		ValueWithUnits,
 		Vector,
 	}
 
