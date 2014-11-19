@@ -599,6 +599,15 @@ namespace Calculator.Grammar
 				return ((Vector)left.Value).Pow(right.Value);
 			}
 
+			if (right.Units != null)
+				return Variable.Error("pow by units");
+			if (left.Units != null)
+			{
+				if (!right.IsLong)
+					return Variable.Error("pow units not int");
+				var units = left.Units.Pow(right.Value);
+				return new Variable(Math.Pow((double)left.Value, (double)right.Value), units: units);
+			}
 			return new Variable(Math.Pow((double)left.Value, (double)right.Value));
 		}
 		private static Variable VisitFactorial(CalcToken token)

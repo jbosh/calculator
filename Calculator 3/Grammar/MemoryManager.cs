@@ -47,16 +47,16 @@ namespace Calculator.Grammar
 		}
 		public void SetDefaultConstants()
 		{
-			SetVariable("G", 6.67428E-11);
-			SetVariable("g", 9.8);
+			SetVariable("G", new Variable(6.67428E-11, units: new VariableUnits(new[] { "m", "m", "m" }, new[] { "kg", "s", "s" })));
+			SetVariable("g", new Variable(9.8, units: new VariableUnits(new[] { "m" }, new[] { "s", "s" })));
 			SetVariable("pi", Math.PI);
 			SetVariable("π", Math.PI);
 			SetVariable("e", Math.E);
-			SetVariable("c", 299792458.0);
+			SetVariable("c", new Variable( 299792458.0, units: new VariableUnits(new[] { "m" }, new[] { "s" })));
 			SetVariable("x", 0);
-			SetVariable("kb", 1024);
-			SetVariable("mb", 1024 * 1024);
-			SetVariable("gb", 1024 * 1024 * 1024);
+			SetVariable("kb", new Variable(1, units: new VariableUnits(new[] { "kb" })));
+			SetVariable("mb", new Variable(1, units: new VariableUnits(new[] { "mb" })));
+			SetVariable("gb", new Variable(1, units: new VariableUnits(new[] { "gb" })));
 			SetVariable("k", 1000);
 		}
 	}

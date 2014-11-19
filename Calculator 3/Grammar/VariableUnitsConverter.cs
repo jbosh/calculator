@@ -130,6 +130,8 @@ namespace Calculator.Grammar
 
 		public static Variable Convert(Variable arguments, VariableUnits to)
 		{
+			if (to == null)
+				return Variable.Error("convert to nothing");
 			if (arguments.IsVector)
 				return Variable.Error("convert on vector");
 			if (arguments.Units == null)
@@ -238,17 +240,29 @@ namespace Calculator.Grammar
 			public dynamic Apply(dynamic value)
 			{
 				if (Multiply)
+				{
 					return value * Amount;
+				}
 				else
+				{
+					if (value / (double)Amount < 1.0)
+						return value / (double)Amount;
 					return value / Amount;
+				}
 			}
 
 			public dynamic ApplyInv(dynamic value)
 			{
 				if (Multiply)
+				{
+					if (value / (double)Amount < 1.0)
+						return value / (double)Amount;
 					return value / Amount;
+				}
 				else
+				{
 					return value * Amount;
+				}
 			}
 		}
 	}

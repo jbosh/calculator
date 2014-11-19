@@ -193,12 +193,24 @@ namespace Calculator.Grammar
 			if (b.IsVector)
 				return new Variable(a.Value / b.Value);
 			// Because integer division doesn't work, must cast to double.
-			if(a.IsVector)
+			if (a.IsVector)
+			{
+				if (b.Units != null)
+					return Variable.Error("vector / units");
 				return new Variable(a.Value / (double)b.Value);
+			}
 			
 			var units = default(VariableUnits);
 			if (a.Units != null || b.Units != null)
+			{
+				if (Program.UnitAutoConversion)
+				{
+					var newA = VariableUnitsConverter.Convert(a, b.Units);
+					if (!newA.Errored)
+						a = newA;
+				}
 				units = a.Units / b.Units;
+			}
 
 			if (b.Value != 0 && a.Value % b.Value == 0)
 				return new Variable(a.Value / b.Value, units: units);
