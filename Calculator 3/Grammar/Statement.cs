@@ -336,7 +336,7 @@ namespace Calculator.Grammar
 
 			{
 				var variable = Memory.GetVariable(name);
-				if (variable != null && variable.Value is string)
+				if (variable.Value is string)
 					return true;
 			}
 
@@ -412,7 +412,6 @@ namespace Calculator.Grammar
 			}
 			else if(token.Children.Length == 0)
 			{
-				var value = int.Parse(token.Text);
 				return new VariableUnits();
 			}
 			throw new NotImplementedException();
@@ -453,7 +452,6 @@ namespace Calculator.Grammar
 				case "vget_lane":
 				case "vset_lane":
 					return VisitVectorFunc(token);
-					throw new NotImplementedException();
 			}
 
 			if (Scripts.FuncExists(name))
@@ -466,7 +464,7 @@ namespace Calculator.Grammar
 
 			{
 				var variable = Memory.GetVariable(name);
-				if(variable != null && variable.Value is string)
+				if(variable.Value is string)
 				{
 					var left = Visit(token.Children[1]);
 					Statement.Memory.Push();
@@ -730,7 +728,6 @@ namespace Calculator.Grammar
 						var units = args[1];
 						return VariableUnitsConverter.Convert(value, units.Units);
 					}
-					throw new NotImplementedException();
 				default:
 					throw new DataException(string.Format("Unsupported token type {0}.", token.Children[0].Text));
 			}
@@ -792,7 +789,6 @@ namespace Calculator.Grammar
 			var left = Visit(token.Children[1]);
 			if (left.Errored)
 				return left;
-			var degreeBefore = Program.Radians ? 1 : 0.0174532925199433;
 			var degreeAfter = !Program.Radians ? 57.2957795130823 : 1;
 			switch (token.Children[0].Text)
 			{
