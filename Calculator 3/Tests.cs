@@ -205,7 +205,6 @@ namespace Calculator
 			TestFunction("1<<14)+1024", 17408);
 			TestFunction("(1/107+(35*35)/(2*-107))/-9.8)))+2", 2.58);
 			TestFunction("shadow=7.13)*8*32*2", 3650.56);
-			TestFunction("32kb/1.5mb", 0.02);
 
 			TestFunction("1?2:3", 2);
 			TestFunction("0?2:3", 3);
@@ -325,6 +324,7 @@ namespace Calculator
 			TestFunction("3<m> + 3<kg>", null);
 			TestFunction("convert{3; <m>}", new Variable(3, units: new VariableUnits(new[] { "m" })));
 			TestFunction("convert{2231<m>;<km>}", new Variable(2.231, units: new VariableUnits(new[] { "km" })));
+			TestFunction("21<gb", null);
 
 			Program.UseXor = true;
 			TestFunction("2^2", 0);
@@ -346,6 +346,8 @@ namespace Calculator
 			Program.UnitAutoConversion = false;
 			TestFunction("1000<m> * (<km> / 1000<m>)", new Variable(1, units: new VariableUnits(new[] { "km" })));
 			Program.UnitAutoConversion = true;
+			TestFunction("32kb/1.5mb", 0.02);
+			Program.UnitAutoConversion = false;
 
 			Memory.Push();
 			Memory["a"] = new Variable(2, "a");

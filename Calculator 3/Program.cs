@@ -37,7 +37,7 @@ namespace Calculator
 		private static bool copyPasteHelper = true;
 		private static bool useXor = false;
 		private static bool errorAsNan = false;
-		private static bool unitAutoConversion = true;
+		private static bool unitAutoConversion = false;
 
 		private static Form HelpForm, OptionsForm, CopyHelpersForm;
 		private static List<ICalculator> Window = new List<ICalculator>();

@@ -17,6 +17,8 @@ namespace Calculator.Grammar
 		{
 			if (value is bool)
 				value = value ? 1L : 0L;
+			if (value is int)
+				value = (long)value;
 			Value = value;
 			Name = name;
 			Units = units;
@@ -429,6 +431,8 @@ namespace Calculator.Grammar
 		#region Comparison Operations
 		public static Variable CompareEquals (Variable a, Variable b)
 		{
+			if (a.Units != b.Units)
+				return Variable.Error("unit comparison mismatch");
 			if (a.Errored || b.Errored)
 				return Variable.SelectError(a, b);
 			if (a.IsLong && b.IsLong)
@@ -444,6 +448,8 @@ namespace Calculator.Grammar
 		}
 		public static Variable CompareNotEquals(Variable a, Variable b)
 		{
+			if (a.Units != b.Units)
+				return Variable.Error("unit comparison mismatch");
 			if (a.Errored || b.Errored)
 				return Variable.SelectError(a, b);
 			if (a.IsLong && b.IsLong)
@@ -459,6 +465,8 @@ namespace Calculator.Grammar
 		}
 		public static Variable CompareLessThan(Variable a, Variable b)
 		{
+			if (a.Units != b.Units)
+				return Variable.Error("unit comparison mismatch");
 			if (a.Errored || b.Errored)
 				return Variable.SelectError(a, b);
 			if (a.IsLong && b.IsLong)
@@ -472,6 +480,8 @@ namespace Calculator.Grammar
 		}
 		public static Variable CompareLessEqual(Variable a, Variable b)
 		{
+			if (a.Units != b.Units)
+				return Variable.Error("unit comparison mismatch");
 			if (a.Errored || b.Errored)
 				return Variable.SelectError(a, b);
 			if (a.IsDouble && b.IsDouble)
@@ -487,6 +497,8 @@ namespace Calculator.Grammar
 		}
 		public static Variable CompareGreaterThan(Variable a, Variable b)
 		{
+			if (a.Units != b.Units)
+				return Variable.Error("unit comparison mismatch");
 			if (a.Errored || b.Errored)
 				return Variable.SelectError(a, b);
 			if (a.IsDouble && b.IsDouble)
@@ -502,6 +514,8 @@ namespace Calculator.Grammar
 		}
 		public static Variable CompareGreaterEqual(Variable a, Variable b)
 		{
+			if (a.Units != b.Units)
+				return Variable.Error("unit comparison mismatch");
 			if (a.Errored || b.Errored)
 				return Variable.SelectError(a, b);
 			if (a.IsDouble && b.IsDouble)
