@@ -128,7 +128,7 @@ namespace Calculator.Grammar
 		}
 		#endregion
 
-		public static Variable Convert(Variable arguments, VariableUnits to)
+		private static Variable ConvertInternal(Variable arguments, VariableUnits to)
 		{
 			if (to == null)
 				return Variable.Error("convert to nothing");
@@ -162,6 +162,18 @@ namespace Calculator.Grammar
 			}
 
 			return new Variable(value, units: to);
+		}
+		public static Variable Convert(Variable arguments, VariableUnits to)
+		{
+			var output = ConvertInternal(arguments, to);
+			if (output.Errored)
+			{
+				var argumentsInv = new Variable(1) / arguments;
+				var outputInv = ConvertInternal(argumentsInv, to);
+				if (!outputInv.Errored)
+					return outputInv;
+			}
+			return output;
 		}
 		private static ConversionMapping GetMapping(string from, string to)
 		{

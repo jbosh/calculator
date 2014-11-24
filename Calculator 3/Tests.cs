@@ -325,6 +325,7 @@ namespace Calculator
 			TestFunction("convert{3; <m>}", new Variable(3, units: new VariableUnits(new[] { "m" })));
 			TestFunction("convert{2231<m>;<km>}", new Variable(2.231, units: new VariableUnits(new[] { "km" })));
 			TestFunction("21<gb", null);
+			TestFunction("convert{20<f/s>; <ms/f>}", new Variable(50.0, units: new VariableUnits(new[] { "ms" }, new[] { "f" })));
 
 			Program.UseXor = true;
 			TestFunction("2^2", 0);
