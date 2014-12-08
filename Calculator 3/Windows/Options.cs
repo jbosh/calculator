@@ -38,6 +38,7 @@ namespace Calculator.Windows
 			chkThousands.Checked = Program.DefaultThousandsSeparator;
 			chkCopyPaste.Checked = Program.CopyPasteHelper;
 			chkUseXor.Checked = Program.UseXor;
+			chkUnits.Checked = Program.UnitAutoConversion;
 			switch (Program.DefaultFormat)
 			{
 				case OutputFormat.Standard:
@@ -165,6 +166,11 @@ namespace Calculator.Windows
 		private void chkUseXor_CheckedChanged(object sender, EventArgs e)
 		{
 			Program.UseXor = chkUseXor.Checked;
+		}
+
+		private void chkUnits_CheckedChanged(object sender, EventArgs e)
+		{
+			Program.UnitAutoConversion = chkUnits.Checked;
 		}
 	}
 }

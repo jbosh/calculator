@@ -319,9 +319,6 @@ namespace Calculator
 			TestFunction("convert{1<km>; <m>}", new Variable(1000, units: new VariableUnits(new[] { "m" })));
 			TestFunction("convert{1<m>/1<s>; <ft>/<s>}", new Variable(3.281, units: new VariableUnits(new[] { "ft" }, new[] { "s" })));
 			TestFunction("convert{1<m>/1<s>; <ft>/<min>}", new Variable(196.86, units: new VariableUnits(new[] { "ft" }, new[] { "min" })));
-			TestFunction("3<km> + 3<m>", new Variable(3003, units: new VariableUnits(new[] { "m" })));
-			TestFunction("3<m> + 3<km>", new Variable(3.003, units: new VariableUnits(new[] { "km" })));
-			TestFunction("3<m> + 3<kg>", null);
 			TestFunction("convert{3; <m>}", new Variable(3, units: new VariableUnits(new[] { "m" })));
 			TestFunction("convert{2231<m>;<km>}", new Variable(2.231, units: new VariableUnits(new[] { "km" })));
 			TestFunction("21<gb", null);
@@ -346,8 +343,14 @@ namespace Calculator
 
 			Program.UnitAutoConversion = false;
 			TestFunction("1000<m> * (<km> / 1000<m>)", new Variable(1, units: new VariableUnits(new[] { "km" })));
+			TestFunction("3<km> + 3<m>", null);
+			TestFunction("3<m> + 3<km>", null);
+			TestFunction("3<m> + 3<kg>", null);
 			Program.UnitAutoConversion = true;
 			TestFunction("32kb/1.5mb", 0.02);
+			TestFunction("3<km> + 3<m>", new Variable(3003, units: new VariableUnits(new[] { "m" })));
+			TestFunction("3<m> + 3<km>", new Variable(3.003, units: new VariableUnits(new[] { "km" })));
+			TestFunction("3<m> + 3<kg>", null);
 			Program.UnitAutoConversion = false;
 
 			Memory.Push();

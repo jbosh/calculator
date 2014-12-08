@@ -45,6 +45,7 @@
 			this.chkCopyPaste = new System.Windows.Forms.CheckBox();
 			this.chkUseXor = new System.Windows.Forms.CheckBox();
 			this.cmbTrig = new System.Windows.Forms.ComboBox();
+			this.chkUnits = new System.Windows.Forms.CheckBox();
 			label1 = new System.Windows.Forms.Label();
 			label3 = new System.Windows.Forms.Label();
 			groupBox1 = new System.Windows.Forms.GroupBox();
@@ -233,11 +234,23 @@
 			this.cmbTrig.TabIndex = 14;
 			this.cmbTrig.SelectedIndexChanged += new System.EventHandler(this.cmbTrig_SelectedIndexChanged);
 			// 
+			// chkUnits
+			// 
+			this.chkUnits.AutoSize = true;
+			this.chkUnits.Location = new System.Drawing.Point(12, 326);
+			this.chkUnits.Name = "chkUnits";
+			this.chkUnits.Size = new System.Drawing.Size(126, 17);
+			this.chkUnits.TabIndex = 16;
+			this.chkUnits.Text = "Auto unit conversion.";
+			this.chkUnits.UseVisualStyleBackColor = true;
+			this.chkUnits.CheckedChanged += new System.EventHandler(this.chkUnits_CheckedChanged);
+			// 
 			// Options
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(164, 328);
+			this.ClientSize = new System.Drawing.Size(164, 353);
+			this.Controls.Add(this.chkUnits);
 			this.Controls.Add(groupBox1);
 			this.Controls.Add(this.cmbTrig);
 			this.Controls.Add(this.chkUseXor);
@@ -277,5 +290,6 @@
 		private System.Windows.Forms.CheckBox chkUseXor;
 		private System.Windows.Forms.ComboBox cmbTrig;
 		private System.Windows.Forms.NumericUpDown numBinaryRounding;
+		private System.Windows.Forms.CheckBox chkUnits;
 	}
 }

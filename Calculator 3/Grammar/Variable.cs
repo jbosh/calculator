@@ -46,6 +46,8 @@ namespace Calculator.Grammar
 				{
 					if (a.Units == null || b.Units == null)
 						return false;
+					if (!Program.UnitAutoConversion)
+						return false;
 
 					var newA = VariableUnitsConverter.Convert(a, b.Units);
 					if (newA.Errored)
