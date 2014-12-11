@@ -28,6 +28,8 @@ namespace Calculator.Grammar
 			= new Regex(@",([xseb])(-?\d+)?(<[^>]+>)?$", RegexOptions.Compiled);
 		private static readonly Regex RegUnits
 			= new Regex(@"<[^>\+\.=!~&\|<{}%\?]+>", RegexOptions.Compiled);
+		private static readonly Regex RegConvertTo
+			= new Regex(@"(.+)(to|in)\s*(<[^>\+\.=!~&\|<{}%\?]+>)", RegexOptions.Compiled);
 		public string VariableName { get; private set; }
         public string Text { get; private set; }
 		public OutputFormat Format { get; private set; }
@@ -87,6 +89,7 @@ namespace Calculator.Grammar
 
 			Text = source;
 
+			#region Funcs
 			{
 				var splits = source.Split(new[] { "=>" }, StringSplitOptions.RemoveEmptyEntries);
 				if (splits.Length == 2)
@@ -99,6 +102,7 @@ namespace Calculator.Grammar
 					return scriptVar;
 				}
 			}
+			#endregion
 
 			{
 				var match = RegEqualOperator.Match(source);
@@ -111,6 +115,32 @@ namespace Calculator.Grammar
 			}
 
 			var outUnits = default(VariableUnits);
+
+			#region Convert To
+			{
+				var match = RegConvertTo.Match(source);
+				if(match.Success)
+				{
+					var func = match.Groups[1].Value;
+					var units = match.Groups[3].Value;
+
+					var unitString = string.Concat("[", units, "]");
+					unitString = PreprocessImplicitMultiplication(unitString);
+					var unitRoot = CalcToken.Parse(unitString);
+					if (unitRoot != null)
+					{
+						var unitVariable = Visit(unitRoot);
+						if (!unitVariable.Errored && unitVariable.Units != null)
+						{
+							outUnits = unitVariable.Units;
+							source = func;
+						}
+					}
+				}
+			}
+			#endregion
+
+			#region Rounding and Units
 			Format = OutputFormat.Invalid;
 			{
 				Rounding = null;
@@ -119,7 +149,7 @@ namespace Calculator.Grammar
 				{
 					source = source.Remove(match.Index);
 					var suffix = match.Groups[1].Value[0];
-					switch(suffix)
+					switch (suffix)
 					{
 						case 'x':
 							Format = OutputFormat.Hex;
@@ -161,7 +191,7 @@ namespace Calculator.Grammar
 					}
 				}
 			}
-			
+			#endregion
 
 			var preprocess = Preprocess(source);
 

@@ -321,6 +321,8 @@ namespace Calculator
 			TestFunction("convert{1<m>/1<s>; <ft>/<min>}", new Variable(196.86, units: new VariableUnits(new[] { "ft" }, new[] { "min" })));
 			TestFunction("convert{3; <m>}", new Variable(3, units: new VariableUnits(new[] { "m" })));
 			TestFunction("convert{2231<m>;<km>}", new Variable(2.231, units: new VariableUnits(new[] { "km" })));
+			TestFunction("2231<m> in <km>", new Variable(2.231, units: new VariableUnits(new[] { "km" })));
+			TestFunction("2231<m> to <km>", new Variable(2.231, units: new VariableUnits(new[] { "km" })));
 			TestFunction("21<gb", null);
 			TestFunction("convert{20<f/s>; <ms/f>}", new Variable(50.0, units: new VariableUnits(new[] { "ms" }, new[] { "f" })));
 
