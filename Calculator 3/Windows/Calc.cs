@@ -93,7 +93,7 @@ namespace Calculator.Windows
 			{
 				case Keys.Escape:
 					Close();
-					return;
+					break;
 				case Keys.G:
 					if (e.Control)
 					{
@@ -109,7 +109,6 @@ namespace Calculator.Windows
 							graph = null;
 						}
 						e.Handled = true;
-						return;
 					}
 					break;
 				case Keys.N:
@@ -117,7 +116,6 @@ namespace Calculator.Windows
 					{
 						Program.NewWindow(new Calc());
 						e.Handled = true;
-						return;
 					}
 					break;
 				case Keys.Oemplus:
@@ -134,7 +132,6 @@ namespace Calculator.Windows
 							Push();
 
 						e.Handled = true;
-						return;
 					}
 					break;
 				case Keys.OemMinus:
@@ -146,7 +143,6 @@ namespace Calculator.Windows
 						else
 							Pop();
 						e.Handled = true;
-						return;
 					}
 					break;
 				case Keys.D:
@@ -177,7 +173,7 @@ namespace Calculator.Windows
 				case Keys.Down:
 					SelectNextControl(ActiveControl, true, true, false, false);
 					e.Handled = true;
-					return;
+					break;
 				case Keys.Enter:
 					{
 						bool selected = SelectNextControl(ActiveControl, true, true, false, false);
@@ -186,15 +182,15 @@ namespace Calculator.Windows
 						e.Handled = true;
 						e.SuppressKeyPress = true;
 					}
-					return;
+					break;
 				case Keys.Up:
 					SelectNextControl(ActiveControl, false, true, false, false);
 					e.Handled = true;
-					return;
+					break;
 				case Keys.Tab:
 					SelectNextControl(ActiveControl, !e.Shift, false, true, false);
 					e.Handled = true;
-					return;
+					break;
 				case Keys.Delete:
 					if (e.Control && e.Shift)
 					{
@@ -259,6 +255,8 @@ namespace Calculator.Windows
 			}
 			if (!e.Handled)
 				Program.GlobalKeyDown(e);
+			else
+				e.SuppressKeyPress = true;
 		}
 
 		private int FindActiveFieldIndex()
