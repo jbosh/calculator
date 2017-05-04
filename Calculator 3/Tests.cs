@@ -31,6 +31,7 @@ namespace Calculator
 			TestFunction("0xF0", 240);
 			TestFunction("0xCD", 205);
 			TestFunction("0xffabcde12348", 281113358574408);
+			TestFunction("0x54475370656564302E362E3137", null);
 
 			TestFunction("2e17", 2E17);
 			TestFunction("3.16e2", 316);

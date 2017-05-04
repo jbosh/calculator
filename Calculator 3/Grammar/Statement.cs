@@ -138,7 +138,9 @@ namespace Calculator.Grammar
 					var rounding = match.Groups[2].Value;
 					if (rounding.Length != 0)
 					{
-						int amt = int.Parse(rounding);
+						int amt;
+						if (!int.TryParse(rounding, out amt))
+							return Variable.Error("Invalid rounding amount");
 						if (amt >= -1)
 							Rounding = amt;
 						else
@@ -497,8 +499,9 @@ namespace Calculator.Grammar
 			{
 				char splittingE = token.Text.Contains("E") ? 'E' : 'e';
 				var split = token.Text.Split(splittingE);
-				var b = double.Parse(split[0]);
-				var e = double.Parse(split[1]);
+				double b, e;
+				if (!double.TryParse(split[0], out b) || !double.TryParse(split[1], out e))
+					return Variable.Error(string.Format("{0} didn't parse", token.Text));
 				var d = b * Math.Pow(10, e);
 				return new Variable(d);
 			}
@@ -510,7 +513,9 @@ namespace Calculator.Grammar
 				ulong u;
 				if (ulong.TryParse(token.Text, out u))
 					return new Variable(u);
-				var d = double.Parse(token.Text);
+				double d;
+				if (!double.TryParse(token.Text, out d))
+					return Variable.Error(string.Format("{0} didn't parse", token.Text));
 				return new Variable(d);
 			}
 		}
@@ -523,8 +528,10 @@ namespace Calculator.Grammar
 		}
 		private static Variable VisitHex(CalcToken token)
 		{
-			var i = long.Parse(token.Text.Substring(2), NumberStyles.HexNumber);
-			return new Variable(i);
+			ulong i;
+			if(ulong.TryParse(token.Text.Substring(2), NumberStyles.HexNumber, null, out i))
+				return new Variable(i);
+			return Variable.Error(string.Format("{0} didn't parse", token.Text));
 		}
 		private static Variable VisitID(CalcToken token)
 		{
