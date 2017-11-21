@@ -543,6 +543,8 @@ namespace Calculator.Grammar
 		private static Variable VisitMinus(CalcToken token)
 		{
 			var left = Visit(token.Children[0]);
+			if (left.Value is ulong)
+				left.Value = (long)left.Value;
 			left.Value *= -1;
 			return left;
 		}

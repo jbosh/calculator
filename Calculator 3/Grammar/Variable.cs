@@ -13,6 +13,7 @@ namespace Calculator.Grammar
 		public bool IsVector { get { return Value != null ? Value is Vector : false; } }
 		public bool IsDouble { get { return Value != null ? Value is double : false; } }
 		public bool IsLong { get { return Value != null ? Value is long : false; } }
+		public bool IsUlong { get { return Value != null ? Value is ulong : false; } }
 		public Variable(dynamic value = null, string name = null, VariableUnits units = null)
 		{
 			if (value is bool)
@@ -59,6 +60,20 @@ namespace Calculator.Grammar
 				}
 			}
 			return true;
+		}
+
+		private static void ConvertToLong(ref Variable a, ref Variable b)
+		{
+			if (a.IsLong == b.IsLong)
+				return;
+
+			if (a.IsDouble || b.IsDouble)
+				return;
+
+			if (a.IsLong)
+				b.Value = (long)b.Value;
+			if (b.IsLong)
+				a.Value = (long)a.Value;
 		}
 
 		#region Logical Operations
@@ -185,7 +200,7 @@ namespace Calculator.Grammar
 					return Variable.Error("vector with units");
 				units = a.Units * b.Units;
 			}
-			if (a.Value is ulong || b.Value is ulong)
+			if ((a.IsUlong || b.IsUlong) && !a.IsVector && !b.IsVector)
 				return new Variable((ulong)a.Value * (ulong)b.Value, units: units);
 			return new Variable(a.Value * b.Value, units: units);
 		}
@@ -232,7 +247,8 @@ namespace Calculator.Grammar
 					units = a.Units / b.Units;
 				}
 			}
-
+			
+			ConvertToLong(ref a, ref b);
 			if (b.Value != 0 && a.Value % b.Value == 0)
 				return new Variable(a.Value / b.Value, units: units);
 			return new Variable(a.Value / (double)b.Value, units: units);
@@ -372,7 +388,7 @@ namespace Calculator.Grammar
             }
             else
             {
-                var v = Math.Abs(Value);
+                var v = IsUlong ? Value : Math.Abs(Value);
                 byte[] bytes;
                 if (v < ushort.MaxValue)
                 {
@@ -404,6 +420,7 @@ namespace Calculator.Grammar
 				return a.Value == b.Value;
 			if (a.Units != b.Units)
 				return false;
+			ConvertToLong(ref a, ref b);
 			return a.Value == b.Value;
 		}
 		public static bool operator !=(Variable a, Variable b)

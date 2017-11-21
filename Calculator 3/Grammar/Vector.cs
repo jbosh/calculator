@@ -75,6 +75,7 @@ namespace Calculator.Grammar
 			}
 			return output;
 		}
+
 		#region Add
 		public static Vector operator +(Vector a, Vector b)
 		{

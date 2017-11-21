@@ -39,11 +39,11 @@ namespace Calculator
 			TestFunction(".3e2", 30);
 			TestFunction("0.2e12", 200000000000);
 			TestFunction("2e.2", 3.17);
-			
+
 			TestFunction("-.27", -.27);
 			TestFunction("-0xff", -255);
 			TestFunction("~12", -13);
-			
+
 			TestFunction("1 << 3", 8);
 			TestFunction("1 << 3 + 2", 32);
 			TestFunction("(1 << 3) + 2", 10);
@@ -201,7 +201,7 @@ namespace Calculator
 			TestFunction("18,446,744,073,709,551,615-1", 18446744073709551614);
 			TestFunction("18,446,744,073,709,551,615&0xFFFF", 0xFFFF);
 
-            TestFunction("endian(23290)", 0xfa5a);
+			TestFunction("endian(23290)", 0xfa5a);
 
 			TestFunction("1<<14)+1024", 17408);
 			TestFunction("(1/107+(35*35)/(2*-107))/-9.8)))+2", 2.58);
@@ -298,7 +298,7 @@ namespace Calculator
 			TestFunction("4<m*m>", new Variable(4, units: new VariableUnits(new[] { "m", "m" })));
 			TestFunction("4<m m>", new Variable(4, units: new VariableUnits(new[] { "m", "m" })));
 			TestFunction("sqrt(4<m^2>)", new Variable(2, units: new VariableUnits(new[] { "m" })));
-			TestFunction("4<m> / 2", new Variable(2, units: new VariableUnits(new[] { "m" }))); 
+			TestFunction("4<m> / 2", new Variable(2, units: new VariableUnits(new[] { "m" })));
 			TestFunction("4<m> + 2", null);
 			TestFunction("4<m> * 2<s>", new Variable(8, units: new VariableUnits(new[] { "m", "s" })));
 			TestFunction("{4}<m>", null);
@@ -307,7 +307,7 @@ namespace Calculator
 			TestFunction("10<m/s> * 4<s>", new Variable(40, units: new VariableUnits(new[] { "m" })));
 			TestFunction("10<m> / 1<m>", 10);
 			TestFunction("10<m> / 1<m> + 20", 30);
-			TestFunction("2<m> / 1<s> / 2", new Variable(1, units: new VariableUnits(new[] { "m" }, new[] { "s" } )));
+			TestFunction("2<m> / 1<s> / 2", new Variable(1, units: new VariableUnits(new[] { "m" }, new[] { "s" })));
 			TestFunction("1<m> 2<s>", new Variable(2, units: new VariableUnits(new[] { "m", "s" })));
 			TestFunction("1<m> <s>", new Variable(1, units: new VariableUnits(new[] { "m", "s" })));
 			TestFunction("2<m s^-1>", new Variable(2, units: new VariableUnits(new[] { "m" }, new[] { "s" })));
@@ -327,6 +327,8 @@ namespace Calculator
 			TestFunction("convert{2231<m>;<km>}", new Variable(2.231, units: new VariableUnits(new[] { "km" })));
 			TestFunction("21<gb", null);
 			TestFunction("convert{20<f/s>; <ms/f>}", new Variable(50.0, units: new VariableUnits(new[] { "ms" }, new[] { "f" })));
+
+			TestFunction("pcurrentStaticCastersIEnd=0x000001ea3e7bc340 {18899}", new Vector(39793399383928256.0));
 
 			Program.UseXor = true;
 			TestFunction("2^2", 0);
