@@ -364,6 +364,7 @@ namespace Calculator
 			Memory["x"] = new Variable(-5);
 			Memory["y"] = new Variable(-1.6);
 			Memory["a_b"] = new Variable(2);
+			Memory["long"] = new Variable(long.MaxValue);
 			TestFunction("a", 2);
 			TestFunction("g * a", 40);
 			TestFunction("a(33)", 66);
@@ -381,6 +382,7 @@ namespace Calculator
 			TestFunction("funkyMath=>value+17)12*sqrt(16)", "value+17)12*sqrt(16)");
 			TestFunction("funkyMath(7)", 1152);
 			TestFunction("funkyMaths(7)", null);
+			TestFunction("long&unknown", null);
 			Memory.Pop();
 		}
 		private static void TestFunction(string function, dynamic correct)

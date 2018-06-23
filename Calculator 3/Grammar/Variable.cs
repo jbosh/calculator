@@ -79,6 +79,8 @@ namespace Calculator.Grammar
 		#region Logical Operations
 		public static Variable operator &(Variable a, Variable b)
 		{
+			if (a.Errored || b.Errored)
+				return Variable.SelectError(a, b);
 			if (a.Units != null || b.Units != null)
 				return Variable.Error("units '&' unsupported");
 
@@ -90,8 +92,6 @@ namespace Calculator.Grammar
 				return new Variable(a.Value & b.Value);
 			if (a.Value is ulong || b.Value is ulong)
 				return new Variable((ulong)a.Value & (ulong)b.Value);
-			if (a.Errored || b.Errored)
-				return Variable.SelectError(a, b);
 			return new Variable(a.Value & b.Value);
 		}
 		public static Variable operator |(Variable a, Variable b)
