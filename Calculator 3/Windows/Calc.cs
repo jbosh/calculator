@@ -292,7 +292,6 @@ namespace Calculator.Windows
 			          		InitialDirectory = Program.WorkingDirectory,
 			          		Filter = "Text Files|*.txt;*.rtf|All Files|*",
 			          		OverwritePrompt = true,
-			          		CreatePrompt = true
 			          	};
 			var result = sfd.ShowDialog();
 			switch (result)
