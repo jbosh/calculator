@@ -96,6 +96,8 @@ namespace Calculator.Grammar
 		}
 		public static Variable operator |(Variable a, Variable b)
 		{
+			if (a.Errored || b.Errored)
+				return Variable.SelectError(a, b);
 			if (a.Units != null || b.Units != null)
 				return Variable.Error("units '|' unsupported");
 
@@ -104,15 +106,15 @@ namespace Calculator.Grammar
 			if (b.IsDouble)
 				b.Value = (long)Math.Round((double)b.Value);
 			if (a.Value is int || a.IsLong)
-				return new Variable(a.Value | b.Value);
+				return new Variable((ulong)a.Value | (ulong)b.Value);
 			if (a.Value is ulong || b.Value is ulong)
 				return new Variable((ulong)a.Value | (ulong)b.Value);
-			if(a.Errored || b.Errored)
-				return Variable.SelectError(a, b);
 			return new Variable(a.Value | b.Value);
 		}
 		public static Variable operator ^(Variable a, Variable b)
 		{
+			if (a.Errored || b.Errored)
+				return Variable.SelectError(a, b);
 			if (a.Units != null || b.Units != null)
 				return Variable.Error("units xor unsupported");
 
@@ -124,8 +126,6 @@ namespace Calculator.Grammar
 				return new Variable(a.Value ^ b.Value);
 			if (a.Value is ulong || b.Value is ulong)
 				return new Variable((ulong)a.Value ^ (ulong)b.Value);
-			if (a.Errored || b.Errored)
-				return Variable.SelectError(a, b);
 			if (a.IsVector)
 				return ((Vector)a.Value).Xor(b.Value);
 			if (b.IsVector)

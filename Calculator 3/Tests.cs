@@ -330,6 +330,11 @@ namespace Calculator
 
 			TestFunction("pcurrentStaticCastersIEnd=0x000001ea3e7bc340 {18899}", new Vector(39793399383928256.0));
 
+			TestFunction("7|0xF", 15);
+			TestFunction("7&0xF", 7);
+			TestFunction("7|invalid", null);
+			TestFunction("7&invalid", null);
+
 			Program.UseXor = true;
 			TestFunction("2^2", 0);
 			TestFunction("2^3", 1);
