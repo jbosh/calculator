@@ -391,7 +391,7 @@ namespace Calculator
 				return FormatOutput((long)value, format, thousandsSeparator, rounding);
 			if (value is Variable)
 			{
-				var v = ((Variable) value).Value;
+				dynamic v = ((Variable) value).Value;
 				if(v == null)
 					return "NaN";
 				return FormatOutput(v, format, thousandsSeparator, rounding);
@@ -463,6 +463,38 @@ namespace Calculator
 					for (var i = top; i >= 0; i--)
 					{
 						var bit = value & (1L << i);
+						builder.Append(bit != 0 ? '1' : '0');
+					}
+					var bin = builder.ToString();
+					if (thousandsSeparator)
+						bin = CommaSeperateNChars(bin, 4);
+					return "0b" + bin;
+				case OutputFormat.Scientific: //No scientific with longs (might be in future)
+				case OutputFormat.Standard:
+				default:
+					if (thousandsSeparator)
+						return value.ToString("#,0." + new string('#', 50));
+					return value.ToString();
+			}
+		}
+		private static string FormatOutput(ulong value, OutputFormat format, bool thousandsSeparator, int rounding)
+		{
+			switch (format)
+			{
+				case OutputFormat.Hex:
+					{
+						var hex = (value).ToString("X");
+						if (thousandsSeparator)
+							hex = CommaSeperateNChars(hex, 4);
+						return "0x" + hex;
+					}
+
+				case OutputFormat.Binary:
+					var top = rounding == -1 ? 32 : rounding;
+					var builder = new StringBuilder();
+					for (var i = top; i >= 0; i--)
+					{
+						var bit = value & (1UL << i);
 						builder.Append(bit != 0 ? '1' : '0');
 					}
 					var bin = builder.ToString();
