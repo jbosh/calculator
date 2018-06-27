@@ -89,7 +89,7 @@ namespace Calculator.Grammar
 			if (b.IsDouble)
 				b.Value = (long)Math.Round((double)b.Value);
 			if (a.Value is int || a.IsLong)
-				return new Variable(a.Value & b.Value);
+				return new Variable((ulong)a.Value & (ulong)b.Value);
 			if (a.Value is ulong || b.Value is ulong)
 				return new Variable((ulong)a.Value & (ulong)b.Value);
 			return new Variable(a.Value & b.Value);
