@@ -334,6 +334,7 @@ namespace Calculator
 			TestFunction("7&0xF", 7);
 			TestFunction("7|invalid", null);
 			TestFunction("7&invalid", null);
+			TestFunction("((1<<4)|(1<<1))%7", 4);
 
 			Program.UseXor = true;
 			TestFunction("2^2", 0);

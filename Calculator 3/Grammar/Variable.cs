@@ -261,6 +261,8 @@ namespace Calculator.Grammar
 		{
 			if (a.Units != null || b.Units != null)
 				return Variable.Error("% operator on units");
+			if(a.IsUlong || b.IsUlong)
+				return new Variable((ulong)a.Value % (ulong)b.Value);
 			return new Variable(a.Value % b.Value);
 		}
 		#endregion
