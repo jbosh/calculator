@@ -289,12 +289,16 @@ namespace Calculator.Grammar
 		{
 			if (Units != null)
 				return Variable.Error("units 'ln' unsupported");
+			if (IsVector)
+				return ((Vector)Value).Ln();
 			return new Variable(Math.Log(Value));
 		}
 		public Variable Log()
 		{
 			if (Units != null)
 				return Variable.Error("units 'log' unsupported");
+			if (IsVector)
+				return ((Vector)Value).Log();
 			return new Variable(Math.Log10(Value));
 		}
 		public Variable Round()

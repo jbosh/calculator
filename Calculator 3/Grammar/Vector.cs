@@ -216,6 +216,16 @@ namespace Calculator.Grammar
 			return PerformOp(a, b, (v0, v1) => v0 % v1);
 		}
 
+		public Variable Log()
+		{
+			return PerformOp(v => v.Log());
+		}
+
+		public Variable Ln()
+		{
+			return PerformOp(v => v.Ln());
+		}
+
 		public Variable Dot()
 		{
 			if (Values.Length != 2)

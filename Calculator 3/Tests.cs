@@ -336,6 +336,9 @@ namespace Calculator
 			TestFunction("7&invalid", null);
 			TestFunction("((1<<4)|(1<<1))%7", 4);
 
+			TestFunction("log({3500, 2})", new Vector(3.85));
+			TestFunction("log({3500; 2})", new Vector(3.54, 0.3));
+
 			Program.UseXor = true;
 			TestFunction("2^2", 0);
 			TestFunction("2^3", 1);
