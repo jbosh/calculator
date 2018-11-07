@@ -1,6 +1,5 @@
 *.user
 *.suo
-
-/Calculator 3/obj
-/Calculator 3/bin
-/_ReSharper.Calculator 3
+.vs/
+obj/
+bin/
