@@ -149,12 +149,26 @@ namespace Calculator
 			foreach (var form in Window)
 				form.Recalculate(global);
 		}
-		[STAThread]
+
+        [System.Runtime.InteropServices.DllImport("Shcore.dll")]
+        static extern int SetProcessDpiAwareness(int PROCESS_DPI_AWARENESS);
+
+        // According to https://msdn.microsoft.com/en-us/library/windows/desktop/dn280512(v=vs.85).aspx
+        private enum DpiAwareness
+        {
+            None = 0,
+            SystemAware = 1,
+            PerMonitorAware = 2
+        }
+
+        [STAThread]
 		private static void Main(string[] args)
 		{
 			Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+            SetProcessDpiAwareness((int)DpiAwareness.PerMonitorAware);
 
-			VariableUnitsConverter.Initialize();
+            VariableUnitsConverter.Initialize();
 			Statement.Initialize();
 			Grammar.CalcToken.Initialize();
 			Scripts.LoadScripts(ScriptsFolder);
