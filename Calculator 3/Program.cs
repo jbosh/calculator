@@ -166,7 +166,10 @@ namespace Calculator
 		{
 			Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            SetProcessDpiAwareness((int)DpiAwareness.PerMonitorAware);
+            if (Environment.OSVersion.Platform != PlatformID.Unix)
+            {
+                SetProcessDpiAwareness((int)DpiAwareness.PerMonitorAware);
+            }
 
             VariableUnitsConverter.Initialize();
 			Statement.Initialize();
