@@ -68,7 +68,7 @@ namespace Calculator.Grammar
 			var mapping = new ConversionMapping(amt, multiply);
 			if (Mappings[from].ContainsKey(to))
 			{
-				if(!mapping.Equals(Mappings[from][to]))
+				if (!mapping.Equals(Mappings[from][to]))
 					throw new Exception();
 				return;
 			}
@@ -260,7 +260,12 @@ namespace Calculator.Grammar
 					var unrounded = value / (double)Amount;
 					var rounded = Math.Round(unrounded);
 					if (Math.Abs(rounded - unrounded) < 0.0001)
-						return value / Amount;
+					{
+						var a = new Variable(value);
+						var b = new Variable(Amount);
+						Variable.ConvertToLong(ref a, ref b);
+						return a.Value / b.Value;
+					}
 					return unrounded;
 				}
 			}
@@ -272,7 +277,12 @@ namespace Calculator.Grammar
 					var unrounded = value / (double)Amount;
 					var rounded = Math.Round(unrounded);
 					if (Math.Abs(rounded - unrounded) < 0.0001)
-						return value / Amount;
+					{
+						var a = new Variable(value);
+						var b = new Variable(Amount);
+						Variable.ConvertToLong(ref a, ref b);
+						return a.Value / b.Value;
+					}
 					return unrounded;
 				}
 				else

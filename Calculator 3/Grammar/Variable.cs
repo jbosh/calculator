@@ -62,7 +62,7 @@ namespace Calculator.Grammar
 			return true;
 		}
 
-		private static void ConvertToLong(ref Variable a, ref Variable b)
+		public static void ConvertToLong(ref Variable a, ref Variable b)
 		{
 			if (a.IsLong == b.IsLong)
 				return;
@@ -261,9 +261,18 @@ namespace Calculator.Grammar
 		{
 			if (a.Units != null || b.Units != null)
 				return Variable.Error("% operator on units");
-			if(a.IsUlong || b.IsUlong)
-				return new Variable((ulong)a.Value % (ulong)b.Value);
-			return new Variable(a.Value % b.Value);
+            if (a.IsUlong || b.IsUlong)
+            {
+                if (b.Value == 0)
+                    return Variable.Error("div by 0");
+                return new Variable((ulong)a.Value % (ulong)b.Value);
+            }
+            else if (b.IsLong && b.Value == 0)
+            {
+                return Variable.Error("div by 0");
+            }
+
+            return new Variable(a.Value % b.Value);
 		}
 		#endregion
 		

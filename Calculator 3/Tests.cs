@@ -53,8 +53,10 @@ namespace Calculator
 			TestFunction("(75 + 0x3F) & 0xFFFFFFC0", 128);
 			TestFunction("1/0", double.PositiveInfinity);
 			TestFunction("-1/0", double.NegativeInfinity);
+            TestFunction("-1%0", null);
+            TestFunction("1%((1 << 63) & 0)", null);
 
-			TestFunction("-2 1 3 4 g", new Variable(-235.2, units: new VariableUnits(new[] { "m" }, new[] { "s", "s" })));
+            TestFunction("-2 1 3 4 g", new Variable(-235.2, units: new VariableUnits(new[] { "m" }, new[] { "s", "s" })));
 			TestFunction("2^2", 4);
 			TestFunction("2.3 + 2321.23 * 234.21 - 233.231 * 2 ^ 2", 542724.65);
 			TestFunction("2*(5+3)", 16);
@@ -302,6 +304,7 @@ namespace Calculator
 			TestFunction("4<m> + 2", null);
 			TestFunction("4<m> * 2<s>", new Variable(8, units: new VariableUnits(new[] { "m", "s" })));
 			TestFunction("{4}<m>", null);
+			TestFunction("0x17*1,000,000<ns>,s<ms>", new Variable(23, units: new VariableUnits(new[] { "ms" })));
 			TestFunction("{4<m>} * {2<s>}", new Vector(new Variable(8, units: new VariableUnits(new[] { "m", "s" }))));
 			TestFunction("4<m> / 2<m>", 2.0);
 			TestFunction("10<m/s> * 4<s>", new Variable(40, units: new VariableUnits(new[] { "m" })));
