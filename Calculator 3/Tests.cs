@@ -63,6 +63,8 @@ namespace Calculator
 			TestFunction("2.3441 + 2.01(2 - 48 + 20 - 0204)", -459.96);
 			TestFunction("2+24-(4+(48/6)*6)2+24-(4+8*6)", -106);
 			TestFunction("(75/3+15)25", 1000);
+			TestFunction("40)/(10", 4);
+			TestFunction("50+(40))/(10-5", 18);
 			TestFunction("10*3+7(8(8-9)+2*10)", 114);
 			TestFunction("---107", -107);
 			TestFunction("-(35*35)", -1225);

@@ -260,13 +260,25 @@ namespace Calculator.Grammar
 			#endregion
 			#region Process Extra Parenthessis
 			var parenDepth = 0;
+			var starterParens = 0;
 			foreach (var c in source)
 			{
 				if (c == '(')
+				{
+					if (parenDepth < 0)
+					{
+						starterParens++;
+						parenDepth++;
+					}
 					parenDepth++;
+				}
 				else if (c == ')')
+				{
 					parenDepth--;
+				}
 			}
+			if (starterParens > 0)
+				source = new string('(', starterParens) + source;
 			if (parenDepth > 0)
 				source = source + new string(')', parenDepth);
 			if (parenDepth < 0)
