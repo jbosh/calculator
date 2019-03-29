@@ -354,6 +354,10 @@ namespace Calculator.Grammar
 		{
 			return PerformOp(v0 => v0.Floor());
 		}
+		public Variable Exp()
+		{
+			return PerformOp(v0 => v0.Exp());
+		}
 		public Variable Endian()
 		{
 			return PerformOp(v0 => v0.Endian());

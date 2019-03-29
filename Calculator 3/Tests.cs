@@ -110,6 +110,7 @@ namespace Calculator
 			TestFunction("roundto{2.73123412; 1232341; 7} * 100", null);
 			TestFunction("roundto{2.73123412; 3}", 2.731);
 			TestFunction("roundto{2.73173412; 3}", 2.732);
+			TestFunction("exp(2)", 7.39);
 			TestFunction("ceiling{2.132;8.812} * 100", new Vector(300, 900));
 			TestFunction("atan{2.4}", null);
 			TestFunction("atan{1;1}", 45);

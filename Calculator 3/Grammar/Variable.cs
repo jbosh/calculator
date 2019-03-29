@@ -351,6 +351,13 @@ namespace Calculator.Grammar
 				return new Variable(amtLong, units: Units);
 			return new Variable(amt, units: Units);
 		}
+		public Variable Exp()
+		{
+			if (IsVector)
+				return ((Vector)Value).Exp();
+			var amt = Math.Exp((double)Value);
+			return new Variable(amt);
+		}
 		public Variable Negate()
 		{
 			if (Units != null)
