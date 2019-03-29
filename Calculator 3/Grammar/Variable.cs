@@ -363,7 +363,10 @@ namespace Calculator.Grammar
 			if (IsVector)
 				return ((Vector)Value).Truncate();
 			var amt = Math.Truncate((double)Value);
-			return new Variable(amt);
+			var amtLong = (long)amt;
+			if (amtLong < long.MaxValue && amtLong > long.MinValue)
+				return new Variable(amtLong, units: Units);
+			return new Variable(amt, units: Units);
 		}
 		public Variable Negate()
 		{
