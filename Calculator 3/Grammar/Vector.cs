@@ -358,6 +358,10 @@ namespace Calculator.Grammar
 		{
 			return PerformOp(v0 => v0.Exp());
 		}
+		public Variable Truncate()
+		{
+			return PerformOp(v0 => v0.Truncate());
+		}
 		public Variable Endian()
 		{
 			return PerformOp(v0 => v0.Endian());

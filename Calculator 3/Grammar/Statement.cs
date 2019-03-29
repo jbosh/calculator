@@ -343,6 +343,7 @@ namespace Calculator.Grammar
 				case "vset_lane":
 				case "convert":
 				case "exp":
+				case "truncate":
 					return true;
 			}
 
@@ -454,6 +455,7 @@ namespace Calculator.Grammar
 				case "lerp":
 				case "convert":
 				case "exp":
+				case "truncate":
 					return VisitMiscFunc(token);
 				case "sin":
 				case "cos":
@@ -752,9 +754,9 @@ namespace Calculator.Grammar
 						return VariableUnitsConverter.Convert(value, units.Units);
 					}
 				case "exp":
-					{
-						return left.Exp();
-					}
+					return left.Exp();
+				case "truncate":
+					return left.Truncate();
 				default:
 					throw new DataException(string.Format("Unsupported token type {0}.", token.Children[0].Text));
 			}

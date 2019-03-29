@@ -358,6 +358,13 @@ namespace Calculator.Grammar
 			var amt = Math.Exp((double)Value);
 			return new Variable(amt);
 		}
+		public Variable Truncate()
+		{
+			if (IsVector)
+				return ((Vector)Value).Truncate();
+			var amt = Math.Truncate((double)Value);
+			return new Variable(amt);
+		}
 		public Variable Negate()
 		{
 			if (Units != null)
