@@ -252,6 +252,7 @@ namespace Calculator
 			TestFunction("{1;2}>={1;2}", null);
 			TestFunction("{1;4.1}>={3;7.0}", null);
 			TestFunction("{1;4.1}<{3;7.0}", null);
+			TestFunction("(1 & ~0 & 1) | ~1)!=0", 1);
 
 #if false //for when simd functions exist
 			TestFunction("{0;2}!={0;1}", new Vector(0, ~0L));

@@ -492,8 +492,7 @@ namespace Calculator.Grammar
 				return Variable.Error("== types");
 			if (a.IsDouble || b.IsDouble)
 				return new Variable((double)a.Value == (double)b.Value);
-
-			throw new Exception();
+			return new Variable((long)a.Value == (long)b.Value);
 		}
 		public static Variable CompareNotEquals(Variable a, Variable b)
 		{
@@ -509,8 +508,7 @@ namespace Calculator.Grammar
 				return Variable.Error("!= types");
 			if (a.IsDouble || b.IsDouble)
 				return new Variable((double)a.Value != (double)b.Value);
-
-			throw new Exception();
+			return new Variable((long)a.Value != (long)b.Value);
 		}
 		public static Variable CompareLessThan(Variable a, Variable b)
 		{
