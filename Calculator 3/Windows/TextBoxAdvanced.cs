@@ -19,6 +19,7 @@ namespace Calculator
 		private Match CtrlClickMatch;
 		private Tuple<int, int> CtrlClickLastSelection;
 		private TextSelection DragText;
+		private bool IsDoubleClicking;
 
 		public TextBoxAdvanced()
 		{
@@ -45,7 +46,9 @@ namespace Calculator
 			{
 				var effects = DoDragDrop(DragText.Select(Text), DragDropEffects.Copy | DragDropEffects.Move);
 				if (effects == DragDropEffects.None)
+				{
 					Cursor = Cursors.IBeam;
+				}
 				else if (DragText.Active && effects == DragDropEffects.Move)
 				{
 					DragText.Active = false;
@@ -68,7 +71,6 @@ namespace Calculator
 						CtrlClickLastSelection = new Tuple<int, int>(SelectionStart, SelectionLength);
 						DragText = new TextSelection(SelectionStart, SelectionLength);
 					}
-					return;
 				}
 			}
 		}
@@ -79,9 +81,10 @@ namespace Calculator
 			{
 				if (SelectionLength != 0)
 					DragText = new TextSelection(SelectionStart, SelectionLength);
+				IsDoubleClicking = false;
 			}
 		}
-		
+
 		void TextBoxAdvanced_MouseMove(object sender, MouseEventArgs e)
 		{
 			if (e.Button == MouseButtons.None)
@@ -100,9 +103,12 @@ namespace Calculator
 			}
 			else if (e.Button == MouseButtons.Left)
 			{
-				if (CtrlClickMatch != null && (ModifierKeys & Keys.Control) == Keys.Control)
+				if (CtrlClickMatch != null && ((ModifierKeys & Keys.Control) == Keys.Control || IsDoubleClicking))
 				{
-					var newSelection = new Tuple<int, int>(SelectionStart, SelectionLength);
+					var newSelection = IsDoubleClicking
+						? new Tuple<int, int>(GetCharIndexFromPosition(e.Location), 0)
+						: new Tuple<int, int>(SelectionStart, SelectionLength);
+
 					int index;
 					if (newSelection.Item1 != CtrlClickLastSelection.Item1) //moving selection start
 					{
@@ -221,6 +227,21 @@ namespace Calculator
 		{
 			switch (m.Msg)
 			{
+				case 0x0203: //WM_LBUTTONDBLCLK
+					{
+						var node = FindToken(CaretStart, Text);
+						if (node != null)
+						{
+							SelectionStart = node.Value.Index;
+							SelectionLength = node.Value.Length;
+
+							CtrlClickMatch = node.Value;
+							CtrlClickLastSelection = new Tuple<int, int>(SelectionStart, SelectionLength);
+							DragText = new TextSelection(SelectionStart, SelectionLength);
+							IsDoubleClicking = true;
+						}
+					}
+					break;
 				case 0x0201: //WM_LBUTTONDOWN:
 					DragText = new TextSelection(SelectionStart, SelectionLength, DragText.Active);
 					base.WndProc(ref m);
@@ -518,7 +539,7 @@ namespace Calculator
 					word = list.First;
 				if (index == sentence.Length)
 					word = list.Last;
-				if(word == null)
+				if (word == null)
 					throw new Exception();
 			}
 			return word;
@@ -559,7 +580,7 @@ namespace Calculator
 		{
 			var pt = PointToClient(new System.Drawing.Point(x, y));
 			var idx = GetCharIndexFromPosition(pt);
-			
+
 			if (idx == Text.Length - 1)
 			{
 				var caretPoint = GetPositionFromCharIndex(idx);
@@ -593,7 +614,7 @@ namespace Calculator
 
 			if (setCursor)
 			{
-				if((e.AllowedEffect & DragDropEffects.Move) != 0 && (e.KeyState & KeyStateCTRL) == 0)
+				if ((e.AllowedEffect & DragDropEffects.Move) != 0 && (e.KeyState & KeyStateCTRL) == 0)
 					e.Effect = DragDropEffects.Move;
 				else
 					e.Effect = DragDropEffects.Copy;
@@ -695,19 +716,10 @@ namespace Calculator
 				Start = start;
 				Length = length;
 			}
-			public bool Contains(int idx)
-			{
-				return idx >= Start && idx < Start + Length;
-			}
-			public string Select(string text)
-			{
-				return text.Substring(Start, Length);
-			}
-			public override string ToString()
-			{
-				return string.Format("Start: {0} Length: {1}", Start, Length);
-			}
+			public bool Contains(int idx) => idx >= Start && idx < Start + Length;
+			public string Select(string text) => text.Substring(Start, Length);
+			public override string ToString() => $"Start: {Start} Length: {Length}";
 		}
-		
+
 	}
 }
