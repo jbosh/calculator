@@ -11,7 +11,7 @@ using System.Windows.Forms;
 using System.Xml;
 using Calculator.Grammar;
 using Calculator.Windows;
-using Help=Calculator.Windows.Help;
+using Help = Calculator.Windows.Help;
 
 namespace Calculator
 {
@@ -41,7 +41,7 @@ namespace Calculator
 
 		private static Form HelpForm, OptionsForm, CopyHelpersForm;
 		private static List<ICalculator> Window = new List<ICalculator>();
-		private static int SleepMilliseconds{ get; set; }
+		private static int SleepMilliseconds { get; set; }
 		public static bool Radians
 		{
 			get { return radians; }
@@ -150,28 +150,28 @@ namespace Calculator
 				form.Recalculate(global);
 		}
 
-        [System.Runtime.InteropServices.DllImport("Shcore.dll")]
-        static extern int SetProcessDpiAwareness(int PROCESS_DPI_AWARENESS);
+		[System.Runtime.InteropServices.DllImport("Shcore.dll")]
+		static extern int SetProcessDpiAwareness(int PROCESS_DPI_AWARENESS);
 
-        // According to https://msdn.microsoft.com/en-us/library/windows/desktop/dn280512(v=vs.85).aspx
-        private enum DpiAwareness
-        {
-            None = 0,
-            SystemAware = 1,
-            PerMonitorAware = 2
-        }
+		// According to https://msdn.microsoft.com/en-us/library/windows/desktop/dn280512(v=vs.85).aspx
+		private enum DpiAwareness
+		{
+			None = 0,
+			SystemAware = 1,
+			PerMonitorAware = 2
+		}
 
-        [STAThread]
+		[STAThread]
 		private static void Main(string[] args)
 		{
 			Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            if (Environment.OSVersion.Platform != PlatformID.Unix)
-            {
-                SetProcessDpiAwareness((int)DpiAwareness.PerMonitorAware);
-            }
+			Application.SetCompatibleTextRenderingDefault(false);
+			if (Environment.OSVersion.Platform != PlatformID.Unix)
+			{
+				SetProcessDpiAwareness((int)DpiAwareness.PerMonitorAware);
+			}
 
-            VariableUnitsConverter.Initialize();
+			VariableUnitsConverter.Initialize();
 			Statement.Initialize();
 			Grammar.CalcToken.Initialize();
 			Scripts.LoadScripts(ScriptsFolder);
@@ -189,16 +189,16 @@ namespace Calculator
 				switch (t)
 				{
 					case "-c":
-					{
-						var formula = string.Concat(args.Skip(1));
-						var Memory = new MemoryManager();
-						Memory.SetDefaultConstants();
-						Memory.Push();
-						Statement.Memory = Memory;
-						var stat = new Statement();
-						Console.WriteLine(stat.ProcessString(formula));
-						return;
-					}
+						{
+							var formula = string.Concat(args.Skip(1));
+							var Memory = new MemoryManager();
+							Memory.SetDefaultConstants();
+							Memory.Push();
+							Statement.Memory = Memory;
+							var stat = new Statement();
+							Console.WriteLine(stat.ProcessString(formula));
+							return;
+						}
 				}
 			}
 			Window = new List<ICalculator>();
@@ -338,15 +338,15 @@ namespace Calculator
 			{
 				form.Closing += FormClosing;
 				form.Show();
-				Window.Add((ICalculator) form);
-				((ICalculator) form).Recalculate(false);
+				Window.Add((ICalculator)form);
+				((ICalculator)form).Recalculate(false);
 			}
 			return form;
 		}
 		private static void FormClosing(object sender, CancelEventArgs e)
 		{
 			lock (Window)
-				Window.Remove((ICalculator) sender);
+				Window.Remove((ICalculator)sender);
 		}
 		public static void GlobalKeyDown(KeyEventArgs e)
 		{
@@ -408,8 +408,8 @@ namespace Calculator
 				return FormatOutput((long)value, format, thousandsSeparator, rounding);
 			if (value is Variable)
 			{
-				dynamic v = ((Variable) value).Value;
-				if(v == null)
+				dynamic v = ((Variable)value).Value;
+				if (v == null)
 					return "NaN";
 				return FormatOutput(v, format, thousandsSeparator, rounding);
 			}
@@ -473,7 +473,7 @@ namespace Calculator
 							hex = CommaSeperateNChars(hex, 4);
 						return "0x" + hex;
 					}
-				
+
 				case OutputFormat.Binary:
 					var top = rounding == -1 ? 32 : rounding;
 					var builder = new StringBuilder();

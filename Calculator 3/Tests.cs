@@ -9,12 +9,12 @@ namespace Calculator
 	{
 		public static void RunTests()
 		{
-	#region Constants
+			#region Constants
 			var Memory = new MemoryManager();
 			Memory.SetDefaultConstants();
 			Memory.Push();
 			Statement.Memory = Memory;
-	#endregion
+			#endregion
 
 			TestFunction("2.3441", 2.34);
 			TestFunction("2E17", 2E17);
@@ -53,10 +53,10 @@ namespace Calculator
 			TestFunction("(75 + 0x3F) & 0xFFFFFFC0", 128);
 			TestFunction("1/0", double.PositiveInfinity);
 			TestFunction("-1/0", double.NegativeInfinity);
-      TestFunction("-1%0", null);
-      TestFunction("1%((1 << 63) & 0)", null);
+			TestFunction("-1%0", null);
+			TestFunction("1%((1 << 63) & 0)", null);
 
-      TestFunction("-2 1 3 4 g", new Variable(-235.2, units: new VariableUnits(new[] { "m" }, new[] { "s", "s" })));
+			TestFunction("-2 1 3 4 g", new Variable(-235.2, units: new VariableUnits(new[] { "m" }, new[] { "s", "s" })));
 			TestFunction("2^2", 4);
 			TestFunction("2.3 + 2321.23 * 234.21 - 233.231 * 2 ^ 2", 542724.65);
 			TestFunction("2*(5+3)", 16);

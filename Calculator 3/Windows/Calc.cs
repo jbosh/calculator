@@ -79,7 +79,7 @@ namespace Calculator.Windows
 				TopMost = Program.AlwaysOnTop;
 			foreach (CalculatorField field in fields)
 				field.Calculate(global);
-			if(graph != null)
+			if (graph != null)
 				graph.Recalculate(global);
 			Memory.Pop();
 			Memory.Push();
@@ -155,7 +155,7 @@ namespace Calculator.Windows
 					}
 					break;
 				case Keys.X:
-					if(e.Control)
+					if (e.Control)
 					{
 						var idx = FindActiveFieldIndex();
 						var field = fields[idx];
@@ -288,11 +288,11 @@ namespace Calculator.Windows
 		private void SaveFile()
 		{
 			var sfd = new SaveFileDialog
-			          	{
-			          		InitialDirectory = Program.WorkingDirectory,
-			          		Filter = "Text Files|*.txt;*.rtf|All Files|*",
-			          		OverwritePrompt = true,
-			          	};
+			{
+				InitialDirectory = Program.WorkingDirectory,
+				Filter = "Text Files|*.txt;*.rtf|All Files|*",
+				OverwritePrompt = true,
+			};
 			var result = sfd.ShowDialog();
 			switch (result)
 			{
@@ -323,7 +323,7 @@ namespace Calculator.Windows
 		}
 		private void PasteAllLines(int fieldIndex)
 		{
-			if(!Clipboard.ContainsText())
+			if (!Clipboard.ContainsText())
 				return;
 			var lines = Clipboard.GetText(TextDataFormat.Text)
 				.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
@@ -350,15 +350,15 @@ namespace Calculator.Windows
 		private void OpenFile()
 		{
 			var ofd = new OpenFileDialog
-			          	{
-			          		InitialDirectory = Program.WorkingDirectory,
-			          		Multiselect = false,
-			          		ShowReadOnly = true,
-			          		Filter = "Text Files|*.txt;*.rtf|All Files|*",
-			          		CheckFileExists = true,
-			          		DereferenceLinks = true,
-			          		AddExtension = true
-			          	};
+			{
+				InitialDirectory = Program.WorkingDirectory,
+				Multiselect = false,
+				ShowReadOnly = true,
+				Filter = "Text Files|*.txt;*.rtf|All Files|*",
+				CheckFileExists = true,
+				DereferenceLinks = true,
+				AddExtension = true
+			};
 			var result = ofd.ShowDialog();
 			switch (result)
 			{
@@ -391,8 +391,8 @@ namespace Calculator.Windows
 				while (fields.Count != lines.Length)
 					Push();
 			}
-			
-			for(var i = 0; i < lines.Length; i++)
+
+			for (var i = 0; i < lines.Length; i++)
 			{
 				var line = lines[i];
 				var text = string.IsNullOrEmpty(line) ? "" : line;
@@ -407,7 +407,7 @@ namespace Calculator.Windows
 		{
 			if (fields.Count >= MaxRows)
 				return;
-			
+
 			var field = new CalculatorField(fields[index]);
 			field.txtQuestion.TextChanged += (o, e) => Recalculate(false);
 			fields.Insert(index + 1, field);
@@ -470,24 +470,15 @@ namespace Calculator.Windows
 			public readonly TextBoxAdvanced txtQuestion;
 			public OutputFormat Format;
 			public bool ThousandsSeparator;
-			public int Bottom
-			{
-				get { return txtQuestion.Bottom; }
-			}
+			public int Bottom => txtQuestion.Bottom;
 			public string Text
 			{
-				get { return txtQuestion.Text; }
-				set { txtQuestion.Text = value; }
+				get => txtQuestion.Text;
+				set => txtQuestion.Text = value;
 			}
-			public string Answer
-			{
-				get { return lblAnswer.Text; }
-			}
+			public string Answer => lblAnswer.Text;
 
-			public ICalculator Parent
-			{
-				get { return (ICalculator) txtQuestion.Parent; }
-			}
+			public ICalculator Parent => (ICalculator)txtQuestion.Parent;
 
 			#region Constructors
 			public CalculatorField(CalculatorField previous = null)
@@ -574,12 +565,12 @@ namespace Calculator.Windows
 				var variable = statement.ProcessString(txtQuestion.Text);
 				var format = statement.Format == OutputFormat.Invalid ? Format : statement.Format;
 
-				var rounding = -1;
-				if(format == OutputFormat.Binary)
+				int rounding;
+				if (format == OutputFormat.Binary)
 					rounding = Program.BinaryRounding;
 				else
 					rounding = Program.Rounding;
-				if(statement.Rounding.HasValue)
+				if (statement.Rounding.HasValue)
 					rounding = statement.Rounding.Value;
 
 				if (variable.Errored && !Program.ErrorsAsNan)
@@ -587,11 +578,12 @@ namespace Calculator.Windows
 				else
 				{
 					var text = Program.FormatOutput(variable, format, ThousandsSeparator, rounding);
-					if(variable.Units != null)
+					if (variable.Units != null)
 						text += string.Concat("<", variable.Units.ToString(), ">");
 					lblAnswer.Text = text;
 				}
 			}
+
 			private void txtQuestion_TextChanged()
 			{
 				CheckForReplacement(@"\pi", "π");//03C0
@@ -609,6 +601,7 @@ namespace Calculator.Windows
 				CheckForReplacement(@"\Delta", "Δ");//0394
 				CheckForReplacement(@"\micro", "µ");//00B5
 			}
+
 			private void CheckForReplacement(string alias, string replace)
 			{
 				var index = txtQuestion.Text.IndexOf(alias);
@@ -619,6 +612,7 @@ namespace Calculator.Windows
 					.Insert(index, replace);
 				txtQuestion.SelectionStart = txtQuestion.CaretStart = index + replace.Length;
 			}
+
 			private void lblAnswer_Click(object sender, EventArgs e)
 			{
 				var mouseArgs = (MouseEventArgs)e;
