@@ -27,8 +27,7 @@ namespace Calculator.Windows
 			Statement.Memory = Memory;
 
 			InitializeComponent();
-			if (Environment.OSVersion.Platform == PlatformID.Unix)
-				FormBorderStyle = FormBorderStyle.FixedSingle;
+
 			KeyDown += Calc_KeyDown;
 			MouseMove += Calc_MouseMove;
 			Resize += Calc_Resize;

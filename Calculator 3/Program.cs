@@ -161,12 +161,14 @@ namespace Calculator
 			PerMonitorAware = 2
 		}
 
+		public static bool IsWindows => Environment.OSVersion.Platform == PlatformID.Win32NT || Environment.OSVersion.Platform == PlatformID.Win32Windows;
+
 		[STAThread]
 		private static void Main(string[] args)
 		{
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
-			if (Environment.OSVersion.Platform != PlatformID.Unix)
+			if (IsWindows)
 			{
 				SetProcessDpiAwareness((int)DpiAwareness.PerMonitorAware);
 			}
