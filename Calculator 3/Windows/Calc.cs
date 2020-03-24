@@ -62,7 +62,6 @@ namespace Calculator.Windows
 		{
 			if ((e.Button & MouseButtons.Left) == 0)
 				return;
-			Console.WriteLine("{0} {1}", e.X, e.Y);
 		}
 		#endregion
 
