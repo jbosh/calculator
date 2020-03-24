@@ -195,22 +195,10 @@ namespace Calculator
 					SelectAll();
 					return true;
 				case Keys.Control | Keys.Z:
-					if (undoStackIndex > 1)
-					{
-						undoStackIndex--;
-						var data = undoStack[undoStackIndex - 1];
-						Text = data.Value;
-						SelectionStart = data.CaretStart;
-					}
+					Undo();
 					return true;
 				case Keys.Control | Keys.Y:
-					if (undoStackIndex < undoStack.Count)
-					{
-						undoStackIndex++;
-						var data = undoStack[undoStackIndex - 1];
-						Text = data.Value;
-						SelectionStart = data.CaretStart;
-					}
+					Redo();
 					return true;
 				case Keys.Control | Keys.OemCloseBrackets:
 					FindMatchingBrace(false);
@@ -403,6 +391,42 @@ namespace Calculator
 						}
 					}
 					break;
+				case Keys.Z:
+					if (e.Control)
+					{
+						Undo();
+						e.Handled = true;
+					}
+					break;
+				case Keys.Y:
+					if (e.Control)
+					{
+						Redo();
+						e.Handled = true;
+					}
+					break;
+			}
+		}
+
+		public new void Undo()
+		{
+			if (undoStackIndex > 1)
+			{
+				undoStackIndex--;
+				var data = undoStack[undoStackIndex - 1];
+				Text = data.Value;
+				SelectionStart = data.CaretStart;
+			}
+		}
+
+		public void Redo()
+		{
+			if (undoStackIndex < undoStack.Count)
+			{
+				undoStackIndex++;
+				var data = undoStack[undoStackIndex - 1];
+				Text = data.Value;
+				SelectionStart = data.CaretStart;
 			}
 		}
 
@@ -559,6 +583,7 @@ namespace Calculator
 				return string.Format("{0}: {1}", CaretStart, Value);
 			}
 		}
+
 		private const int MaxUndoRedoSteps = 128;
 		private int undoStackIndex;
 		private List<UndoData> undoStack;
