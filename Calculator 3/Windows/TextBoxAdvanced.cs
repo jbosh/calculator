@@ -662,47 +662,10 @@ namespace Calculator
 			}
 		}
 
-		[DllImport("user32.dll")]
-		private static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wp, IntPtr lp);
-
-		[DllImport("User32.dll", EntryPoint = "SendMessage", CharSet = CharSet.Auto)]
-		private static extern IntPtr SendMessage(HandleRef hWnd, int msg, IntPtr wParam, IntPtr lParam);
-
-		private const int WM_SETREDRAW = 0x0b;
-
-		/// <summary>
-		/// When beginning changing fonts and such, this disables drawing.
-		/// </summary>
-		public void BeginUpdate()
-		{
-			SendMessage(Handle, WM_SETREDRAW, (IntPtr)0, IntPtr.Zero);
-		}
-
-		/// <summary>
-		/// When finished changing fonts and such, this re-enables drawing. This will invalidate
-		/// the control.
-		/// </summary>
-		public void EndUpdate()
-		{
-			SendMessage(this.Handle, WM_SETREDRAW, (IntPtr)1, IntPtr.Zero);
-			Invalidate();
-		}
-
-		private const int EM_CHARFROMPOS = 0x00D7;
-
 		public int GetTrueIndexPositionFromPoint(Point pt)
 		{
-#if DEBUG
-			if ((object)this is RichTextBox) //casting is for compiler warning
-				throw new NotImplementedException("SendMessage needs to send POINT instead of LO/HI");
-#endif
-
-			var lo = (long)pt.X;
-			var hi = (long)pt.Y << (IntPtr.Size * 4);
-			var wpt = new IntPtr(lo | hi);
-			var index = SendMessage(new HandleRef(this, Handle), EM_CHARFROMPOS, IntPtr.Zero, wpt);
-
-			return index.ToInt32();
+			var charIndex = GetCharIndexFromPosition(pt);
+			return charIndex;
 		}
 
 		private struct TextSelection
@@ -720,6 +683,5 @@ namespace Calculator
 			public string Select(string text) => text.Substring(Start, Length);
 			public override string ToString() => $"Start: {Start} Length: {Length}";
 		}
-
 	}
 }
